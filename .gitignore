@@ -1,6 +1,6 @@
 __pycache__/
 
-.DS_Store/
+.DS_Store
 
-s3_responses/
-s3_uploads/
+data/s3_responses/
+data/s3_uploads/
