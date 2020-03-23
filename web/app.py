@@ -10,7 +10,7 @@ def hello_whale():
 
 @app.route('/test')
 def test():
-	return 'Test world'
+	return 'Test world 1'
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
