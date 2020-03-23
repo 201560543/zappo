@@ -1,4 +1,6 @@
 __pycache__/
 
+.DS_Store/
+
 s3_responses/
 s3_uploads/
