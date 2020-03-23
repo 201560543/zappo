@@ -1,0 +1,271 @@
+ID,TYPE,TEXT,CONFIDENCE
+0,PHONE_NUMBER,562 944 4000,0.8
+1,supplier_address,"Tel:
+562 944 4000",0.9583548
+2,PHONE_NUMBER,562 944 4200,0.8
+3,ADDRESS,"By Megan Norgrove at 8:44 am, Aug 20, 2019",0.8
+4,GENERAL,1/2,0.8
+5,ADDRESS,"CED
+ALBUQUERQUE
+701A COMANCHE RD NE
+ALBUQUERQUE NM 87107",0.8
+6,ADDRESS,"CED
+ΑTT ATT: : ΑΡIC
+APIC SOLUTIONS INC
+701A COMANCHE RD NE
+ALBUQUERQUE NM 87107",0.8
+7,customer_address,"CED
+ALBUQUERQUE
+701A COMANCHE RD NE
+ALBUQUERQUE NM 87107",0.5087104
+8,ship_to_address,"CED
+ΑTT ATT: : ΑΡIC
+APIC SOLUTIONS INC
+701A COMANCHE RD NE
+ALBUQUERQUE NM 87107",0.98682445
+9,DATE,08/05/2019 037646,0.8
+10,invoice_date,08/05/2019,0.6031102
+11,carrier,Via,0.99486625
+12,ADDRESS,SK,0.8
+13,ID,0146-MAC986970D UPS,0.8
+14,ADDRESS,0006479,0.8
+15,customer_name,WALLY CLINE,0.93055797
+16,ID,037646,0.8
+17,ID,Date,0.8
+18,ID,VA ABQ MRI swit,0.8
+19,TERMS,1 10 days NET 30,0.8
+20,ADDRESS,Terms,0.8
+21,DATE,08/16/2019 08/15/19 PREPAID,0.8
+22,payment_terms,1 10 days NET 30,0.9996363
+23,invoice_id,037646,0.999495
+24,line_item,"***********
+**********
+UPS Track# 129196110366845206",NA
+25,line_item/product_code,"***********
+**********
+UPS Track# 129196110366845206",0.54387695
+26,line_item,UPS Track # 129196110365375216,NA
+27,line_item/product_code,UPS Track # 129196110365375216,0.5454247
+28,line_item/product_code,"THJ9VF26-R
+GE THJ9V 600A 3P 600V
+Ea
+600AMP FRAME",0.873319
+29,line_item,"1
+2
+2:
+THJ9VF26-R
+GE THJ9V 600A 3P 600V
+Ea
+600AMP FRAME
+3450.00 $6900.00",NA
+30,line_item/unit_price,3450.00,0.76931125
+31,line_item/quantity,1,0.9292124
+32,line_item/quantity,2,0.4602482
+33,line_item/quantity,2:,0.7064845
+34,line_item,400AMP SENSORS/CTS,NA
+35,line_item/product_code,400AMP SENSORS/CTS,0.6034477
+36,line_item/product_code,"GE TS20LSIT1 LSI/TARGETS
+RMS-9 MICROVERSATRIP TRIP",0.56403553
+37,line_item,"GE TS20LSIT1 LSI/TARGETS
+RMS-9 MICROVERSATRIP TRIP",NA
+38,ADDRESS,MICROVERSATRIP TRIP,0.8
+39,line_item/product_code,UNIT,0.8647036
+40,line_item,UNIT,NA
+41,line_item/product_code,"GE AV-3 Line and Load Side
+clusters and hardware",0.6856054
+42,line_item,"GE AV-3 Line and Load Side
+clusters and hardware",NA
+43,line_item/product_code,breakers,0.7829581
+44,line_item,breakers,NA
+45,line_item/product_code,**NO LUGS**,0.91383123
+46,line_item,**NO LUGS**,NA
+47,line_item,"2
+1
+1
+THJ9VF 26-R
+GE THJ9V 600A 3P 600V
+Ea
+600AMP FRAME
+3450.00
+$3450.00",NA
+48,line_item/product_code,$3450.00,0.29081604
+49,line_item/quantity,2,0.94455916
+50,line_item/quantity,1,0.5188677
+51,line_item/quantity,1,0.9488413
+52,line_item/unit_price,3450.00,0.941827
+53,line_item/description,"PLEASE SET LONG TIME
+CONTINUOUS DIAL TO:",0.8262616
+54,line_item,"PLEASE SET LONG TIME
+CONTINUOUS DIAL TO:",NA
+55,line_item,"150amp x.5
+50% 75amps",NA
+56,line_item/description,"150amp x.5
+50% 75amps",0.88196075
+57,supplier_address,"Tel:
+562 944 4000",0.96497476
+58,PHONE_NUMBER,562 944 4000,0.8
+59,supplier_tax_id,800 942 7561,0.70775276
+60,PHONE_NUMBER,562 944 4200,0.8
+61,ADDRESS,Santa Fe Springs CA 90670,0.8
+62,GENERAL,2/2,0.8
+63,ADDRESS,"CED
+ALBUQUERQUE
+701A COMANCHE RD NE
+ALBUQUERQUE NM 87107",0.8
+64,ADDRESS,"CED
+ΑTT ATT: : ΑΡIC
+APIC SOLUTIONS INC
+701A COMANCHE RD NE
+ALBUQUERQUE NM 87107",0.8
+65,ship_to_name,"ALBUQUERQUE
+701A COMANCHE RD NE
+CED
+CED",0.38897312
+66,customer_address,"CED
+ALBUQUERQUE
+701A COMANCHE RD NE
+ALBUQUERQUE NM 87107",0.5087104
+67,ship_to_address,"CED
+ΑTT ATT: : ΑΡIC
+APIC SOLUTIONS INC
+701A COMANCHE RD NE
+ALBUQUERQUE NM 87107",0.98682445
+68,DATE,08/05/2019 037646,0.8
+69,invoice_date,08/05/2019,0.77004844
+70,carrier,Via,0.99486625
+71,ADDRESS,SK,0.8
+72,ID,0146-MAC986970D UPS,0.8
+73,ADDRESS,0006479,0.8
+74,customer_name,WALLY CLINE,0.93055797
+75,ID,037646,0.8
+76,DATE,08/16/2019,0.9
+77,ID,VA ABQ MRI swit,0.8
+78,TERMS,1 10 days NET 30,0.8
+79,TERMS,PREPAID,0.8
+80,DATE,08/15/19,0.8
+81,payment_terms,1 10 days NET 30,0.9996363
+82,invoice_id,037646,0.999495
+83,line_item/unit,UNIT,0.7250082
+84,line_item,UNIT,NA
+85,line_item/description,"GE AV-3 Line and Load Side
+Clusters and hardware",0.6472728
+86,line_item,"GE AV-3 Line and Load Side
+Clusters and hardware",NA
+87,line_item,"**NO LUGS**
+PEARL",NA
+88,line_item/product_code,"**NO LUGS**
+PEARL",0.2171213
+89,line_item,Reconditioned/Tested/Obsolete,NA
+90,line_item/description,Reconditioned/Tested/Obsolete,0.34316167
+91,line_item,"PEARL REPORT-R
+MISC PEARL TEST CERTIFICA Ea
+0.00
+$0.00",NA
+92,line_item/product_code,PEARL RERT-R,0.8962709
+93,PRICE,"10,350.00",0.8
+94,line_item,"Merchandise
+10,350.00",NA
+95,ADDRESS,0.00,0.8
+96,line_item,"FOR ELECTRONIC PLEASE EMAIL INVOICES
+NICOLE@RGINDUSTRIES.NET
+Freight
+Misc_Charges
+SubTotal
+Taxable
+0.00
+0.00
+10,350.00
+0.00",NA
+97,PRICE,0.00,0.8
+98,net_amount,"10,350.00",0.9996013
+99,PRICE,"10,350.00",0.8
+100,PRICE,0.00,0.8
+101,total_tax_amount,0.00,0.99857175
+102,PRICE,0.00,0.8
+103,line_item/unit_price,Merchandise,0.6493337
+104,line_item/description,"Freight
+Misc_Charges
+SubTotal",0.6842851
+105,line_item/description,Taxable,0.4500646
+106,line_item/product_code,FOR ELECTRONIC PLEASE EMAIL,0.82471293
+107,PRICE,"$10,350.00",0.9
+108,total_amount,"$10,350.00",0.99877924
+109,ADDRESS,PL,0.8
+110,line_item/description,NA,0.2047888
+111,line_item/description,NA,0.2047888
+112,line_item/description,NA,0.2047888
+113,line_item/description,NA,0.2047888
+114,line_item/description,NA,0.2047888
+115,line_item/description,NA,0.2047888
+116,line_item/description,NA,0.2047888
+117,line_item/description,NA,0.2047888
+118,line_item/description,NA,0.2047888
+119,line_item/description,NA,0.2047888
+120,line_item/description,NA,0.2047888
+121,line_item/description,NA,0.2047888
+122,line_item/description,NA,0.2047888
+123,line_item/description,NA,0.2047888
+124,line_item/quantity,NA,0.3189019
+125,line_item/quantity,NA,0.3189019
+126,line_item/quantity,NA,0.3189019
+127,line_item/quantity,NA,0.3189019
+128,line_item/quantity,NA,0.3189019
+129,line_item/quantity,NA,0.3189019
+130,line_item/quantity,NA,0.3189019
+131,line_item/quantity,NA,0.3189019
+132,line_item/quantity,NA,0.3189019
+133,line_item/quantity,NA,0.3189019
+134,line_item/quantity,NA,0.3189019
+135,line_item/quantity,NA,0.3189019
+136,line_item/quantity,NA,0.3189019
+137,line_item/quantity,NA,0.3189019
+138,line_item/quantity,NA,0.3189019
+139,line_item/quantity,NA,0.3189019
+140,line_item/unit_price,NA,0.99830735
+141,line_item/unit_price,NA,0.99830735
+142,line_item/unit_price,NA,0.99830735
+143,line_item/unit_price,NA,0.99830735
+144,line_item/unit_price,NA,0.99830735
+145,line_item/unit_price,NA,0.9623431
+146,line_item/product_code,NA,0.9276226
+147,line_item/product_code,NA,0.9276226
+148,line_item/product_code,NA,0.9276226
+149,line_item/product_code,NA,0.9276226
+150,line_item/product_code,NA,0.9276226
+151,line_item/product_code,NA,0.9276226
+152,line_item/product_code,NA,0.9276226
+153,line_item/unit_price,NA,0.99830735
+154,line_item/unit_price,NA,0.85525316
+155,line_item/unit_price,NA,0.85525316
+156,line_item/unit_price,NA,0.85525316
+157,line_item/unit_price,NA,0.85525316
+158,line_item/unit_price,NA,0.99830735
+159,line_item/unit_price,NA,0.99830735
+160,line_item/unit_price,NA,0.99830735
+161,line_item/unit_price,NA,0.99830735
+162,line_item/unit_price,NA,0.99830735
+163,line_item/unit_price,NA,0.6028643
+164,line_item/unit_price,NA,0.99830735
+165,line_item/product_code,NA,0.38851005
+166,line_item/unit_price,NA,0.99830735
+167,line_item/quantity,NA,0.3189019
+168,line_item/quantity,NA,0.3189019
+169,line_item/quantity,NA,0.3189019
+170,line_item/quantity,NA,0.3189019
+171,line_item/quantity,NA,0.3189019
+172,line_item/quantity,NA,0.3189019
+173,line_item/quantity,NA,0.3189019
+174,line_item/quantity,NA,0.3189019
+175,line_item/quantity,NA,0.3189019
+176,line_item/unit_price,NA,0.99830735
+177,line_item/description,NA,0.2047888
+178,line_item/description,NA,0.2047888
+179,line_item/description,NA,0.2047888
+180,line_item/description,NA,0.2047888
+181,line_item/description,NA,0.2047888
+182,line_item/description,NA,0.2047888
+183,line_item/description,NA,0.2047888
+184,line_item/description,NA,0.2047888
+185,line_item/description,NA,0.2047888
+""
+,FIELD_NAME,FIELD_VALUE
