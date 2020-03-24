@@ -57,7 +57,7 @@ def spread_columns(df):
 			for right_index in range(start_point+1, len(col_names)):
 				if col_names[right_index] != '':
 					break
-				df[spreader] = df.iloc[:, right_index].astype(str)+" "+df[spreader]
+				df[spreader] = df[spreader]+" "+df.iloc[:, right_index].astype(str)
 
 	return df
 
@@ -75,5 +75,7 @@ def update_column_headers(df, template_name='sysco.json'):
     orders_df = pd.DataFrame(df.values[1:], columns=column_headers)
     # Spread the columns if they are empty
     orders_df = spread_columns(orders_df)
+
+    orders_df.drop([''], axis = 1, inplace=True) 
 
     return orders_df
