@@ -9,6 +9,7 @@
 			"qty. shpd.": "shipped_quantity",
 			"unit": "unit",
 			"pack size": "size",
+			"brand": "brand",
 			"description": "description",
 			"weight": "weight",
 			"price": "price",

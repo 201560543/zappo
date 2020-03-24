@@ -1,6 +1,7 @@
 import json
 from trp import Document
 import pandas as pd
+from utils import update_column_headers
 
 def processDocument(doc):
     for page in doc.pages:
@@ -40,7 +41,9 @@ def processDocument(doc):
             print("Field: Key: {}, Value: {}".format(field.key, field.value))
 
         df = pd.DataFrame([[cell.text for cell in row.cells] for row in page.tables[0].rows])
-        print(df.head())
+        print(update_column_headers(df)) 
+
+
 
 
 def run():
@@ -55,5 +58,3 @@ def run():
 
 run()
 
-import os
-print(os.getcwd())
