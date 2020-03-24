@@ -1,0 +1,18 @@
+{
+	"mapper": {
+		"order": {
+			"invoice": "invoice_number"
+		},
+		"order_item": {
+			"no.": "item_number",
+			"qty. ord.": "order_quantity",
+			"qty. shpd.": "shipped_quantity",
+			"unit": "unit",
+			"pack size": "size",
+			"description": "description",
+			"weight": "weight",
+			"price": "price",
+			"extension": "total_price"			
+		}
+	}
+}
