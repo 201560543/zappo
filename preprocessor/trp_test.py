@@ -33,12 +33,13 @@ def processDocument(doc):
     #     if(f):
     #         print("Field: Key: {}, Value: {}".format(f.key.text, f.value.text))
 
-    #     #Search field by key
-    #     key = "CUSTOMER ACCOUNT NO. No."
-    #     print("\nSearch field by key ({}):\n====================".format(key))
-    #     fields = page.form.searchFieldsByKey(key)
-    #     for field in fields:
-    #         print("Field: Key: {}, Value: {}".format(field.key, field.value))
+        #Search field by key
+        key = "CUSTOMER ACCOUNT NO."
+
+        fields = page.form.searchFieldsByKey(key)
+        print(page.form)
+        for field in fields:
+            print("Field: Key: {}, Value: {}".format(field.key, field.value))
 
         df = pd.DataFrame([[cell.text for cell in row.cells] for row in page.tables[0].rows])
         orders_df = update_column_headers(df)
