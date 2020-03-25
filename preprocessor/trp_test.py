@@ -2,6 +2,7 @@ import json
 from trp import Document
 import pandas as pd
 from utils import update_column_headers
+from orders import Order
 
 def processDocument(doc):
     for page in doc.pages:
@@ -33,18 +34,28 @@ def processDocument(doc):
     #     if(f):
     #         print("Field: Key: {}, Value: {}".format(f.key.text, f.value.text))
 
+
         #Search field by key
         key = "CUSTOMER ACCOUNT NO."
 
         fields = page.form.searchFieldsByKey(key)
         print(page.form)
-        for field in fields:
-            print("Field: Key: {}, Value: {}".format(field.key, field.value))
+        # for field in fields:
+        #     print("Field: Key: {}, Value: {}".format(field.key, field.value))
 
-        df = pd.DataFrame([[cell.text for cell in row.cells] for row in page.tables[0].rows])
-        orders_df = update_column_headers(df)
-        print(orders_df.head())
-        print(orders_df.columns)
+        # # Turning invoice line items into a DF
+        # df = pd.DataFrame([[cell.text for cell in row.cells] for row in page.tables[0].rows])
+        # orders_df = update_column_headers(df)
+        # print(orders_df.head())
+        # print(orders_df.columns)
+        # print([line.text for line in page.lines])
+        # print(orders_df.head())
+
+        order = Order()
+        order.set_page(page)
+
+        import pdb; pdb.set_trace()
+
 
 
 
