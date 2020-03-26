@@ -562,7 +562,7 @@ class Page:
 
     @property
     def lines(self):
-        return self._lines
+        return iter(self._lines)
 
     @property
     def form(self):
