@@ -34,10 +34,6 @@ class Order():
     def customer_accnt_no(self):
         return self._customer_accnt_no
 
-    @customer_accnt_no.setter
-    def customer_accnt_no(self, account_no):
-        self._customer_accnt_no = account_no
-
     @property
     def order_items(self):
         return [order_item for order_item in self._order_items]
@@ -58,10 +54,18 @@ class Order():
         # Fetch the order item template
         order_template = template_data.get('mapper').get('order')
         # For each extracted key, search for relevant keys from the json template
-        matched_keys_raw = [(idx, prefix_dictionary_search(field_key, order_template)) 
-                            for idx,field_key 
-                            in enumerate(self.Form_dict.keys())]
-        matched_keys_idx, matched_keys = ([idx for idx,key in matched_keys_raw if key != ''],
-                                          [key for idx,key in matched_keys_raw if key != ''])
+        matched_keys_raw = {prefix_dictionary_search(field_key, order_template):self.Form_dict[field_key]
+                            for field_key 
+                            in self.Form_dict.keys()}
+        
+        return matched_keys_raw
+    
 
-        return matched_keys_idx, matched_keys
+
+
+    def set_order_values(self, page_obj):
+        # Set Page object
+        self.Page = page_obj
+        # Get Page's Form 
+        self.extract_keys_using_template()
+
