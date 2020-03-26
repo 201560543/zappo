@@ -52,10 +52,8 @@ def processDocument(doc):
         # print(orders_df.head())
 
         order = Order()
-        print(order.set_order_values(page))
-
-        import pdb; pdb.set_trace()
-        
+        order.Page = page
+        print(order.extract_keys_using_template())
 
 
 
