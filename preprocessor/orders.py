@@ -5,10 +5,15 @@ class Order():
     def __init__(self):
         self._Page = None
         self._Form_dict = None
+
         self._invoice_number = None
-        self._customer_accnt_no = None
+        self._invoice_term_name = None
+        self._invoice_date = None
+
+        self._customer_account_number = None
         self._vendor = None
         self._order_items = []
+        self._raw_sold_to_info = None
 
     def __str__(self):
         return f'{self._invoice_number}, number of items: {len(self._order_items)}'
@@ -31,12 +36,24 @@ class Order():
         return self._invoice_number
 
     @property
-    def customer_accnt_no(self):
-        return self._customer_accnt_no
+    def invoice_term_name(self):
+        return self._invoice_term_name
+
+    @property
+    def customer_account_number(self):
+        return self._customer_account_number
+
+    @property
+    def invoice_date(self):
+        return self._invoice_date
 
     @property
     def order_items(self):
         return [order_item for order_item in self._order_items]
+
+    @property
+    def raw_sold_to_info(self):
+        return self._raw_sold_to_info
 
     @property
     def vendor(self):
@@ -59,13 +76,20 @@ class Order():
                             in self.Form_dict.keys()}
         
         return matched_keys_raw
-    
-
-
+        
 
     def set_order_values(self, page_obj):
         # Set Page object
         self.Page = page_obj
         # Get Page's Form 
-        self.extract_keys_using_template()
+        searched_form_dict = self.extract_keys_using_template()
+        # Set attributes using matched dict
+        self._customer_account_number = searched_form_dict.get('customer_account_number')
+        self._invoice_date = searched_form_dict.get('invoice_date')
+        self._invoice_term_name = searched_form_dict.get('invoice_term_name')
+        self._raw_sold_to_info = searched_form_dict.get('raw_sold_to_info')
+
+        _temp = self.raw_sold_to_info
+        return _temp
+
 
