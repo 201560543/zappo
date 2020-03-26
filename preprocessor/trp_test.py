@@ -1,7 +1,7 @@
 import json
 from trp import Document
 import pandas as pd
-from utils import update_column_headers
+from utils import update_column_headers, convert_form_to_dict
 from orders import Order
 
 def processDocument(doc):
@@ -39,7 +39,7 @@ def processDocument(doc):
         key = "CUSTOMER ACCOUNT NO."
 
         fields = page.form.searchFieldsByKey(key)
-        print(page.form)
+        # print(page.form)
         # for field in fields:
         #     print("Field: Key: {}, Value: {}".format(field.key, field.value))
 
@@ -52,8 +52,7 @@ def processDocument(doc):
         # print(orders_df.head())
 
         order = Order()
-        order.set_page(page)
-
+        order.Page = page
         import pdb; pdb.set_trace()
 
 
