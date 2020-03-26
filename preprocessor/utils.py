@@ -56,11 +56,11 @@ def prefix_dictionary_search(key: str, template_data: Dict) -> str:
 	return ''
 
 
-def missing_headers(current_headers, template_data):
+def missing_headers(current_data, template_data):
     """
     Returns columns which could not be found in the key value pair
     """
-    missed_headers = [key for key, val in template_data.items() if val not in current_headers]
+    missed_headers = [key for key, val in template_data.items() if val not in current_data]
     return missed_headers
 
 def fetch_page_lines(lines, missing_header):
@@ -70,14 +70,14 @@ def fetch_page_lines(lines, missing_header):
             return next(lines).text
 
 
-def failover(current_headers, template_data, page_obj):
-    missed_headers = missing_headers(current_headers, template_data)
+def failover(current_data, template_data, page_obj):
+    missed_headers = missing_headers(current_data, template_data)
 
     if not missed_headers:
         return {}
 
     return {
-        missed_header: fetch_page_lines(page_obj.lines, missed_header)
+        template_data[missed_header]: fetch_page_lines(page_obj.lines, missed_header)
         for missed_header in missed_headers
     }
 
