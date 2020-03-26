@@ -79,3 +79,14 @@ def update_column_headers(df, template_name='sysco.json'):
     orders_df.drop([''], axis = 1, inplace=True) 
 
     return orders_df
+
+def convert_form_to_dict(form_obj):
+    """
+    Returns dictionary with lowercase strings from a Page's Form's Fields
+	"""
+    fields = form_obj.fields
+    keys = [field.key.text.lower() for field in fields]
+    # Condition used because some field.keys do not have a corresponding field.value
+    values = [field.value.text.lower() if field.value is not None else None for field in fields]
+    return dict(zip(keys,values))
+
