@@ -1,5 +1,5 @@
 from typing import List
-from utils import fetch_json, prefix_dictionary_search, convert_form_to_dict
+from utils import fetch_json, prefix_dictionary_search, convert_form_to_dict, failover
 
 class Order():
     def __init__(self):
@@ -57,11 +57,12 @@ class Order():
         matched_keys_raw = {prefix_dictionary_search(field_key, order_template):self.Form_dict[field_key]
                             for field_key 
                             in self.Form_dict.keys()}
-        
-        return matched_keys_raw
+
+        # Remove all empty keys
+        del matched_keys_raw['']
+
+        return {**matched_keys_raw, **failover(matched_keys_raw, order_template, self._Page)}
     
-
-
 
     def set_order_values(self, page_obj):
         # Set Page object

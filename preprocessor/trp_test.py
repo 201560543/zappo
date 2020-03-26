@@ -53,7 +53,7 @@ def processDocument(doc):
 
         order = Order()
         order.Page = page
-        import pdb; pdb.set_trace()
+        print(order.extract_keys_using_template())
 
 
 

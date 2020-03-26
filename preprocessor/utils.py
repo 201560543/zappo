@@ -1,4 +1,5 @@
 import json
+import re
 import pandas as pd
 from typing import Dict, List
 from constants import TEMPLATES_DIR, SPREADERS
@@ -24,6 +25,12 @@ def prefix_search(prefix: str, template_data: Dict) -> List:
 	return [(key, val) for key, val in template_data.items()  
                    if key.startswith(prefix)]
 
+def remove_special_characters(text, extra_attr=''):
+	"""
+	Remove special characters
+	"""
+	return re.sub(f'[^A-Za-z0-9 {extra_attr}]+', '', text)
+
 def prefix_dictionary_search(key: str, template_data: Dict) -> str:
 	"""
 	Checks which key matches with present json 
@@ -31,6 +38,12 @@ def prefix_dictionary_search(key: str, template_data: Dict) -> str:
 	find_all_spaces = find(key, ' ')
 
 	find_all_spaces.append(len(key))
+
+	# Smart check to check if the value matches together
+	clean_key = remove_special_characters(key)
+
+	if clean_key in template_data:
+		return template_data[clean_key]
 
 	for index in find_all_spaces:
 		prefix = key[:index]
@@ -41,6 +54,33 @@ def prefix_dictionary_search(key: str, template_data: Dict) -> str:
 			return matched_items[0][1]
 
 	return ''
+
+
+def missing_headers(current_headers, template_data):
+    """
+    Returns columns which could not be found in the key value pair
+    """
+    missed_headers = [key for key, val in template_data.items() if val not in current_headers]
+    return missed_headers
+
+def fetch_page_lines(lines, missing_header):
+    for line in lines:
+        line_text = remove_special_characters(line.text).lower().strip()
+        if line_text == missing_header:
+            return next(lines).text
+
+
+def failover(current_headers, template_data, page_obj):
+    missed_headers = missing_headers(current_headers, template_data)
+
+    if not missed_headers:
+        return {}
+
+    return {
+        missed_header: fetch_page_lines(page_obj.lines, missed_header)
+        for missed_header in missed_headers
+    }
+
 
 def spread_columns(df):
 	index_map = {col: index for index, col in enumerate(df.columns)}
