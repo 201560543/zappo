@@ -5,3 +5,16 @@ To re-run, after making changes please user docker-compose build before docker-c
 
 
 To run the development server, use: FLASK_DEBUG=1 flask run. 
+
+Remember to set environment variables.
+
+For local, kindly run the following command to get the mysql port:  
+```
+ps aux | grep mysql
+```
+  
+followed by. 
+
+```
+export DB_PORT=3306
+```
