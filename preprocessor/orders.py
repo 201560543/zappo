@@ -87,12 +87,19 @@ class Order():
         # Get Page's Form 
         searched_form_dict = self.extract_keys_using_template()
         # Set attributes using matched dict
-        self._customer_account_number = searched_form_dict.get('customer_account_number')
-        self._invoice_date = searched_form_dict.get('invoice_date')
-        self._invoice_term_name = searched_form_dict.get('invoice_term_name')
-        self._raw_sold_to_info = searched_form_dict.get('raw_sold_to_info')
+        # self._customer_account_number = searched_form_dict.get('customer_account_number')
+        # self._invoice_date = searched_form_dict.get('invoice_date')
+        # self._invoice_term_name = searched_form_dict.get('invoice_term_name')
+        # self._raw_sold_to_info = searched_form_dict.get('raw_sold_to_info')
+        self.set_attributes(searched_form_dict)
 
-        _temp = self.raw_sold_to_info
-        return _temp
+        print(self.__dict__)
+        # _temp = self.raw_sold_to_info
+        return 
+
+    def set_attributes(self, data):
+        for key, val in data.items():
+            if hasattr(self, key):
+                setattr(self, f'_{key}', val)
 
 
