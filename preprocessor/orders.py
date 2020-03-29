@@ -94,7 +94,6 @@ class Order():
         self.set_attributes(searched_form_dict)
 
         print(self.__dict__)
-        # _temp = self.raw_sold_to_info
         return 
 
     def set_attributes(self, data):
