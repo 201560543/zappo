@@ -15,6 +15,7 @@
 			"oty. shpd.": "shipped_quantity",
 			"unit": "unit",
 			"pack size": "size",
+			"b unit": "unit",
 			"brand": "brand",
 			"description": "description",
 			"weight": "weight",

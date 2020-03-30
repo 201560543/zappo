@@ -42,13 +42,11 @@ def prefix_dictionary_search(key: str, template_data: Dict) -> str:
 
 	find_all_spaces.append(len(clean_key))
 
-	print('c', clean_key)
 	if clean_key in template_data:
 		return template_data[clean_key]
 
 	for index in find_all_spaces:
 		prefix = clean_key[:index]
-		print(prefix)
 
 		matched_items = prefix_search(prefix, template_data)
 

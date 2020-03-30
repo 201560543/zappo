@@ -102,7 +102,9 @@ class Orderitems():
             orderitem.set_attributes(row_dict)
 
             # For debugging
-            print(orderitem)
+            # print(orderitem)
+
+        print(self._TableDataFrame)
 
 class Orderitem():
     """
