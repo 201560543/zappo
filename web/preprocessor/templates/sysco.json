@@ -2,10 +2,10 @@
 	"mapper": {
 		"order": {
 			"invoice:": "invoice_number",
-            "customer account no.": "customer_account_number",
-            "invoice mo": "invoice_date",
-            "terms": "invoice_term_name",
-            "sold to": "raw_sold_to_info"
+			"customer account no.": "customer_account_number",
+			"invoice mo": "invoice_date",
+			"terms": "invoice_term_name",
+			"sold to": "raw_sold_to_info"
 		},
 		"order_item": {
 			"no.": "item_number",
@@ -19,5 +19,8 @@
 			"price": "price",
 			"extension": "total_price"			
 		}
+	},
+	"expected_tokens": {
+		"1": ["item_number", "order_quantity", "shipped_quantity"]
 	}
 }

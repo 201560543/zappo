@@ -16,7 +16,7 @@ def fetch_json(template_name: str) -> Dict:
 	"""
 	try:
 		with open(f'{TEMPLATES_DIR}/{template_name}') as f:
-	  		return json.load(f)
+			return json.load(f)
 	except IOError:
 		print(f'File {template_name} does not exist')
 
@@ -130,3 +130,13 @@ def convert_form_to_dict(form_obj):
     values = [field.value.text.lower() if field.value is not None else None for field in fields]
     return dict(zip(keys,values))
 
+def get_expected_tokens(template_name='sysco.json'):
+    # Fetch the required template type
+    template_data = fetch_json(template_name)
+    # Fetch the expected tokens and place in dictionary
+    expected_tokens = template_data.get('expected_tokens')
+    token_dict = {}
+    for key in expected_tokens.keys():
+        token_dict[int(key)] = expected_tokens[key]
+    
+    return token_dict

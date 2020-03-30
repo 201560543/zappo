@@ -46,9 +46,10 @@ def processDocument(doc):
 
         # Turning invoice line items into a DF
         for table in page.tables:
-            orderlines = Orderitems()
-            orderlines.set_orderitems_dataframe(table)
-            df = orderlines.TableDataFrame
+            orderitems = Orderitems()
+            orderitems.set_orderitems_dataframe(table)
+            df = orderitems.TableDataFrame
+            orderitems.convert_DF_to_Orderitem_objs()
             import pdb; pdb.set_trace()
 
         # df = pd.DataFrame([[cell.text for cell in row.cells] for row in page.tables[0].rows])
