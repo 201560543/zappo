@@ -31,6 +31,7 @@ class OrderitemsDF():
         self._TableDataFrame = df[df['item_number'] != '']
     
     def strip_col(self, target_column):
+        print(self._TableDataFrame[target_column])
         self._TableDataFrame[target_column] = self._TableDataFrame[target_column].apply(lambda x: x.strip())
     
     def strip_all_cols(self):
@@ -82,6 +83,14 @@ class OrderitemsDF():
                 # Appends the original extracted string onto the extra tokens
                 original_string = self._TableDataFrame.iloc[idx,col_idx+1]
                 self._TableDataFrame.iloc[idx,col_idx+1] = extra_tokens[idx] + ' ' + original_string
+    
+    def pre_validate_column(self, target_column, expected_tokens, token_type):
+        """
+        Checks whether a column is ready to be converted to its correct data type.
+        e.g. If item_number (to be converted to int) has 1 token, and that token is all numeric, it should pass this check
+        """
+        # return here: add expected data types to template
+
     
     def set_orderitems_dataframe(self, table_obj):
         # Set Table object

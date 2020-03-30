@@ -71,8 +71,8 @@ def processDocument(doc):
 def run():
     response = {}
     
-    filePath = "./data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" # <- First response we worked with
-    # filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_3.png.json" # <- PDF response (1 of 4)  
+    # filePath = "./data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" # <- First response we worked with
+    filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <- PDF response (1 of 4)  
     with open(filePath, 'r') as document:
         response = json.loads(document.read())
 

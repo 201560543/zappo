@@ -22,5 +22,11 @@
 	},
 	"expected_tokens": {
 		"1": ["item_number", "order_quantity", "shipped_quantity"]
+	},
+	"item_expected_data_types": {
+		"item_number": "int"
+	},
+	"header_expected_data_types": {
+		"invoice_number": "int"
 	}
 }
