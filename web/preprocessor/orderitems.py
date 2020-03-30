@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 from utils import update_column_headers, get_expected_tokens
 
-class Orderitems():
+class OrderitemsDF():
     """
     Used to store extracted information in tabular format
     """
