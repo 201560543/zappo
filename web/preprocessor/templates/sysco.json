@@ -9,8 +9,10 @@
 		},
 		"order_item": {
 			"no.": "item_number",
-			"qty. ord.": "order_quantity",
-			"qty. shpd.": "shipped_quantity",
+			"item no": "item_number",
+			"qty ord": "order_quantity",
+			"qty shpd": "shipped_quantity",
+			"oty. shpd.": "shipped_quantity",
 			"unit": "unit",
 			"pack size": "size",
 			"brand": "brand",
