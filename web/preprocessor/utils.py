@@ -35,18 +35,18 @@ def prefix_dictionary_search(key: str, template_data: Dict) -> str:
 	"""
 	Checks which key matches with present json 
 	"""
-	find_all_spaces = find(key, ' ')
-
-	find_all_spaces.append(len(key))
-
 	# Smart check to check if the value matches together
 	clean_key = remove_special_characters(key)
+
+	find_all_spaces = find(clean_key, ' ')
+
+	find_all_spaces.append(len(clean_key))
 
 	if clean_key in template_data:
 		return template_data[clean_key]
 
 	for index in find_all_spaces:
-		prefix = key[:index]
+		prefix = clean_key[:index]
 
 		matched_items = prefix_search(prefix, template_data)
 
@@ -116,7 +116,8 @@ def update_column_headers(df, template_name='sysco.json'):
     # Spread the columns if they are empty
     orders_df = spread_columns(orders_df)
 
-    orders_df.drop([''], axis = 1, inplace=True) 
+    if '' in orders_df:
+	    orders_df.drop([''], axis = 1, inplace=True) 
 
     return orders_df
 

@@ -47,14 +47,13 @@ def processDocument(doc):
         # Turning invoice line items into a DF
         for table in page.tables:
             try:
-                orderitems = OrderitemsDF()
+                orderitems = Orderitems()
                 orderitems.set_orderitems_dataframe(table)
                 df = orderitems.TableDataFrame
-                import pdb; pdb.set_trace()
-                # orderitems.convert_DF_to_Orderitem_objs()
+                orderitems.convert_DF_to_Orderitem_objs()
+                # import pdb; pdb.set_trace()
             except KeyError:
                 break
-            
 
         # df = pd.DataFrame([[cell.text for cell in row.cells] for row in page.tables[0].rows])
         # orders_df = update_column_headers(df)
@@ -71,8 +70,8 @@ def processDocument(doc):
 def run():
     response = {}
     
-    # filePath = "./data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" # <- First response we worked with
-    filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <- PDF response (1 of 4)  
+    filePath = "./data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" # <- First response we worked with
+    # filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <- PDF response (1 of 4)
     with open(filePath, 'r') as document:
         response = json.loads(document.read())
 

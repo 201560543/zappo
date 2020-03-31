@@ -9,10 +9,13 @@
 		},
 		"order_item": {
 			"no.": "item_number",
-			"qty. ord.": "order_quantity",
-			"qty. shpd.": "shipped_quantity",
+			"item no": "item_number",
+			"qty ord": "order_quantity",
+			"qty shpd": "shipped_quantity",
+			"oty. shpd.": "shipped_quantity",
 			"unit": "unit",
 			"pack size": "size",
+			"b unit": "unit",
 			"brand": "brand",
 			"description": "description",
 			"weight": "weight",
@@ -23,10 +26,14 @@
 	"expected_tokens": {
 		"1": ["item_number", "order_quantity", "shipped_quantity"]
 	},
-	"item_expected_data_types": {
-		"item_number": "int"
+	"item_expected_py_dtypes": {
+		"item_number": "int",
+		"order_quantity": "int",
+		"shipped_quantity": "int",
+		"unit": "int"
+
 	},
-	"header_expected_data_types": {
+	"header_expected_py_dtypes": {
 		"invoice_number": "int"
 	}
 }
