@@ -23,17 +23,28 @@
 			"extension": "total_price"			
 		}
 	},
+	"expected_lineitem_column_order" : {
+		"1":"item_number",
+		"2":"order_quantity",
+		"3":"shipped_quantity",
+		"4":"broken",
+		"5":"unit",
+		"6":"size",
+		"7":"brand",
+		"8":"description",
+		"9":"weight",
+		"10":"price",
+		"11":"total_price"
+	},
 	"expected_tokens": {
 		"1": ["item_number", "order_quantity", "shipped_quantity"]
 	},
-	"item_expected_py_dtypes": {
-		"item_number": "int",
-		"order_quantity": "int",
-		"shipped_quantity": "int",
-		"unit": "int"
-
-	},
-	"header_expected_py_dtypes": {
-		"invoice_number": "int"
+	"dtype_map":{
+		"item_expected_dtypes": {
+			"int": ["item_number", "order_quantity", "shipped_quantity", "unit"]
+		},
+		"header_expected_dtypes": {
+			"int": ["invoice_number"]
+		}
 	}
 }
