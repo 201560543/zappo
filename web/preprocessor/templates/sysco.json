@@ -23,19 +23,6 @@
 			"extension": "total_price"			
 		}
 	},
-	"expected_lineitem_column_order" : {
-		"1":"item_number",
-		"2":"order_quantity",
-		"3":"shipped_quantity",
-		"4":"broken",
-		"5":"unit",
-		"6":"size",
-		"7":"brand",
-		"8":"description",
-		"9":"weight",
-		"10":"price",
-		"11":"total_price"
-	},
 	"expectation_checks": {
 		"num_tokens": {
 			"item_number": 1,
@@ -62,6 +49,19 @@
 			"weight": "float",
 			"price": "float",
 			"total_proce": "float"
+		},
+		"column_order": {
+			"1":"item_number",
+			"2":"order_quantity",
+			"3":"shipped_quantity",
+			"4":"broken",
+			"5":"unit",
+			"6":"size",
+			"7":"brand",
+			"8":"description",
+			"9":"weight",
+			"10":"price",
+			"11":"total_price"
 		}
 	}
 }
