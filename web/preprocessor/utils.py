@@ -131,30 +131,25 @@ def convert_form_to_dict(form_obj):
     values = [field.value.text.lower() if field.value is not None else None for field in fields]
     return dict(zip(keys,values))
 
-def get_expected_tokens(template_name='sysco.json'):
-    # Fetch the required template type
-    template_data = fetch_json(template_name)
-    # Fetch the expected tokens and place in dictionary
-    expected_tokens = template_data.get('expected_tokens')
-    token_dict = {}
-    for key in expected_tokens.keys():
-        token_dict[int(key)] = expected_tokens[key]
-    
-    return token_dict
+def get_lineitem_expectations(template_name='sysco.json'):
+	"""
+	For a given template, fetch expectations for line item structure. (number of tokens, data type, and order)
+	Format...
+	Num Tokens - column:num_expected
+	Data Type - column:data type
+	Order - position:column
 
-def get_expected_column_order(template_name='sysco.json', return_as_list = True):
-    """
-    Fetches expected column order for order line items given a given.
-	Column order is stored in a key-value format to prevent accidental re-ordering. Keys are position and value is column.
-	
-	Returns: list of columns
-    """
+	Returns all 3 dictionaries
+	"""
     # Fetch the required template type
     template_data = fetch_json(template_name)
-    # Fetch the expected tokens and place in dictionary
-    expected_tokens = template_data.get('expected_lineitem_column_order')
-	
-    if return_as_list == True:
-        return list(expected_tokens.values())
-    else:
-        return expected_tokens
+    # Fetch the expectations from template
+    expectations = template_data.get('expectation_checks')
+	# Fetch expected tokens
+	expec_tokens = expectations.get('num_tokens')
+	# Fetch expected dtypes
+	expec_dtypes = expectations.get('d_types')
+	# Fetch expected column order
+	expec_col_order = expectations.get('column_order')
+
+	return expec_tokens, expec_dtypes, expec_col_order
