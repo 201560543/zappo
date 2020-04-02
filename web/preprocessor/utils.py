@@ -141,3 +141,20 @@ def get_expected_tokens(template_name='sysco.json'):
         token_dict[int(key)] = expected_tokens[key]
     
     return token_dict
+
+def get_expected_column_order(template_name='sysco.json', return_as_list = True):
+    """
+    Fetches expected column order for order line items given a given.
+	Column order is stored in a key-value format to prevent accidental re-ordering. Keys are position and value is column.
+	
+	Returns: list of columns
+    """
+    # Fetch the required template type
+    template_data = fetch_json(template_name)
+    # Fetch the expected tokens and place in dictionary
+    expected_tokens = template_data.get('expected_lineitem_column_order')
+	
+    if return_as_list == True:
+        return list(expected_tokens.values())
+    else:
+        return expected_tokens
