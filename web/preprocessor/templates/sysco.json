@@ -36,15 +36,32 @@
 		"10":"price",
 		"11":"total_price"
 	},
-	"expected_tokens": {
-		"1": ["item_number", "order_quantity", "shipped_quantity"]
-	},
-	"dtype_map":{
-		"item_expected_dtypes": {
-			"int": ["item_number", "order_quantity", "shipped_quantity", "unit"]
+	"expectation_checks": {
+		"num_tokens": {
+			"item_number": 1,
+			"order_quantity": 1,
+			"shipped_quantity": 1,
+			"broken": 1,
+			"unit": 1,
+			"size": null,
+			"brand": null,
+			"description": null,
+			"weight": null,
+			"price": null,
+			"total_price": null
 		},
-		"header_expected_dtypes": {
-			"int": ["invoice_number"]
+		"d_types": {
+			"item_number": "int",
+			"order_quantity": "int",
+			"shipped_quantity": "int",
+			"broken": "string",
+			"unit": "int",
+			"size": "string",
+			"brand": "string",
+			"description": "string",
+			"weight": "float",
+			"price": "float",
+			"total_proce": "float"
 		}
 	}
 }
