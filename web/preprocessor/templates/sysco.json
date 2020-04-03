@@ -48,7 +48,7 @@
 			"description": "string",
 			"weight": "float",
 			"price": "float",
-			"total_proce": "float"
+			"total_price": "float"
 		},
 		"column_order": {
 			"1":"item_number",
