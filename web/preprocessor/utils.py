@@ -132,24 +132,23 @@ def convert_form_to_dict(form_obj):
     return dict(zip(keys,values))
 
 def get_lineitem_expectations(template_name='sysco.json'):
-	"""
-	For a given template, fetch expectations for line item structure. (number of tokens, data type, and order)
-	Format...
-	Num Tokens - column:num_expected
-	Data Type - column:data type
-	Order - position:column
+    """
+    For a given template, fetch expectations for line item structure. (number of tokens, data type, and order)
+    Format...
+    Num Tokens - column:num_expected
+    Data Type - column:data type
+    Order - position:column
 
-	Returns all 3 dictionaries
-	"""
+    Returns all 3 dictionaries
+    """
     # Fetch the required template type
     template_data = fetch_json(template_name)
     # Fetch the expectations from template
     expectations = template_data.get('expectation_checks')
-	# Fetch expected tokens
-	expec_tokens = expectations.get('num_tokens')
-	# Fetch expected dtypes
-	expec_dtypes = expectations.get('d_types')
-	# Fetch expected column order
-	expec_col_order = expectations.get('column_order')
-
-	return expec_tokens, expec_dtypes, expec_col_order
+    # Fetch expected tokens
+    expec_tokens = expectations.get('num_tokens')
+    # Fetch expected dtypes
+    expec_dtypes = expectations.get('d_types')
+    # Fetch expected column order
+    expec_col_order = expectations.get('column_order')
+    return expec_tokens, expec_dtypes, expec_col_order
