@@ -5,55 +5,55 @@ from typing import Dict, List
 from constants import TEMPLATES_DIR, SPREADERS
 
 def find(s: str, ch: str) -> List:
-	"""
-	Utility function to find all indexes of a character in a string
-	"""
-	return [i for i, ltr in enumerate(s) if ltr == ch]
+    """
+    Utility function to find all indexes of a character in a string
+    """
+    return [i for i, ltr in enumerate(s) if ltr == ch]
 
 def fetch_json(template_name: str) -> Dict:
-	"""
-	Fetches the json file and returns it. This lookup is done through the template name
-	"""
-	try:
-		with open(f'{TEMPLATES_DIR}/{template_name}') as f:
-			return json.load(f)
-	except IOError:
-		print(f'File {template_name} does not exist')
+    """
+    Fetches the json file and returns it. This lookup is done through the template name
+    """
+    try:
+        with open(f'{TEMPLATES_DIR}/{template_name}') as f:
+            return json.load(f)
+    except IOError:
+        print(f'File {template_name} does not exist')
 
 
 def prefix_search(prefix: str, template_data: Dict) -> List:
-	return [(key, val) for key, val in template_data.items()  
+    return [(key, val) for key, val in template_data.items()  
                    if key.startswith(prefix)]
 
 def remove_special_characters(text, extra_attr=''):
-	"""
-	Remove special characters
-	"""
-	return re.sub(f'[^A-Za-z0-9 {extra_attr}]+', '', text)
+    """
+    Remove special characters
+    """
+    return re.sub(f'[^A-Za-z0-9 {extra_attr}]+', '', text)
 
 def prefix_dictionary_search(key: str, template_data: Dict) -> str:
-	"""
-	Checks which key matches with present json 
-	"""
-	# Smart check to check if the value matches together
-	clean_key = remove_special_characters(key)
+    """
+    Checks which key matches with present json 
+    """
+    # Smart check to check if the value matches together
+    clean_key = remove_special_characters(key)
 
-	find_all_spaces = find(clean_key, ' ')
+    find_all_spaces = find(clean_key, ' ')
 
-	find_all_spaces.append(len(clean_key))
+    find_all_spaces.append(len(clean_key))
 
-	if clean_key in template_data:
-		return template_data[clean_key]
+    if clean_key in template_data:
+        return template_data[clean_key]
 
-	for index in find_all_spaces:
-		prefix = clean_key[:index]
+    for index in find_all_spaces:
+        prefix = clean_key[:index]
 
-		matched_items = prefix_search(prefix, template_data)
+        matched_items = prefix_search(prefix, template_data)
 
-		if len(matched_items) == 1:
-			return matched_items[0][1]
+        if len(matched_items) == 1:
+            return matched_items[0][1]
 
-	return ''
+    return ''
 
 
 def missing_headers(current_data, template_data):
@@ -83,23 +83,23 @@ def failover(current_data, template_data, page_obj):
 
 
 def spread_columns(df):
-	index_map = {col: index for index, col in enumerate(df.columns)}
-	col_names = df.columns
+    index_map = {col: index for index, col in enumerate(df.columns)}
+    col_names = df.columns
 
-	for spreader in SPREADERS:
-		if spreader in index_map:
-			start_point = index_map[spreader]
-			for left_index in range(start_point-1, -1, -1):
-				if col_names[left_index] != '':
-					break
-				df[spreader] = df.iloc[:, left_index].astype(str)+" "+df[spreader]
+    for spreader in SPREADERS:
+        if spreader in index_map:
+            start_point = index_map[spreader]
+            for left_index in range(start_point-1, -1, -1):
+                if col_names[left_index] != '':
+                    break
+                df[spreader] = df.iloc[:, left_index].astype(str)+" "+df[spreader]
 
-			for right_index in range(start_point+1, len(col_names)):
-				if col_names[right_index] != '':
-					break
-				df[spreader] = df[spreader]+" "+df.iloc[:, right_index].astype(str)
+            for right_index in range(start_point+1, len(col_names)):
+                if col_names[right_index] != '':
+                    break
+                df[spreader] = df[spreader]+" "+df.iloc[:, right_index].astype(str)
 
-	return df
+    return df
 
 def update_column_headers(df, template_name='sysco.json'):
     column_headers = df.iloc[0]
@@ -117,14 +117,14 @@ def update_column_headers(df, template_name='sysco.json'):
     orders_df = spread_columns(orders_df)
 
     if '' in orders_df:
-	    orders_df.drop([''], axis = 1, inplace=True) 
+        orders_df.drop([''], axis = 1, inplace=True) 
 
     return orders_df
 
 def convert_form_to_dict(form_obj):
     """
     Returns dictionary with lowercase strings from a Page's Form's Fields
-	"""
+    """
     fields = form_obj.fields
     keys = [field.key.text.lower() for field in fields]
     # Condition used because some field.keys do not have a corresponding field.value
@@ -137,7 +137,7 @@ def get_lineitem_expectations(template_name='sysco.json'):
     Format...
     Num Tokens - column:num_expected
     Data Type - column:data type
-    Order - position:column
+    Order - list of columns in their order
 
     Returns all 3 dictionaries
     """

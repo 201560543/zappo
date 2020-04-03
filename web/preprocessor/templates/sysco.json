@@ -50,18 +50,16 @@
 			"price": "float",
 			"total_price": "float"
 		},
-		"column_order": {
-			"1":"item_number",
-			"2":"order_quantity",
-			"3":"shipped_quantity",
-			"4":"broken",
-			"5":"unit",
-			"6":"size",
-			"7":"brand",
-			"8":"description",
-			"9":"weight",
-			"10":"price",
-			"11":"total_price"
-		}
+		"column_order": ["item_number",
+						"order_quantity",
+						"shipped_quantity",
+						"broken",
+						"unit",
+						"size",
+						"brand",
+						"description",
+						"weight",
+						"price",
+						"total_price"]
 	}
 }

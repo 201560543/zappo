@@ -45,7 +45,16 @@ class OrderitemsDF():
         """
         for col in self._TableDataFrame.columns:
             self.strip_col(col)
-    
+
+    def lowercase_all_str_cols(self, expected_columns, expec_dtypes):
+        """
+        Used to convert string columns to lowercase.
+        """
+        for column in expected_columns:
+            if expec_dtypes[column] == 'string':
+                print(f'Converting {column} to lowercase.')
+                self._TableDataFrame[column] = self._TableDataFrame[column].str.lower()
+
     def unbleed_single_column(self, target_column, num_expected_tokens = 1):
         """
         Warning: This assumes that Textract only accidentally misreads values to the left
@@ -176,18 +185,26 @@ class OrderitemsDF():
         Iterates through expected columns, checks if columns were read, runs unbleed on columns, and converts to correct data type
         """
         # Get all expectations (num tokens, data types, and column order)
-        expec_tokens, expec_dtypes, expec_col_order = get_lineitem_expectations(template_name='sysco.json')
-        # Pull out expected columns as a list
-        expected_columns = list(expec_col_order.values())
+        expec_tokens, expec_dtypes, expected_columns = get_lineitem_expectations(template_name='sysco.json')
         # Insert all expected columns if missed
         inserted_columns = self.insert_missing_cols(expected_columns=expected_columns)
+        # Lowercase all string columns
+        self.lowercase_all_str_cols(expected_columns=expected_columns, expec_dtypes=expec_dtypes)
 
         # Run unbleed
         self.unbleed_columns(expected_columns=expected_columns, 
                             expec_tokens=expec_tokens,
                             expec_dtypes=expec_dtypes,
                             inserted_columns=inserted_columns)
-        
+    
+    def remove_line_junk(self):
+        """
+        NOTE: Short term fix. Need to find a smarter solution for this later
+        Used to remove known strings that may get misread into certain columns
+        """
+        line_junk = ['bottle deposit', 'recycling fee']
+
+
     def set_orderitems_dataframe(self, table_obj):
         # Set Table object
         self._Table = table_obj
@@ -200,6 +217,8 @@ class OrderitemsDF():
         self.strip_all_cols()
         # Remove non items (like categories or totals)
         self.remove_nonitem_rows()
+        # Split combined lines
+
         # Run expectations method - checks read DF against template expectations
         self.evaluate_expectations()
 
