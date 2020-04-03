@@ -36,17 +36,6 @@ class OrderitemsDF():
     def strip_all_cols(self):
         for col in self._TableDataFrame.columns:
             self.strip_col(col)
-
-    # # 4/2 This will no longer work with new json structure    
-    # def unbleed_columns(self):
-    #     """
-    #     Adjusts/redistributes strings read into incorrect columns by Textract
-    #     """
-    #     token_dict = get_expected_tokens(template_name='sysco.json')
-    #     for num_expected_tokens in token_dict.keys():
-    #         cols = token_dict[num_expected_tokens]
-    #         for col in cols:
-    #             self.unbleed_single_column(target_column=col, num_expected_tokens=num_expected_tokens)
     
     def unbleed_single_column(self, target_column, num_expected_tokens = 1):
         """
@@ -91,13 +80,13 @@ class OrderitemsDF():
         """
         Takes list of expected columns (IN ORDER) and inserts into self._TableDataFrame if missing
         """
-        reinserted_columns = []
+        inserted_columns = []
         for idx, column in enumerate(expected_columns):
             if column not in self._TableDataFrame.columns:
                 # Inserts column with an empty value
                 self._TableDataFrame.insert(idx, column, '')
-                reinserted_columns.append(column)
-        return reinserted_columns
+                inserted_columns.append(column)
+        return inserted_columns
 
     def pull_from_next_col(self, target_row_idx, target_col_idx, missing_tokens=1):
         """
@@ -112,17 +101,21 @@ class OrderitemsDF():
         self._TableDataFrame.iloc[target_row_idx, target_col_idx] = new_value
         self._TableDataFrame.iloc[target_row_idx, target_col_idx+1] = ' '.join(remaining_vals)
 
-    def fill_unbleed_columns(self):
+    def unbleed_columns(self, expected_columns, expec_tokens, expec_dtypes, inserted_columns):
         """
-        Iterates through expected columns, checks if columns were read, runs unbleed on columns, and converts to correct data type
-        """
-        # Get all expectations (num tokens, data types, and column order)
-        expec_tokens, expec_dtypes, expec_col_order = get_lineitem_expectations(template_name='sysco.json')
-        # Pull out expected columns as a list
-        expected_columns = list(expec_col_order.values())
-        # Insert all expected columns if missed
-        reinserted_columns = self.insert_missing_cols(expected_columns=expected_columns)
+        Unbleed algorithm...
+        1. Iterate through all expected columns after inserting missing columns
+        2. If we have expected number of tokens for a column, run unbleed logic to re-distribute misread values
 
+        INPUTS
+        expected_columns: List of expected columns in their intende order (from template)
+        expec_tokens: dictionary of columns and their expected number of tokens (from template)
+        expec_dtypes: dictionary of columns and their expected data types (from template)
+        inserted_columns: any columns that were initially not read by OCR and had to be inserted back into the DF
+
+        RETURNS
+        None - edits the self._TableDataFrame inplace 
+        """
         # Iterate through columns for cleaning algorithm
         for col_idx, column in enumerate(expected_columns):
             # Get expected num tokens and expected dtype
@@ -132,7 +125,7 @@ class OrderitemsDF():
             if num_expected_tokens is not None:
                 # Handling reinserted columns with an expected number of tokens as a special case because these
                 # ...will be empty if unbleed does not push values into them
-                if column in reinserted_columns:
+                if column in inserted_columns:
                     # Checking if row has required tokens
                     for row_idx in range(len(self._TableDataFrame)):
                         row_vals = self._TableDataFrame.iloc[row_idx,col_idx].split()
@@ -147,8 +140,24 @@ class OrderitemsDF():
             # # If we do not have a number of expected tokens, accept
             else:
                 pass
-        return 
 
+    def evaluate_expectations(self):
+        """
+        Iterates through expected columns, checks if columns were read, runs unbleed on columns, and converts to correct data type
+        """
+        # Get all expectations (num tokens, data types, and column order)
+        expec_tokens, expec_dtypes, expec_col_order = get_lineitem_expectations(template_name='sysco.json')
+        # Pull out expected columns as a list
+        expected_columns = list(expec_col_order.values())
+        # Insert all expected columns if missed
+        inserted_columns = self.insert_missing_cols(expected_columns=expected_columns)
+
+        # Run unbleed
+        self.unbleed_columns(expected_columns=expected_columns, 
+                            expec_tokens=expec_tokens,
+                            expec_dtypes=expec_dtypes,
+                            inserted_columns=inserted_columns)
+        
     def set_orderitems_dataframe(self, table_obj):
         # Set Table object
         self._Table = table_obj
@@ -158,8 +167,8 @@ class OrderitemsDF():
         self.strip_all_cols()
         # Remove non items (like categories or totals)
         self.remove_nonitem_rows()
-        # # Run cleaning method # 4/2 TO BE IMPLEMENTED
-        self.fill_unbleed_columns()
+        # # Run expectations method - checks read DF against template expectations
+        self.evaluate_expectations()
 
 
 
