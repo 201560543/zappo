@@ -1,8 +1,9 @@
 import json
 from trp import Document
 import pandas as pd
-from utils import update_column_headers
+from utils import update_column_headers, convert_form_to_dict
 from orders import Order
+from orderitems import OrderitemsDF
 
 def processDocument(doc):
     for page in doc.pages:
@@ -36,14 +37,26 @@ def processDocument(doc):
 
 
         #Search field by key
-        key = "CUSTOMER ACCOUNT NO."
+        # key = "CUSTOMER ACCOUNT NO."
 
-        fields = page.form.searchFieldsByKey(key)
-        print(page.form)
+        # fields = page.form.searchFieldsByKey(key)
+        # print(page.form)
         # for field in fields:
         #     print("Field: Key: {}, Value: {}".format(field.key, field.value))
 
-        # # Turning invoice line items into a DF
+        # Turning invoice line items into a DF
+        for table in page.tables:
+            try:
+                orderitems = OrderitemsDF()
+                orderitems.set_orderitems_dataframe(table)
+                df = orderitems.TableDataFrame
+                if len(df) == 0:
+                    continue
+                orderitems.convert_DF_to_Orderitem_objs()
+                # import pdb; pdb.set_trace()
+            except KeyError:
+                break
+
         # df = pd.DataFrame([[cell.text for cell in row.cells] for row in page.tables[0].rows])
         # orders_df = update_column_headers(df)
         # print(orders_df.head())
@@ -51,10 +64,6 @@ def processDocument(doc):
         # print([line.text for line in page.lines])
         # print(orders_df.head())
 
-        order = Order()
-        order.set_page(page)
-
-        import pdb; pdb.set_trace()
 
 
 
@@ -63,7 +72,10 @@ def processDocument(doc):
 def run():
     response = {}
     
-    filePath = "./data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json"
+    filePath = "./data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" # <- First response we worked with
+    # filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <- PDF response (1 of 4)
+    # filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_1.png.json" # <- PDF response (2 of 4)
+    # filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_2.png.json" # <- PDF response (3 of 4)
     with open(filePath, 'r') as document:
         response = json.loads(document.read())
 

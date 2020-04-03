@@ -1,0 +1,65 @@
+{
+	"mapper": {
+		"order": {
+			"invoice:": "invoice_number",
+			"customer account no.": "customer_account_number",
+			"invoice mo": "invoice_date",
+			"terms": "invoice_term_name",
+			"sold to": "raw_sold_to_info"
+		},
+		"order_item": {
+			"no.": "item_number",
+			"item no": "item_number",
+			"qty ord": "order_quantity",
+			"qty shpd": "shipped_quantity",
+			"oty. shpd.": "shipped_quantity",
+			"unit": "unit",
+			"pack size": "size",
+			"b unit": "unit",
+			"brand": "brand",
+			"description": "description",
+			"weight": "weight",
+			"price": "price",
+			"extension": "total_price"			
+		}
+	},
+	"expectation_checks": {
+		"num_tokens": {
+			"item_number": 1,
+			"order_quantity": 1,
+			"shipped_quantity": 1,
+			"broken": 1,
+			"unit": 1,
+			"size": null,
+			"brand": null,
+			"description": null,
+			"weight": null,
+			"price": null,
+			"total_price": null
+		},
+		"d_types": {
+			"item_number": "int",
+			"order_quantity": "int",
+			"shipped_quantity": "int",
+			"broken": "string",
+			"unit": "int",
+			"size": "string",
+			"brand": "string",
+			"description": "string",
+			"weight": "float",
+			"price": "float",
+			"total_price": "float"
+		},
+		"column_order": ["item_number",
+						"order_quantity",
+						"shipped_quantity",
+						"broken",
+						"unit",
+						"size",
+						"brand",
+						"description",
+						"weight",
+						"price",
+						"total_price"]
+	}
+}
