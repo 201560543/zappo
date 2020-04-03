@@ -18,3 +18,8 @@ followed by.
 ```
 export DB_PORT=3306
 ```
+     
+    
+# To run test cases
+
+```python -m unittest discover -s tests -p "*_test.py"```
