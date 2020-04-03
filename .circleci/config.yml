@@ -4,7 +4,7 @@ machine:
 
 test:
   override:
-    - python -m unittest -v tests
+    - python -m unittest discover -s tests -p "*_test.py"
 
 
 version: 2
@@ -41,7 +41,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            python -m unittest -v tests
+            python -m unittest discover -s tests -p "*_test.py"
 
       - store_artifacts:
           path: test-reports
