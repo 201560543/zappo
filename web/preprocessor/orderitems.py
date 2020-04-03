@@ -19,6 +19,9 @@ class OrderitemsDF():
         return self._TableDataFrame
 
     def create_TableDataFrame(self):
+        """
+        Converts json from OCR to pandas DataFrame
+        """
         df = pd.DataFrame([[cell.text for cell in row.cells] for row in self._Table.rows])
         return update_column_headers(df)
     
@@ -31,9 +34,15 @@ class OrderitemsDF():
         self._TableDataFrame = df[df['item_number'] != '']
     
     def strip_col(self, target_column):
+        """
+        Helper function to strip leading and trailing whitespace
+        """
         self._TableDataFrame[target_column] = self._TableDataFrame[target_column].apply(lambda x: x.strip())
     
     def strip_all_cols(self):
+        """
+        Stips all leading and trailing whitespace from each column in the DataFrame
+        """
         for col in self._TableDataFrame.columns:
             self.strip_col(col)
     
@@ -79,6 +88,9 @@ class OrderitemsDF():
     def insert_missing_cols(self, expected_columns):
         """
         Takes list of expected columns (IN ORDER) and inserts into self._TableDataFrame if missing
+
+        INPUTS
+        expected_columns: list of expected columns in their intended order (from template)
         """
         inserted_columns = []
         for idx, column in enumerate(expected_columns):
@@ -90,7 +102,14 @@ class OrderitemsDF():
 
     def pull_from_next_col(self, target_row_idx, target_col_idx, missing_tokens=1):
         """
-        For a given row and column with known missing tokens, pulls token(s) from the subsequent cell in the DataFrame
+        For a given row and column with known missing tokens, pulls token(s) from the subsequent cell in the DataFrame.
+        Primarily used when 1) a column was not read by OCR service and 2) has a known number of tokens that the column must contain.
+        If the unbleed on the previous column did not fill the missing value, this method pulls the first value out of the subsequent column
+        
+        Warning: prone to fail if 1) an inserted column follows a column with no definite expected tokens and 
+            2) the OCR read any of the inserted column's values into the column with no definite expected tokens
+        
+        Future improvements can be made to make sure this method is only run on an inserted column following a column with known tokens
         """
         current_values = self._TableDataFrame.iloc[target_row_idx, target_col_idx].split()
         next_val_tokens = self._TableDataFrame.iloc[target_row_idx, target_col_idx+1].split()
