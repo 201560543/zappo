@@ -53,6 +53,8 @@ class OrderitemsDF():
         Used to unbleed columns (when a column's value gets read into column to the left)
         Moves stray tokens (words or numbers without spaces) into subsequent column if expected number of tokens is reached
         """
+        # Print for debugging
+        print(f"Running Unbleed: Column '{target_column} has expected number of tokens: {num_expected_tokens}.'")
         split_rows = self._TableDataFrame[target_column].apply(lambda x: x.split())
         expected_tokens, extra_tokens = [], []
         for row in split_rows:
@@ -95,6 +97,7 @@ class OrderitemsDF():
         inserted_columns = []
         for idx, column in enumerate(expected_columns):
             if column not in self._TableDataFrame.columns:
+                print(f"Detected missing column: {column} | Inserting in position {idx}")
                 # Inserts column with an empty value
                 self._TableDataFrame.insert(idx, column, '')
                 inserted_columns.append(column)
@@ -136,6 +139,7 @@ class OrderitemsDF():
         None - edits the self._TableDataFrame inplace 
         """
         # Iterate through columns for cleaning algorithm
+        print(f"Running Unbleed for columns with an expected number of tokens...")
         for col_idx, column in enumerate(expected_columns):
             # Get expected num tokens and expected dtype
             num_expected_tokens = expec_tokens[column]
@@ -145,14 +149,21 @@ class OrderitemsDF():
                 # Handling reinserted columns with an expected number of tokens as a special case because these
                 # ...will be empty if unbleed does not push values into them
                 if column in inserted_columns:
+                    print(f"Detected column with an expected number of columns that was not read by OCR")
+                    print(f"\tColumn: {column} | Expected Tokens: {num_expected_tokens}")
                     # Checking if row has required tokens
+                    # Setting a counter to check if values were pulled for debugging
+                    values_pulled = 0
                     for row_idx in range(len(self._TableDataFrame)):
                         row_vals = self._TableDataFrame.iloc[row_idx,col_idx].split()
                         if len(row_vals) < num_expected_tokens:
+                            values_pulled += 1
                             missing_tokens = num_expected_tokens-len(row_vals)
                             self.pull_from_next_col(target_row_idx=row_idx, target_col_idx=col_idx, missing_tokens=missing_tokens)
                         else:
                             pass
+                    if values_pulled > 0:
+                        print(f"Column '{column}' pulled from {values_pulled} rows because expected tokens were not met.")
                 # If we have num_expected_tokens, run unbleed
                 else:
                     self.unbleed_single_column(column, num_expected_tokens=num_expected_tokens)
@@ -182,11 +193,14 @@ class OrderitemsDF():
         self._Table = table_obj
         # Set DataFrame
         self._TableDataFrame = self.create_TableDataFrame()
+        if len(self._TableDataFrame) == 0:
+            print("Detected Empty Table.")
+            return None
         # Strip all columns of whitespace
         self.strip_all_cols()
         # Remove non items (like categories or totals)
         self.remove_nonitem_rows()
-        # # Run expectations method - checks read DF against template expectations
+        # Run expectations method - checks read DF against template expectations
         self.evaluate_expectations()
 
 
