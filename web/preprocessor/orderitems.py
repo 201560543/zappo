@@ -1,5 +1,7 @@
+import re
 import pandas as pd
 import numpy as np
+from constants import REGEX_MAP
 from utils import update_column_headers, get_lineitem_expectations
 
 class OrderitemsDF():
@@ -196,6 +198,28 @@ class OrderitemsDF():
                             expec_tokens=expec_tokens,
                             expec_dtypes=expec_dtypes,
                             inserted_columns=inserted_columns)
+
+        # Perform regex parsing as a last resort
+        self.regex_parsing(expec_dtypes)
+
+    def regex_parsing(self, expected_dtypes):
+        """
+        Checks on all the constraints defined by a template and removes redundant values using
+        regex
+        """
+        for column_name, dtype in expected_dtypes.items():
+            if column_name not in self._TableDataFrame or dtype not in REGEX_MAP:
+                continue
+            self.regex_column_parsing(column_name, REGEX_MAP[dtype])
+
+
+    def regex_column_parsing(self, column_name, regex):
+        """
+        Parses all the records in the columns and returns the first pattern match.
+        If there is no match then it will return an empty string.
+        """
+        self._TableDataFrame[column_name] = self._TableDataFrame[column_name].apply(lambda x: re.findall(regex, x)[0])
+
     
     def remove_line_junk(self):
         """
