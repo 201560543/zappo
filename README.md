@@ -4,7 +4,7 @@ To run, please use docker-compose up.
 To re-run, after making changes please user docker-compose build before docker-compose up. 
 
 
-To run the development server, use: FLASK_DEBUG=1 flask run. 
+To run the development server, use: ```FLASK_DEBUG=1 flask run```. 
 
 Remember to set environment variables.
 

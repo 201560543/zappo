@@ -1,6 +1,6 @@
 import json
 import unittest
-from web.preprocessor.trp import Document 
+from preprocessor.trp import Document 
 
 class TrpClassTest(unittest.TestCase):
     def setUp(self):
@@ -27,6 +27,11 @@ class TrpClassTest(unittest.TestCase):
         doc = Document(self.response)
         self.assertEqual(len(doc.pages), 1)
 
+
+    def test_document_tables(self):
+        doc = Document(self.response)
+        first_page = doc.pages[0]
+        self.assertEqual(len(first_page.tables), 3)
 
     def tearDown(self):
         del self.response
