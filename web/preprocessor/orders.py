@@ -1,4 +1,5 @@
 from typing import List
+import copy 
 from preprocessor.utils import fetch_json, prefix_dictionary_search, convert_form_to_dict, failover
 
 class Order():
@@ -72,8 +73,9 @@ class Order():
         order_template = template_data.get('mapper').get('order')
         # For each extracted key, search for relevant keys from the json template
         matched_keys_raw = {prefix_dictionary_search(field_key, order_template):self.Form_dict[field_key]
-                            for field_key 
-                            in self.Form_dict.keys()}
+                            for field_key, val
+                            in self.Form_dict.items()
+                            if val is not None}
 
         # Remove all empty keys
         del matched_keys_raw['']
@@ -81,11 +83,11 @@ class Order():
         return {**matched_keys_raw, **failover(matched_keys_raw, order_template, self._Page)}
     
 
-    def set_order_values(self, page_obj):
+    def set_order_values(self, page_obj, template_name = 'sysco.json'):
         # Set Page object
         self.Page = page_obj
         # Get Page's Form 
-        searched_form_dict = self.extract_keys_using_template()
+        searched_form_dict = self.extract_keys_using_template(template_name)
         # Set attributes using matched dict
         # self._customer_account_number = searched_form_dict.get('customer_account_number')
         # self._invoice_date = searched_form_dict.get('invoice_date')

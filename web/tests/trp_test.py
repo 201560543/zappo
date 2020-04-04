@@ -7,7 +7,7 @@ class TrpClassTest(unittest.TestCase):
         """
         Function to setup the base for the test cases
         """
-        filePath = "./data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json"
+        filePath = "../data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json"
         with open(filePath, 'r') as document:
             self.response = json.loads(document.read())
          
