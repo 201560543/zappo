@@ -1,9 +1,9 @@
 import json
-from trp import Document
 import pandas as pd
-from utils import update_column_headers, convert_form_to_dict
-from orders import Order
-from orderitems import OrderitemsDF
+from preprocessor.trp import Document
+from preprocessor.utils import update_column_headers, convert_form_to_dict
+from preprocessor.orders import Order
+from preprocessor.orderitems import OrderitemsDF
 
 def processDocument(doc):
     for page in doc.pages:
@@ -57,6 +57,9 @@ def processDocument(doc):
             except KeyError:
                 break
 
+        order = Order()
+        order.set_order_values(page)
+
         # df = pd.DataFrame([[cell.text for cell in row.cells] for row in page.tables[0].rows])
         # orders_df = update_column_headers(df)
         # print(orders_df.head())
@@ -72,15 +75,16 @@ def processDocument(doc):
 def run():
     response = {}
     
-    filePath = "./data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" # <- First response we worked with
-    # filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <- PDF response (1 of 4)
-    # filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_1.png.json" # <- PDF response (2 of 4)
-    # filePath = "./data/s3_responses/INV_044_17165_709955_20191106.PDF_2.png.json" # <- PDF response (3 of 4)
+    filePath = "../data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" # <- First response we worked with
+    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <- PDF response (1 of 4)
+    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_1.png.json" # <- PDF response (2 of 4)
+    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_2.png.json" # <- PDF response (3 of 4)
     with open(filePath, 'r') as document:
         response = json.loads(document.read())
 
     doc = Document(response)
     processDocument(doc)
 
-run()
+if __name__ == '__main__':
+    run()
 

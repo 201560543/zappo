@@ -2,7 +2,7 @@ import json
 import re
 import pandas as pd
 from typing import Dict, List
-from constants import TEMPLATES_DIR, SPREADERS
+from preprocessor.constants import TEMPLATES_DIR, SPREADERS
 
 def find(s: str, ch: str) -> List:
     """
