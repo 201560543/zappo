@@ -57,8 +57,8 @@ def processDocument(doc):
             except KeyError:
                 break
 
-        order = Order()
-        order.set_order_values(page)
+        # order = Order()
+        # order.set_order_values(page)
 
         # df = pd.DataFrame([[cell.text for cell in row.cells] for row in page.tables[0].rows])
         # orders_df = update_column_headers(df)
