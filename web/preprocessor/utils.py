@@ -2,7 +2,7 @@ import json
 import re
 import pandas as pd
 from typing import Dict, List
-from constants import TEMPLATES_DIR, SPREADERS
+from preprocessor.constants import TEMPLATES_DIR, SPREADERS
 
 def find(s: str, ch: str) -> List:
     """
@@ -43,6 +43,7 @@ def prefix_dictionary_search(key: str, template_data: Dict) -> str:
     find_all_spaces.append(len(clean_key))
 
     if clean_key in template_data:
+        # val = template_data.pop(clean_key)
         return template_data[clean_key]
 
     for index in find_all_spaces:
@@ -51,6 +52,7 @@ def prefix_dictionary_search(key: str, template_data: Dict) -> str:
         matched_items = prefix_search(prefix, template_data)
 
         if len(matched_items) == 1:
+            # val = template_data.pop(matched_items[0][0])
             return matched_items[0][1]
 
     return ''

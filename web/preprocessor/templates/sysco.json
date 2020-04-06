@@ -2,7 +2,8 @@
 	"mapper": {
 		"order": {
 			"invoice:": "invoice_number",
-			"customer account no.": "customer_account_number",
+			"invoice": "invoice_number",
+			"customer account no": "customer_account_number",
 			"invoice mo": "invoice_date",
 			"terms": "invoice_term_name",
 			"sold to": "raw_sold_to_info"
