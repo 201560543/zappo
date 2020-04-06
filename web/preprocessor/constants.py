@@ -1,4 +1,4 @@
-TEMPLATES_DIR = 'web/preprocessor/templates/'
+TEMPLATES_DIR = './preprocessor/templates/'
 
 SPREADERS = ['description']
 

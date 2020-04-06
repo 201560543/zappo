@@ -1,5 +1,6 @@
 import traceback
 from flask import Flask, render_template, jsonify, request, abort, make_response
+from preprocessor.trp_test import run
 
 app = Flask(__name__)
 
@@ -32,10 +33,9 @@ def preprocess():
     try:
         print(request.args)
         print(request.view_args)
-
+        print(run())
         return make_response(jsonify({'hello': 'world'}))
     except Exception as exc:
-        print(e)
         traceback.print_exc()
         return abort(400)
 
