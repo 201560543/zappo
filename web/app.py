@@ -49,7 +49,7 @@ def connection():
         logging.debug(obj.host)
         print('check if print works in fargate')
         print(obj.host)
-        result = obj.get_query('select 1+1; select 4;', True)
+        result = obj.get_query('show databases;', True)
         return make_response(jsonify({'query_result': result}))
     except Exception as exc:
         traceback.print_exc()
