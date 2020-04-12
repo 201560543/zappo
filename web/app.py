@@ -43,7 +43,11 @@ def preprocess():
 @app.route('/connection', methods=['GET'])
 def connection():
     try:
+        import logging
+        logging.debug('This is a message I have created')
         obj = DBConn()
+        logging.debug(obj.host)
+        print('check if print works in fargate')
         print(obj.host)
         result = obj.get_query('select 1+1; select 4;', True)
         return make_response(jsonify({'query_result': result}))
