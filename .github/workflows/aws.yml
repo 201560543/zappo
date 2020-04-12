@@ -77,6 +77,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: preprocessor-service
+        service: preprocessor-svc
         cluster: preprocessing-cluster
         wait-for-service-stability: true
