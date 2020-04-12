@@ -11,7 +11,6 @@ import os
 os.chdir(os.path.dirname(os.path.dirname(__file__)))
 
 
-print(os.getcwd())
 
 class OrderClassTest(unittest.TestCase):
     def setUp(self):
