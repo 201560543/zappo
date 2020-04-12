@@ -1,7 +1,7 @@
 import re
 import pandas as pd
 import numpy as np
-from constants import REGEX_MAP
+from preprocessor.constants import REGEX_MAP
 from preprocessor.utils import update_column_headers, get_lineitem_expectations
 
 class OrderitemsDF():
