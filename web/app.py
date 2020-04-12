@@ -53,7 +53,7 @@ def connection():
         return make_response(jsonify({'query_result': result}))
     except Exception as exc:
         traceback.print_exc()
-        return abort(400)
+        return make_response(jsonify({'host': obj.host}))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
