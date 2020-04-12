@@ -1,6 +1,7 @@
 import traceback
 from flask import Flask, render_template, jsonify, request, abort, make_response
 from preprocessor.trp_test import run
+from DBConnection import DBConn
 
 app = Flask(__name__)
 
@@ -35,6 +36,16 @@ def preprocess():
         print(request.view_args)
         print(run())
         return make_response(jsonify({'hello': 'world'}))
+    except Exception as exc:
+        traceback.print_exc()
+        return abort(400)
+
+@app.route('/connection', methods=['GET'])
+def connection():
+    try:
+        obj = DBConn()
+        result = obj.get_query('select 1+1; select 4;', True)
+        return make_response(jsonify({'query_result': result}))
     except Exception as exc:
         traceback.print_exc()
         return abort(400)
