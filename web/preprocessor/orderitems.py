@@ -134,7 +134,27 @@ class OrderitemsDF():
         self._TableDataFrame.iloc[target_row_idx, target_col_idx] = new_value
         self._TableDataFrame.iloc[target_row_idx, target_col_idx+1] = ' '.join(remaining_vals)
 
-    def unbleed_columns(self, expected_columns, expec_tokens, expec_dtypes, inserted_columns):
+    def map_regex_groups_to_cols(self, column, expec_regex, drop_original=True):
+        """
+        Given an expectation on the regex of a column, map the groups to new columns, then optionally drop original column
+
+        INPUTS
+        column: column with regex expectation
+        expec_regex: json containing regex str and resulting new columns
+        """
+        # Getting regex
+        regex = r'{}'.format(expec_regex.get('regex'))
+        # Getting columns
+        regex_cap_group_cols = expec_regex.get('capture_group_columns')
+        print(f'Regex expectation for {column} detected. Creating new columns: {regex_cap_group_cols}.')
+        # Extracting groups and creating new columns
+        extracted_groups = self._TableDataFrame[column].str.extract(regex, expand=True)
+        self._TableDataFrame[regex_cap_group_cols] = extracted_groups
+        if drop_original==True:
+            print(f'Dropped {column}.')
+            self._TableDataFrame = self._TableDataFrame.drop(column, axis=1)
+
+    def unbleed_columns(self, expected_columns, expec_tokens, expec_dtypes, inserted_columns, expec_regex):
         """
         Unbleed algorithm...
         1. Iterate through all expected columns after inserting missing columns
@@ -145,6 +165,7 @@ class OrderitemsDF():
         expec_tokens: dictionary of columns and their expected number of tokens (from template)
         expec_dtypes: dictionary of columns and their expected data types (from template)
         inserted_columns: any columns that were initially not read by OCR and had to be inserted back into the DF
+        expec_regex: regular expression for a column (if available) and its group -> column mapping
 
         RETURNS
         None - edits the self._TableDataFrame inplace 
@@ -152,9 +173,10 @@ class OrderitemsDF():
         # Iterate through columns for cleaning algorithm
         print(f"Running Unbleed for columns with an expected number of tokens...")
         for col_idx, column in enumerate(expected_columns):
-            # Get expected num tokens and expected dtype
-            num_expected_tokens = expec_tokens[column]
-            expected_dtype = expec_dtypes[column]
+            # Get expected num tokens, expected dtype, and regex
+            num_expected_tokens = expec_tokens.get(column)
+            expected_dtype = expec_dtypes.get(column)
+            expected_regex = expec_regex.get(column)
             # If we have number of expected tokens...
             if num_expected_tokens is not None:
                 # Handling reinserted columns with an expected number of tokens as a special case because these
@@ -179,6 +201,8 @@ class OrderitemsDF():
                 else:
                     self.unbleed_single_column(column, num_expected_tokens=num_expected_tokens)
             # # If we do not have a number of expected tokens, accept
+            elif expected_regex is not None:
+                self.map_regex_groups_to_cols(column, expected_regex)
             else:
                 pass
 
@@ -187,7 +211,7 @@ class OrderitemsDF():
         Iterates through expected columns, checks if columns were read, runs unbleed on columns, and converts to correct data type
         """
         # Get all expectations (num tokens, data types, and column order)
-        expec_tokens, expec_dtypes, expected_columns = get_lineitem_expectations(template_name='sysco.json')
+        expec_tokens, expec_dtypes, expected_columns, expec_regex = get_lineitem_expectations(template_name='sysco.json')
         # Insert all expected columns if missed
         inserted_columns = self.insert_missing_cols(expected_columns=expected_columns)
         # Lowercase all string columns
@@ -197,7 +221,8 @@ class OrderitemsDF():
         self.unbleed_columns(expected_columns=expected_columns, 
                             expec_tokens=expec_tokens,
                             expec_dtypes=expec_dtypes,
-                            inserted_columns=inserted_columns)
+                            inserted_columns=inserted_columns,
+                            expec_regex=expec_regex)
 
         # Perform regex parsing as a last resort
         self.regex_parsing(expec_dtypes)
@@ -241,7 +266,6 @@ class OrderitemsDF():
         self.strip_all_cols()
         # Remove non items (like categories or totals)
         self.remove_nonitem_rows()
-        # Split combined lines
 
         # Run expectations method - checks read DF against template expectations
         self.evaluate_expectations()
