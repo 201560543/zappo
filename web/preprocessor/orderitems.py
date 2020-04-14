@@ -143,7 +143,7 @@ class OrderitemsDF():
         expec_regex: json containing regex str and resulting new columns
         """
         # Getting regex
-        regex = r'{}'.format(expec_regex.get('regex'))
+        regex = expec_regex.get('regex')
         # Getting columns
         regex_cap_group_cols = expec_regex.get('capture_group_columns')
         print(f'Regex expectation for {column} detected. Creating new columns: {regex_cap_group_cols}.')
@@ -200,9 +200,10 @@ class OrderitemsDF():
                 # If we have num_expected_tokens, run unbleed
                 else:
                     self.unbleed_single_column(column, num_expected_tokens=num_expected_tokens)
-            # # If we do not have a number of expected tokens, accept
+            # Else if we have an expected regex, use it to create new columns
             elif expected_regex is not None:
                 self.map_regex_groups_to_cols(column, expected_regex)
+            # # If we do not have a number of expected tokens, accept
             else:
                 pass
 
