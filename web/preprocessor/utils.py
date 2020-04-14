@@ -153,4 +153,6 @@ def get_lineitem_expectations(template_name='sysco.json'):
     expec_dtypes = expectations.get('d_types')
     # Fetch expected column order
     expec_col_order = expectations.get('column_order')
-    return expec_tokens, expec_dtypes, expec_col_order
+    # Fetch custom regex expectations (if any)
+    expec_regex = expectations.get('regex')
+    return expec_tokens, expec_dtypes, expec_col_order, expec_regex
