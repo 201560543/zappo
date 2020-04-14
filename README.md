@@ -26,3 +26,18 @@ export DB_PORT=3306
 # To run test cases
 
 ```python -m unittest discover -s web -p "*_test.py"```
+
+
+
+# Configuration to run S3 APIs
+```
+pip3 install web/requirements.txt
+```
+
+Before you can begin using Boto 3, you should set up authentication credentials. Credentials for your AWS account can be found in the IAM Console. You can create or use an existing user. Go to manage access keys and generate a new set of keys.
+
+
+```
+aws configure
+```
+
