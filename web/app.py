@@ -1,7 +1,11 @@
 import traceback
 from flask import Flask, render_template, jsonify, request, abort, make_response
-from preprocessor.trp_test import run
-from DBConnection import DBConn
+from preprocessor.trp_test import run, processDocument
+from preprocessor.trp import Document
+from connections.s3_connection import S3Interface
+from connections.DBConnection import DBConn
+from constants import S3_BUCKET_NAME
+
 
 app = Flask(__name__)
 
@@ -43,17 +47,26 @@ def preprocess():
 @app.route('/connection', methods=['GET'])
 def connection():
     try:
-        import logging
-        logging.debug('This is a message I have created')
         obj = DBConn()
-        logging.debug(obj.host)
-        print('check if print works in fargate')
-        print(obj.host)
         result = obj.get_query('show databases;', True)
         return make_response(jsonify({'query_result': result}))
     except Exception as exc:
         traceback.print_exc()
         return make_response(jsonify({'host': obj.host}))
+
+
+@app.route('/s3-connect', methods=['GET'])
+def s3_connect():
+    try:
+        file_name = request.args.get('file_name')
+        s3_obj = S3Interface(S3_BUCKET_NAME)
+        resp = s3_obj.get_file(file_name)
+        doc = Document(resp)
+        resp = processDocument(doc)
+        return make_response(resp)
+    except Exception as exc:
+        traceback.print_exc()
+        return abort(400)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')

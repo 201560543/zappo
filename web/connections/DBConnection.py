@@ -1,6 +1,7 @@
 import os
 import mysql.connector
 import contextlib
+from constants import DEFAULT_DB_HOST, DEFAULT_DB_PORT
 
 class DBConn(object):
     """
@@ -11,8 +12,8 @@ class DBConn(object):
     3. Run insert_query for DML or get_query for DQL (Select statements)
     4. Context and connections are handled in execute_statement. This will terminate it as the query finishes.
     """
-    def __init__(self, host=os.environ.get('DB_HOST', 'localhost'),
-                        port=os.environ.get('DB_PORT', 3306)):
+    def __init__(self, host=os.environ.get('DB_HOST', DEFAULT_DB_HOST),
+                        port=os.environ.get('DB_PORT', DEFAULT_DB_PORT)):
         self.host = host
         self.port = int(port)
         self.connection = None

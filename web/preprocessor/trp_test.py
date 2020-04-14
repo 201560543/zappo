@@ -53,6 +53,8 @@ def processDocument(doc):
                 if len(df) == 0:
                     continue
                 orderitems.convert_DF_to_Orderitem_objs()
+
+                return orderitems._TableDataFrame.to_dict()
                 # import pdb; pdb.set_trace()
             except KeyError:
                 break
@@ -66,6 +68,7 @@ def processDocument(doc):
         # print(orders_df.columns)
         # print([line.text for line in page.lines])
         # print(orders_df.head())
+        return 
 
 
 
