@@ -2,9 +2,10 @@ import traceback
 from flask import Flask, render_template, jsonify, request, abort, make_response
 from preprocessor.trp_test import run, processDocument
 from preprocessor.trp import Document
-from s3_connection import S3Interface
+from connections.s3_connection import S3Interface
+from connections.DBConnection import DBConn
 from constants import S3_BUCKET_NAME
-from DBConnection import DBConn
+
 
 app = Flask(__name__)
 
