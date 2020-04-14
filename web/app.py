@@ -62,7 +62,7 @@ def s3_connect():
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
-        processDocument(doc)
+        resp = processDocument(doc)
         return make_response(resp)
     except Exception as exc:
         traceback.print_exc()
