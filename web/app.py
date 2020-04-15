@@ -1,13 +1,18 @@
+import os
 import traceback
 from flask import Flask, render_template, jsonify, request, abort, make_response
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from preprocessor.trp_test import run, processDocument
 from preprocessor.trp import Document
 from connections.s3_connection import S3Interface
 from connections.DBConnection import DBConn
 from constants import S3_BUCKET_NAME
+from config import base
+from init import create_app
 
-
-app = Flask(__name__)
+# Configurations
+app = create_app(base)
 
 # signal definition
 def log_request(sender, **extra):

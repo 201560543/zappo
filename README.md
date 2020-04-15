@@ -33,6 +33,12 @@ followed by.
 ```
 export DB_PORT=3306
 ```
+
+Also create a database for the migrations to run.
+
+```
+create database zapoo;
+```
      
     
 # To run test cases
