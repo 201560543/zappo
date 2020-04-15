@@ -4,6 +4,7 @@ from preprocessor.trp import Document
 from preprocessor.utils import update_column_headers, convert_form_to_dict
 from preprocessor.orders import Order
 from preprocessor.orderitems import OrderitemsDF
+pd.set_option('max_columns', 12)
 
 def processDocument(doc):
     for page in doc.pages:
@@ -55,7 +56,6 @@ def processDocument(doc):
                 orderitems.convert_DF_to_Orderitem_objs()
 
                 return orderitems._TableDataFrame.to_dict()
-                # import pdb; pdb.set_trace()
             except KeyError:
                 break
 
@@ -82,6 +82,52 @@ def run():
     # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <- PDF response (1 of 4)
     # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_1.png.json" # <- PDF response (2 of 4)
     # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_2.png.json" # <- PDF response (3 of 4)
+    # NEW RESPONSES
+    # filePath = "../data/s3_responses_sysco/20191103_193232.jpg.json"
+    # filePath = "../data/s3_responses_sysco/20191103_193336.jpg.json"
+    # filePath = "../data/s3_responses_sysco/20191103_193346.jpg.json"
+    # filePath = "../data/s3_responses_sysco/20191103_193354.jpg.json"
+    # filePath = "../data/s3_responses_sysco/20191103_193403.jpg.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-2.png.json""
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-4.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-4.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-5.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-4.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-4.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_709755_20191106-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_725235_20191119-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_725235_20191119-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_725235_20191119-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-4.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_709646_20191106-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_709646_20191106-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_709646_20191106-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-4.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-4.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-3.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-4.png.json"
     with open(filePath, 'r') as document:
         response = json.loads(document.read())
 
