@@ -43,7 +43,7 @@ create database zapoo;
     
 # To run test cases
 
-```python -m unittest discover -s web -p "*_test.py"```
+```python -m unittest discover -s app -p "*_test.py"```
 
 
 # 3rd Party Connections
@@ -67,6 +67,6 @@ aws configure
 Sample URL for S3 on local:
 
 ```
-http://localhost:5000/s3-connect?file_name=113375995671546834861/0aa281948fvbq2v/2020/April/05e73376-7ec3-471e-b1e1-59919b660501.json
+http://localhost:5000/api/s3-connect?file_name=113375995671546834861/0aa281948fvbq2v/2020/April/05e73376-7ec3-471e-b1e1-59919b660501.json
 ```
 

@@ -1,9 +1,9 @@
 import json
 import pandas as pd
-from preprocessor.trp import Document
-from preprocessor.utils import update_column_headers, convert_form_to_dict
-from preprocessor.orders import Order
-from preprocessor.orderitems import OrderitemsDF
+from web.preprocessor.trp import Document
+from web.preprocessor.utils import update_column_headers, convert_form_to_dict
+from web.preprocessor.orders import Order
+from web.preprocessor.orderitems import OrderitemsDF
 pd.set_option('max_columns', 12)
 
 def processDocument(doc):

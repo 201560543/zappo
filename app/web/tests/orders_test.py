@@ -1,16 +1,15 @@
 import json
 import unittest
-from preprocessor.trp import Document 
-from preprocessor.trp_test import processDocument
-from preprocessor.orders import Order 
+from web.preprocessor.trp import Document 
+from web.preprocessor.trp_test import processDocument
+from web.preprocessor.orders import Order 
+from web.tests.constants import TEST_DIR
 
 # For testing purposes, so that it can run normally
 # we have to update the directory to conform in the same way
 # as the flask application.
 import os
-os.chdir(os.path.dirname(os.path.dirname(__file__)))
-
-
+os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
 class OrderClassTest(unittest.TestCase):
     def setUp(self):

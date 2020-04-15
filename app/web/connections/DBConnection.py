@@ -1,7 +1,7 @@
 import os
 import mysql.connector
 import contextlib
-from constants import DEFAULT_DB_HOST, DEFAULT_DB_PORT
+from web.constants import DEFAULT_DB_HOST, DEFAULT_DB_PORT
 
 class DBConn(object):
     """
