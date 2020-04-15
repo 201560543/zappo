@@ -1,5 +1,0 @@
-DEBUG = False
-TESTING = True
-SECRET_KEY = 'secret_key'
-SERVER_NAME = 'some_server'
-SQLALCHEMY_TRACK_MODIFICATIONS = True

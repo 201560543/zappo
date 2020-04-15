@@ -47,7 +47,7 @@ create database zapoo;
 
 
 # 3rd Party Connections
-All files which maintain any sort of connection with another service is maintained under the connections directory. Presently the MemSQL connection (DBconnections.py) and S3 connection (s3_connection.py) is maintained under this directory. 
+All files which maintain any sort of connection with another service is maintained under the connections directory. Presently the MemSQL connection (DBweb.connections.py) and S3 connection (s3_connection.py) is maintained under this directory. 
 
 This has been done so that our parent directory is as clean as possible.
 
