@@ -15,8 +15,19 @@ To check all your docker images use:
 ```docker ps```  
 
 
+### To run migrations:
+1. First time init
+```python manage.py db init```
+
+2. Migrate new changes
+```python manage.py db migrate```
+
+3. Upgrade / Get new changes
+```python manage.py db upgrade```
+
+
 ### Running locally
-To run the development server, use: ```FLASK_DEBUG=1 flask run```.   
+To run the development server, use: ```FLASK_DEBUG=1 flask run```.  Even ```python3 run.py``` works. 
 
 Please do make sure to change the directory to web before running the flask run
 as the main application is inside web. ```cd web ```  
