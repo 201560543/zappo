@@ -4,7 +4,7 @@ machine:
 
 test:
   override:
-    - python -m unittest discover -s web -p "*_test.py"
+    - python -m unittest discover -s app -p "*_test.py"
 
 
 version: 2
@@ -30,7 +30,7 @@ jobs:
             sudo pip install virtualenv
             virtualenv venv
             . venv/bin/activate
-            pip install -r web/requirements.txt
+            pip install -r app/requirements.txt
 
       - save_cache:
           paths:
@@ -41,7 +41,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
-            python -m unittest discover -s web -p "*_test.py"
+            python -m unittest discover -s app -p "*_test.py"
 
       - store_artifacts:
           path: test-reports
