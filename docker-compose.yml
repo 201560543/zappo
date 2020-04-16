@@ -1,5 +1,5 @@
-web:
-  build: ./web
+app:
+  build: ./app
   ports:
     - "5000:5000"
   volumes:

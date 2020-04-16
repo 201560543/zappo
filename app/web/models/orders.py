@@ -19,6 +19,19 @@ class Order(db.Model):
     def __repr__(self):
         return '<Order {0}>'.format(self.invoice_number)
 
+    @property
+    def Page(self):
+        return self._Page
+	
+    @Page.setter
+    def Page(self,page_obj):
+        self._Page = page_obj
+        self._Form_dict = convert_form_to_dict(page_obj.form)
+
+    @property
+    def Form_dict(self):
+        return self._Form_dict
+
     def add_order_items(self, order_item):
         self._order_items.append(order_item)
 

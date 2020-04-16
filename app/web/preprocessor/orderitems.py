@@ -2,7 +2,6 @@ import re
 import pandas as pd
 import numpy as np
 from web.preprocessor.constants import REGEX_MAP
-from web.models.order_items import OrderItem
 from web.preprocessor.utils import update_column_headers, get_lineitem_expectations
 
 class OrderitemsDF():
@@ -275,6 +274,9 @@ class OrderitemsDF():
 
 
     def convert_DF_to_Orderitem_objs(self):
+        # To handle cyclic imports importing the model in the function
+        from web.models.order_items import OrderItem
+
         for idx in range(len(self._TableDataFrame)):
             orderitem = OrderItem()
             row_dict = self._TableDataFrame.iloc[idx,:].to_dict()

@@ -3,12 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from web.api.routes import api
 
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        #Make sure that the arguments correspond to your current MemSQL instance.
-        db = g._database = SQLAlchemy()
-
+db = SQLAlchemy()
 
 def create_app(config_name):
     # create app instance

@@ -4,6 +4,7 @@ class OrderItem(db.Model):
     """
     Used to store item-level information
     """
+    order_item_id = db.Column(db.String(32), primary_key=True)
     item_number = db.Column(db.String(32))
     order_quantity = db.Column(db.String(32))
     shipped_quantity = db.Column(db.String(32))
