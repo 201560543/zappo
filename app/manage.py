@@ -11,7 +11,6 @@ migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
-
 if __name__ == '__main__':
     from web.models.user import User
     from web.models.orders import Order
