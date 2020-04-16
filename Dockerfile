@@ -16,5 +16,10 @@ ENV DB_HOST ${DB_HOST}
 COPY ./app /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt
+
+# Migrations
+RUN python3 manage.py db migrate
+RUN python3 manage.py db upgrade
+
 ENTRYPOINT ["python3"]
 CMD ["run.py"]
