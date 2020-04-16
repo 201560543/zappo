@@ -5,14 +5,15 @@ from preprocessor.utils import update_column_headers, convert_form_to_dict
 from preprocessor.orders import Order
 from preprocessor.orderitems import OrderitemsDF
 pd.set_option('max_columns', 12)
+pd.options.display.width = 0
 
 def processDocument(doc):
     for page in doc.pages:
     #     print("PAGE\n====================")
-    #     for line in page.lines:
-    #         print("Line: {}--{}".format(line.text, ' '))
-    #         for word in line.words:
-    #             print("Word: {}--{}".format(word.text, ' '))
+        # for line in page.lines:
+        #     print("Line: {}--{}".format(line.text, ' '))
+        #     for word in line.words:
+        #         print("Word: {}--{}".format(word.text, ' '))
     #     for table in page.tables:
     #         print("TABLE\n====================")
     #         for r, row in enumerate(table.rows):
@@ -45,19 +46,29 @@ def processDocument(doc):
         # for field in fields:
         #     print("Field: Key: {}, Value: {}".format(field.key, field.value))
 
+        # Getting Header Info
+        print("==========================================")
+        print("=========Header-Level Information=========")
+        print("==========================================")
+        order = Order()
+        order.set_order_values(page)
         # Turning invoice line items into a DF
+        print("=============================================")
+        print("=========Orderitem-Level Information=========")
+        print("=============================================")
         for table in page.tables:
             try:
                 orderitems = OrderitemsDF()
                 orderitems.set_orderitems_dataframe(table)
                 df = orderitems.TableDataFrame
-                if len(df) == 0:
+                if df.empty:
                     continue
+                print(df)
                 orderitems.convert_DF_to_Orderitem_objs()
-
+                print("Returning Preprocessed DataFrame")
                 return orderitems._TableDataFrame.to_dict()
             except KeyError:
-                break
+                pass
 
         # order = Order()
         # order.set_order_values(page)
@@ -68,7 +79,7 @@ def processDocument(doc):
         # print(orders_df.columns)
         # print([line.text for line in page.lines])
         # print(orders_df.head())
-        return 
+        # return 
 
 
 
@@ -78,56 +89,59 @@ def processDocument(doc):
 def run():
     response = {}
     
-    filePath = "../data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" # <- First response we worked with
-    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <- PDF response (1 of 4)
-    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_1.png.json" # <- PDF response (2 of 4)
-    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_2.png.json" # <- PDF response (3 of 4)
-    # NEW RESPONSES
-    # filePath = "../data/s3_responses_sysco/20191103_193232.jpg.json"
-    # filePath = "../data/s3_responses_sysco/20191103_193336.jpg.json"
-    # filePath = "../data/s3_responses_sysco/20191103_193346.jpg.json"
-    # filePath = "../data/s3_responses_sysco/20191103_193354.jpg.json"
+    # filePath = "../data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" 
+    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_1.png.json" 
     # filePath = "../data/s3_responses_sysco/20191103_193403.jpg.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-2.png.json""
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-3.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-4.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-3.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-4.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-5.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-3.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-4.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-3.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-4.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_709755_20191106-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_725235_20191119-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_725235_20191119-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_725235_20191119-3.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-2.png.json"
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-3.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-4.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_709646_20191106-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_709646_20191106-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_709646_20191106-3.png.json"
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-1.png.json"
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-3.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-4.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-3.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-4.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-3.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-4.png.json"
+    filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-2.png.json" # Almost good, but need to investigate
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-2.png.json" # <-- Lots of available data. Textract didn't catch the table
+    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <-- Combines lines
+    # filePath = "../data/s3_responses_sysco/20191103_193232.jpg.json" # <-- Combines lines
+    # filePath = "../data/s3_responses_sysco/20191103_193336.jpg.json" # <-- Isn't reading broken column
+    # filePath = "../data/s3_responses_sysco/20191103_193346.jpg.json" # <-- Subtotal portion of invoice
+    # filePath = "../data/s3_responses_sysco/20191103_193354.jpg.json" # <-- No data - End of invoice
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-1.png.json"  # <-- Combines lines
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-4.png.json" # <-- Empty, end of invoice. no orderitems
+    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_2.png.json" # <- no data. There are a few orderitems. Bad read
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-3.png.json" # <- no data. There are a few orderitems. Bad read
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-2.png.json" # <-- Really bad read. Lots of data. Didn't capture tables
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-3.png.json" # <-- Really bad read. Lots of data. Didn't capture tables
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-1.png.json" # <-- Lots of available data. Textract didn't catch the table
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-4.png.json" # <-- Subtotals. No relevant data. Still didn't capture tables though. Really bad read
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-5.png.json" # <-- Empty, end of invoice
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-3.png.json" # <-- Subtotals. No relevant data. Still didn't capture tables though. Really bad read
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-4.png.json" # <-- Subtotals. No relevant data. Still didn't capture tables though. Really bad read
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-3.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-4.png.json" #<-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_709755_20191106-1.png.json" #<-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_725235_20191119-1.png.json" #<-- Combines Lines
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_725235_20191119-2.png.json" #<-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_725235_20191119-3.png.json" #<-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-1.png.json" #<-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-3.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-4.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_709646_20191106-1.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_709646_20191106-2.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_709646_20191106-3.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-3.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-4.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-1.png.json" # <-- Combines lines
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-2.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-3.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_748631_20191205-4.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-1.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-3.png.json" # <-- Empty
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-4.png.json" # <-- Subtotals, no line items
+
+    # Attemping the same image several times for debugging
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-1.png.json" # <-- Really bad read. Lots of data. Didn't capture tables
+    # filePath =  "../data/s3_responses_sysco/retry/17165_741819_20191130-1_retry.json"
+    # filePath =  "../data/s3_responses_sysco/retry/17165_741819_20191130-1_retry2.json"
     with open(filePath, 'r') as document:
         response = json.loads(document.read())
 
@@ -136,4 +150,3 @@ def run():
 
 if __name__ == '__main__':
     run()
-

@@ -95,7 +95,9 @@ class Order():
         # self._raw_sold_to_info = searched_form_dict.get('raw_sold_to_info')
         self.set_attributes(searched_form_dict)
 
-        print(self.__dict__)
+        for k,v in self.__dict__.items():
+            if k not in ['_Page', '_Form_dict']:
+                print(k,':',v)
         return 
 
     def set_attributes(self, data):

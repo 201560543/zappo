@@ -36,9 +36,9 @@ def hello_whale():
 @app.route('/preprocess', methods=['GET'])
 def preprocess():
     try:
-        print(request.args)
-        print(request.view_args)
-        print(run())
+        # print(request.args)
+        # print(request.view_args)
+        run()
         return make_response(jsonify({'hello': 'world'}))
     except Exception as exc:
         traceback.print_exc()

@@ -39,15 +39,27 @@ class OrderitemsDF():
         """
         Helper function to strip leading and trailing whitespace
         """
-        self._TableDataFrame[target_column] = self._TableDataFrame[target_column].apply(lambda x: x.strip())
+        try:
+            self._TableDataFrame[target_column] = self._TableDataFrame[target_column].apply(lambda x: x.strip())
+            # Returning False as a check for duplicate columns
+            return False
+        except AttributeError:
+            print("***Detected duplicate columns. update_column_headers method mapped two columns into one name.***")
+            # Returning True as a check for duplicate columns
+            return True
     
     def strip_all_cols(self):
         """
         Stips all leading and trailing whitespace from each column in the DataFrame
         """
+        duplicate_cols = False
         for col in self._TableDataFrame.columns:
-            self.strip_col(col)
-
+            res = self.strip_col(col)
+            if res == True:
+                print("Emptying Current DataFrame. Original Table:")
+                print(self._TableDataFrame)
+                self._TableDataFrame = pd.DataFrame([])
+    
     def lowercase_all_str_cols(self, expected_columns, expec_dtypes):
         """
         Used to convert string columns to lowercase.
@@ -246,42 +258,35 @@ class OrderitemsDF():
         """
         self._TableDataFrame[column_name] = self._TableDataFrame[column_name].apply(lambda x: re.findall(regex, x)[0])
 
-    
-    def remove_line_junk(self):
-        """
-        NOTE: Short term fix. Need to find a smarter solution for this later
-        Used to remove known strings that may get misread into certain columns
-        """
-        line_junk = ['bottle deposit', 'recycling fee']
-
 
     def set_orderitems_dataframe(self, table_obj):
         # Set Table object
         self._Table = table_obj
         # Set DataFrame
+        print("===Creating DataFrame===")
         self._TableDataFrame = self.create_TableDataFrame()
-        if len(self._TableDataFrame) == 0:
-            print("Detected Empty Table.")
+        if self._TableDataFrame.empty:
+            print("Detected Empty Table after updating column headers.")
             return None
         # Strip all columns of whitespace
+        print("===Stripping Columns===")
         self.strip_all_cols()
+        if self._TableDataFrame.empty:
+            print("Detected Empty Table after stripping columns.")
+            return None
         # Remove non items (like categories or totals)
+        print("===Removing Nonitem Rows===")
         self.remove_nonitem_rows()
 
         # Run expectations method - checks read DF against template expectations
+        print("===Evaluating Expectations===")
         self.evaluate_expectations()
-
-
 
     def convert_DF_to_Orderitem_objs(self):
         for idx in range(len(self._TableDataFrame)):
             orderitem = Orderitem()
             row_dict = self._TableDataFrame.iloc[idx,:].to_dict()
             orderitem.set_attributes(row_dict)
-
-            # For debugging
-            # print(orderitem)
-        print(self._TableDataFrame)
 
 class Orderitem():
     """
