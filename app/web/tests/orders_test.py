@@ -2,7 +2,7 @@ import json
 import unittest
 from web.preprocessor.trp import Document 
 from web.preprocessor.trp_test import processDocument
-from web.preprocessor.orders import Order 
+from web.models.orders import Order 
 from web.tests.constants import TEST_DIR
 
 # For testing purposes, so that it can run normally

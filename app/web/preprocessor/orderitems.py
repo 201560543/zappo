@@ -2,6 +2,7 @@ import re
 import pandas as pd
 import numpy as np
 from web.preprocessor.constants import REGEX_MAP
+from web.models.order_items import OrderItem
 from web.preprocessor.utils import update_column_headers, get_lineitem_expectations
 
 class OrderitemsDF():
@@ -275,7 +276,7 @@ class OrderitemsDF():
 
     def convert_DF_to_Orderitem_objs(self):
         for idx in range(len(self._TableDataFrame)):
-            orderitem = Orderitem()
+            orderitem = OrderItem()
             row_dict = self._TableDataFrame.iloc[idx,:].to_dict()
             orderitem.set_attributes(row_dict)
 
@@ -283,40 +284,6 @@ class OrderitemsDF():
             # print(orderitem)
         print(self._TableDataFrame)
 
-class Orderitem():
-    """
-    Used to store item-level information
-    """
-    def __init__(self):
-        self.item_number = None
-        self.order_quantity = None
-        self.shipped_quantity = None
-        self.unit = None
-        self.size = None
-        self.brand = None
-        self.description = None
-        self.weight = None
-        self.price = None
-        self.total_price = None
-    
-    def __repr__(self):
-        return f'''{[
-            self.item_number,
-            self.order_quantity,
-            self.shipped_quantity,
-            self.unit,
-            self.size,
-            self.brand,
-            self.description,
-            self.weight,
-            self.price,
-            self.total_price
-            ]}'''
-    
-    def set_attributes(self, data):
-        for key, val in data.items():
-            if hasattr(self, key):
-                setattr(self, f'{key}', val)
 
     
 
