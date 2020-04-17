@@ -1,20 +1,25 @@
+import pandas as pd
 from typing import List
 import copy 
 from preprocessor.utils import fetch_json, prefix_dictionary_search, convert_form_to_dict, failover
+from preprocessor.constants import ORDER_HEADER_COLUMN_ORDER
+from io import StringIO
 
 class Order():
     def __init__(self):
         self._Page = None
         self._Form_dict = None
 
+        self._account_number = None # ZappoTrack accnt number
         self._invoice_number = None
         self._invoice_term_name = None
         self._invoice_date = None
+        self._supplier = None
 
-        self._customer_account_number = None
-        self._vendor = None
+        self._customer_account_number = None # Customer's accnt number with supplier
         self._order_items = []
         self._raw_sold_to_info = None
+
 
     def __str__(self):
         return f'{self._invoice_number}, number of items: {len(self._order_items)}'
@@ -57,8 +62,8 @@ class Order():
         return self._raw_sold_to_info
 
     @property
-    def vendor(self):
-        return self._vendor
+    def supplier(self):
+        return self._supplier
 
     def add_order_items(self, order_item):
         self._order_items.append(order_item)
@@ -88,21 +93,33 @@ class Order():
         self.Page = page_obj
         # Get Page's Form 
         searched_form_dict = self.extract_keys_using_template(template_name)
-        # Set attributes using matched dict
-        # self._customer_account_number = searched_form_dict.get('customer_account_number')
-        # self._invoice_date = searched_form_dict.get('invoice_date')
-        # self._invoice_term_name = searched_form_dict.get('invoice_term_name')
-        # self._raw_sold_to_info = searched_form_dict.get('raw_sold_to_info')
+        # Set attributes using extracted keys
         self.set_attributes(searched_form_dict)
+        # Set supplier using template
+        self._supplier = template_name[:-5]
 
         for k,v in self.__dict__.items():
             if k not in ['_Page', '_Form_dict']:
-                print(k,':',v)
-        return 
+                print(k,':',v) 
 
     def set_attributes(self, data):
         for key, val in data.items():
             if hasattr(self, key):
                 setattr(self, f'_{key}', val)
 
+    def convert_to_tsv(self):
+        """
+        Used to export Header values as a tsv file. Returns both raw string format and buf
+        """
+        vals = []
+        for key in ORDER_HEADER_COLUMN_ORDER:
+            key_prefixed = '_'+key
+            vals.append(self.__dict__.get(key_prefixed))
+        # for k,v in self.__dict__.items():
+        #     if k not in ['_Page', '_Form_dict']:
+        #         vals.append(v)
+        tsv_buf = StringIO()
+        pd.DataFrame([vals]).to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)
+        raw_tsv = pd.DataFrame([vals]).to_csv(path_or_buf=None, sep='\t', header=False, index=False)
+        return tsv_buf, raw_tsv
 

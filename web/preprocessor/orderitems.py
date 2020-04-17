@@ -1,8 +1,9 @@
 import re
 import pandas as pd
 import numpy as np
-from preprocessor.constants import REGEX_MAP
+from preprocessor.constants import REGEX_MAP, ORDERITEMS_COLUMN_ORDER
 from preprocessor.utils import update_column_headers, get_lineitem_expectations
+from io import StringIO
 
 class OrderitemsDF():
     """
@@ -52,7 +53,6 @@ class OrderitemsDF():
         """
         Stips all leading and trailing whitespace from each column in the DataFrame
         """
-        duplicate_cols = False
         for col in self._TableDataFrame.columns:
             res = self.strip_col(col)
             if res == True:
@@ -161,10 +161,10 @@ class OrderitemsDF():
         print(f'Regex expectation for {column} detected. Creating new columns: {regex_cap_group_cols}.')
         # Extracting groups and creating new columns
         extracted_groups = self._TableDataFrame[column].str.extract(regex, expand=True)
-        self._TableDataFrame[regex_cap_group_cols] = extracted_groups
         if drop_original==True:
             print(f'Dropped {column}.')
             self._TableDataFrame = self._TableDataFrame.drop(column, axis=1)
+        self._TableDataFrame[regex_cap_group_cols] = extracted_groups
 
     def unbleed_columns(self, expected_columns, expec_tokens, expec_dtypes, inserted_columns, expec_regex):
         """
@@ -282,11 +282,46 @@ class OrderitemsDF():
         print("===Evaluating Expectations===")
         self.evaluate_expectations()
 
+        # Remove non items again in case unbleed rearranged an invalid value under item_number
+        print("===Removing Nonitem Rows===")
+        self.remove_nonitem_rows()
+
     def convert_DF_to_Orderitem_objs(self):
         for idx in range(len(self._TableDataFrame)):
             orderitem = Orderitem()
             row_dict = self._TableDataFrame.iloc[idx,:].to_dict()
             orderitem.set_attributes(row_dict)
+    
+    def set_column_order_for_export(self, invoice_number):
+        """
+        Setting the expected column order for MemSQL Raw Tables
+
+        INPUT
+        invoice_number: assigns this invoice number to the DataFrame. Needs to get passed in after reading Header values
+        """
+        try:
+            print("Re-arranging column order for export")
+            self._TableDataFrame['invoice_number'] = invoice_number
+            self._TableDataFrame = self._TableDataFrame[ORDERITEMS_COLUMN_ORDER]
+        except:
+            print("Error occurred when returning proper column order.")
+            print("Original Columns:")
+            print(self._TableDataFrame.columns)
+            print("Rearranged Columns:")
+            print(ORDERITEMS_COLUMN_ORDER)
+    
+    def export_items_as_tsv(self, invoice_number):
+        """
+        Used to export dataframe as a tsv file. Returns both raw string format and buf
+        """
+        try:
+            self.set_column_order_for_export(invoice_number=invoice_number)
+            tsv_buf = StringIO()
+            self._TableDataFrame.to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)
+            raw_tsv = self._TableDataFrame.to_csv(path_or_buf=None, sep='\t', header=False, index=False)
+            return tsv_buf, raw_tsv
+        except:
+            print("Error occurred when exporting orderitems")
 
 class Orderitem():
     """

@@ -52,6 +52,12 @@ def processDocument(doc):
         print("==========================================")
         order = Order()
         order.set_order_values(page)
+        invoice_num = order._invoice_number
+        ## LINES BELOW TEMPORARY 
+        TEMPORARY_ACCNT_NO = '7d6ad4d0-80c9-11ea-b51c-0aedbe94'
+        order._account_number = TEMPORARY_ACCNT_NO
+        ## LINES ABOVE TEMPORARY
+        order_tsv_buf, order_header_raw_tsv = order.convert_to_tsv()
         # Turning invoice line items into a DF
         print("=============================================")
         print("=========Orderitem-Level Information=========")
@@ -59,14 +65,15 @@ def processDocument(doc):
         for table in page.tables:
             try:
                 orderitems = OrderitemsDF()
-                orderitems.set_orderitems_dataframe(table)
+                orderitems.set_orderitems_dataframe(table) 
                 df = orderitems.TableDataFrame
                 if df.empty:
                     continue
                 print(df)
                 orderitems.convert_DF_to_Orderitem_objs()
-                print("Returning Preprocessed DataFrame")
-                return orderitems._TableDataFrame.to_dict()
+                print("Returning Preprocessed DataFrame and Headers")
+                orderitems_tsv_buf, orderitems_raw_tsv = orderitems.export_items_as_tsv(invoice_number=invoice_num)
+                return (order_tsv_buf, order_header_raw_tsv), (orderitems_tsv_buf, orderitems_raw_tsv), TEMPORARY_ACCNT_NO
             except KeyError:
                 pass
 
@@ -88,26 +95,32 @@ def processDocument(doc):
 
 def run():
     response = {}
-    
-    # filePath = "../data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" 
-    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_1.png.json" 
-    # filePath = "../data/s3_responses_sysco/20191103_193403.jpg.json"
+    # # UPLOADED
+    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_1.png.json"
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-2.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-1.png.json"
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-2.png.json" # Almost good, need to implement type check
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-2.png.json" 
+    
+    # TRUFFLES
+     # FUUD
+    # filePath = "../data/s3_responses_sysco/20191103_193403.jpg.json"
+    # TRUFFLES TRUCK
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-2.png.json"
+    # TRUFFLES CAFE ANVIL CNTR
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-1.png.json"
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-2.png.json"
-    filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-2.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-1.png.json"
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-2.png.json" # Almost good, but need to investigate
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-2.png.json" # <-- Lots of available data. Textract didn't catch the table
+
+    # filePath = "../data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" 
+    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-2.png.json"
     # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <-- Combines lines
     # filePath = "../data/s3_responses_sysco/20191103_193232.jpg.json" # <-- Combines lines
     # filePath = "../data/s3_responses_sysco/20191103_193336.jpg.json" # <-- Isn't reading broken column
     # filePath = "../data/s3_responses_sysco/20191103_193346.jpg.json" # <-- Subtotal portion of invoice
     # filePath = "../data/s3_responses_sysco/20191103_193354.jpg.json" # <-- No data - End of invoice
+    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_2.png.json" # <- no data. There are a few orderitems. Bad read
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-1.png.json"  # <-- Combines lines
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-4.png.json" # <-- Empty, end of invoice. no orderitems
-    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_2.png.json" # <- no data. There are a few orderitems. Bad read
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-3.png.json" # <- no data. There are a few orderitems. Bad read
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-2.png.json" # <-- Really bad read. Lots of data. Didn't capture tables
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-3.png.json" # <-- Really bad read. Lots of data. Didn't capture tables

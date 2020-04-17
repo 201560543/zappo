@@ -4,7 +4,7 @@ from preprocessor.trp_test import run, processDocument
 from preprocessor.trp import Document
 from connections.s3_connection import S3Interface
 from connections.DBConnection import DBConn
-from constants import S3_BUCKET_NAME
+from constants import S3_BUCKET_NAME, S3_PREPROCESSED_HEADERS_BUCKET, S3_PREPROCESSED_ORDERITEMS_BUCKET
 
 
 app = Flask(__name__)
@@ -28,6 +28,10 @@ def not_found(error):
 def bad_request(error):
     return make_response(jsonify({'detail': 'Bad request'}), 400)
 
+# custom 500 error handler
+@app.errorhandler(500)
+def internal_server_error(error):
+    return make_response(jsonify({'detail': 'Internal Server Error'}), 500)
 
 @app.route('/')
 def hello_whale():
@@ -54,7 +58,6 @@ def connection():
         traceback.print_exc()
         return make_response(jsonify({'host': obj.host}))
 
-
 @app.route('/s3-connect', methods=['GET'])
 def s3_connect():
     try:
@@ -62,11 +65,31 @@ def s3_connect():
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
-        resp = processDocument(doc)
-        return make_response(resp)
+        (order_tsv_buf, order_tsv_raw), (orderitems_tsv_buf, orderitems_tsv_raw), accnt_no = processDocument(doc)
+        return make_response(orderitems_tsv_raw)
     except Exception as exc:
         traceback.print_exc()
         return abort(400)
+
+@app.route('/s3-upload', methods=['POST'])
+def upload_invoice():
+    error = False
+    try:
+        file_name = request.get_json()['file_name']
+        s3_obj = S3Interface(S3_BUCKET_NAME)
+        resp = s3_obj.get_file(file_name)
+        doc = Document(resp)
+        (order_tsv_buf, order_tsv_raw), (orderitems_tsv_buf, orderitems_tsv_raw), accnt_no = processDocument(doc)
+        # Uploading header
+        s3_obj.upload_file(order_tsv_buf, S3_PREPROCESSED_HEADERS_BUCKET, accnt_no)
+        # Uploading orderitems
+        s3_obj.upload_file(orderitems_tsv_buf, S3_PREPROCESSED_ORDERITEMS_BUCKET, accnt_no)
+    except:
+        error = True
+        traceback.print_exc()
+        return abort(500) 
+    
+    return make_response(orderitems_tsv_raw), 200
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
