@@ -54,6 +54,7 @@ def processDocument(doc):
         order.set_order_values(page)
         invoice_num = order._invoice_number
         ## LINES BELOW TEMPORARY 
+        # TO DO: refactor
         TEMPORARY_ACCNT_NO = '7d6ad4d0-80c9-11ea-b51c-0aedbe94'
         order._account_number = TEMPORARY_ACCNT_NO
         ## LINES ABOVE TEMPORARY
@@ -73,6 +74,7 @@ def processDocument(doc):
                 orderitems.convert_DF_to_Orderitem_objs()
                 print("Returning Preprocessed DataFrame and Headers")
                 orderitems_tsv_buf, orderitems_raw_tsv = orderitems.export_items_as_tsv(invoice_number=invoice_num)
+                # TO DO: refactor
                 return (order_tsv_buf, order_header_raw_tsv), (orderitems_tsv_buf, orderitems_raw_tsv), TEMPORARY_ACCNT_NO
             except KeyError:
                 pass
@@ -92,27 +94,27 @@ def processDocument(doc):
 
 
 
-
 def run():
     response = {}
     # # UPLOADED
-    # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_1.png.json"
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-2.png.json"
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-1.png.json"
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-2.png.json" # Almost good, need to implement type check
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_744788_20191203-2.png.json" 
     
     # TRUFFLES
-     # FUUD
+    # FUUD
     # filePath = "../data/s3_responses_sysco/20191103_193403.jpg.json"
+    # filePath = "../data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" 
     # TRUFFLES TRUCK
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_20677_746612_20191204-2.png.json"
     # TRUFFLES CAFE ANVIL CNTR
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-1.png.json"
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_23905_725646_20191119-2.png.json"
-
-    # filePath = "../data/s3_responses/04eed195-04b7-40bd-a304-2609b8fd2db3.json" 
+    # OSCAR'S PUB
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_28773_750236_20191206-2.png.json"
+
+
     # filePath = "../data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json" # <-- Combines lines
     # filePath = "../data/s3_responses_sysco/20191103_193232.jpg.json" # <-- Combines lines
     # filePath = "../data/s3_responses_sysco/20191103_193336.jpg.json" # <-- Isn't reading broken column

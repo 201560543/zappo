@@ -4,7 +4,7 @@ from preprocessor.trp_test import run, processDocument
 from preprocessor.trp import Document
 from connections.s3_connection import S3Interface
 from connections.DBConnection import DBConn
-from constants import S3_BUCKET_NAME, S3_PREPROCESSED_HEADERS_BUCKET, S3_PREPROCESSED_ORDERITEMS_BUCKET
+from constants import S3_BUCKET_NAME, S3_PREPROCESSED_INVOICES_BUCKET
 
 
 app = Flask(__name__)
@@ -81,9 +81,9 @@ def upload_invoice():
         doc = Document(resp)
         (order_tsv_buf, order_tsv_raw), (orderitems_tsv_buf, orderitems_tsv_raw), accnt_no = processDocument(doc)
         # Uploading header
-        s3_obj.upload_file(order_tsv_buf, S3_PREPROCESSED_HEADERS_BUCKET, accnt_no)
+        s3_obj.upload_file(order_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,type='header')
         # Uploading orderitems
-        s3_obj.upload_file(orderitems_tsv_buf, S3_PREPROCESSED_ORDERITEMS_BUCKET, accnt_no)
+        s3_obj.upload_file(orderitems_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,type='lineitem')
     except:
         error = True
         traceback.print_exc()

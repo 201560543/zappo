@@ -87,6 +87,15 @@ class Order():
 
         return {**matched_keys_raw, **failover(matched_keys_raw, order_template, self._Page)}
     
+    def format_date(self):
+        """
+        Textract may read dates as "YYY MM DD". Reformat to "YYYY-MM-DD" for DB insertion
+        """
+        try:
+            self._invoice_date = self._invoice_date.replace(" ","-")
+        except:
+            # If invoice date was not read, pass in as None
+            pass
 
     def set_order_values(self, page_obj, template_name = 'sysco.json'):
         # Set Page object
@@ -97,6 +106,8 @@ class Order():
         self.set_attributes(searched_form_dict)
         # Set supplier using template
         self._supplier = template_name[:-5]
+        # Format Date
+        self.format_date()
 
         for k,v in self.__dict__.items():
             if k not in ['_Page', '_Form_dict']:
@@ -111,13 +122,13 @@ class Order():
         """
         Used to export Header values as a tsv file. Returns both raw string format and buf
         """
+        # TO DO: refactor - consider using avro in the future
+
         vals = []
         for key in ORDER_HEADER_COLUMN_ORDER:
             key_prefixed = '_'+key
             vals.append(self.__dict__.get(key_prefixed))
-        # for k,v in self.__dict__.items():
-        #     if k not in ['_Page', '_Form_dict']:
-        #         vals.append(v)
+        
         tsv_buf = StringIO()
         pd.DataFrame([vals]).to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)
         raw_tsv = pd.DataFrame([vals]).to_csv(path_or_buf=None, sep='\t', header=False, index=False)
