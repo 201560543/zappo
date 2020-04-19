@@ -69,4 +69,5 @@ def s3_connect():
         return abort(400)
 
 if __name__ == '__main__':
+    app.logger.info('We have started our application. This is my test.')
     app.run(debug=True, host='0.0.0.0')
