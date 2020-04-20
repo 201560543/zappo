@@ -53,6 +53,7 @@ def processDocument(doc):
         order = Order()
         order.set_order_values(page)
         invoice_num = order._invoice_number
+        supplier = order._supplier
         ## LINES BELOW TEMPORARY 
         # TO DO: refactor
         TEMPORARY_ACCNT_NO = '7d6ad4d0-80c9-11ea-b51c-0aedbe94'
@@ -66,14 +67,16 @@ def processDocument(doc):
         for table in page.tables:
             try:
                 orderitems = OrderitemsDF()
-                orderitems.set_orderitems_dataframe(table) 
+                orderitems.set_orderitems_dataframe(table)
                 df = orderitems.TableDataFrame
                 if df.empty:
                     continue
                 print(df)
-                orderitems.convert_DF_to_Orderitem_objs()
                 print("Returning Preprocessed DataFrame and Headers")
-                orderitems_tsv_buf, orderitems_raw_tsv = orderitems.export_items_as_tsv(invoice_number=invoice_num)
+                # Setting header values in DataFrame of orderitems
+                orderitems.set_header_values(invoice_number=invoice_num, account_number=TEMPORARY_ACCNT_NO, supplier=supplier)
+                # Exporting as buffer and raw tsv
+                orderitems_tsv_buf, orderitems_raw_tsv = orderitems.export_items_as_tsv()
                 # TO DO: refactor
                 return (order_tsv_buf, order_header_raw_tsv), (orderitems_tsv_buf, orderitems_raw_tsv), TEMPORARY_ACCNT_NO
             except KeyError:
@@ -125,7 +128,7 @@ def run():
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-4.png.json" # <-- Empty, end of invoice. no orderitems
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_709955_20191106-3.png.json" # <- no data. There are a few orderitems. Bad read
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-2.png.json" # <-- Really bad read. Lots of data. Didn't capture tables
-    # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-3.png.json" # <-- Really bad read. Lots of data. Didn't capture tables
+    filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-3.png.json" # <-- Really bad read. Lots of data. Didn't capture tables
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_750415_20191206-1.png.json" # <-- Lots of available data. Textract didn't catch the table
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-4.png.json" # <-- Subtotals. No relevant data. Still didn't capture tables though. Really bad read
     # filePath = "../data/s3_responses_sysco/sysco_test_INV_044_17165_741819_20191130-5.png.json" # <-- Empty, end of invoice

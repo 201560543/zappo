@@ -16,7 +16,9 @@ REGEX_MAP = {
 }
 
 # Required to create tsv files in the right order
-ORDERITEMS_COLUMN_ORDER = ['invoice_number' ,
+ORDERITEMS_COLUMN_ORDER = ['account_number' , 
+							'supplier' ,
+							'invoice_number' ,
 							'item_number' ,
 							'order_quantity' ,
 							'shipped_quantity',

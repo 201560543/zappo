@@ -10,6 +10,8 @@ create table if not exists invoice_header_final_test (
 
 
 create table if not exists invoice_lineitem_final_test (
+    account_number varchar(35),
+    supplier varchar(15),
     invoice_number int,
     item_number int,
     order_quantity int,

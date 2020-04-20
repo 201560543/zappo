@@ -26,6 +26,7 @@ class OrderitemsDF():
         Converts json from OCR to pandas DataFrame
         """
         df = pd.DataFrame([[cell.text for cell in row.cells] for row in self._Table.rows])
+        print(df)
         return update_column_headers(df)
     
     def remove_nonitem_rows(self):
@@ -286,22 +287,23 @@ class OrderitemsDF():
         print("===Removing Nonitem Rows===")
         self.remove_nonitem_rows()
 
+    def set_header_values(self, invoice_number, account_number, supplier):
+        self._TableDataFrame['invoice_number'] = invoice_number
+        self._TableDataFrame['account_number'] = account_number
+        self._TableDataFrame['supplier'] = supplier
+
     def convert_DF_to_Orderitem_objs(self):
         for idx in range(len(self._TableDataFrame)):
             orderitem = Orderitem()
             row_dict = self._TableDataFrame.iloc[idx,:].to_dict()
             orderitem.set_attributes(row_dict)
     
-    def set_column_order_for_export(self, invoice_number):
+    def set_column_order_for_export(self):
         """
         Setting the expected column order for MemSQL Raw Tables
-
-        INPUT
-        invoice_number: assigns this invoice number to the DataFrame. Needs to get passed in after reading Header values
         """
         try:
             print("Re-arranging column order for export")
-            self._TableDataFrame['invoice_number'] = invoice_number
             self._TableDataFrame = self._TableDataFrame[ORDERITEMS_COLUMN_ORDER]
         except:
             print("Error occurred when returning proper column order.")
@@ -309,19 +311,22 @@ class OrderitemsDF():
             print(self._TableDataFrame.columns)
             print("Rearranged Columns:")
             print(ORDERITEMS_COLUMN_ORDER)
+            # TO DO: Add proper error handling
     
-    def export_items_as_tsv(self, invoice_number):
+    def export_items_as_tsv(self):
         """
         Used to export dataframe as a tsv file. Returns both raw string format and buf
         """
+        # TO DO: refactor - consider using avro in the future
         try:
-            self.set_column_order_for_export(invoice_number=invoice_number)
+            self.set_column_order_for_export()
             tsv_buf = StringIO()
             self._TableDataFrame.to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)
             raw_tsv = self._TableDataFrame.to_csv(path_or_buf=None, sep='\t', header=False, index=False)
             return tsv_buf, raw_tsv
         except:
             print("Error occurred when exporting orderitems")
+            # TO DO: Add proper error handling
 
 class Orderitem():
     """
