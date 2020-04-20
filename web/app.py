@@ -66,12 +66,12 @@ def connection():
 def s3_connect():
     try:
         file_name = request.args.get('file_name')
+        template_name = request.args.get('template_name')+'.json' # TO DO: need to discuss whether we will detect template or take template as a parameter
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
         processed_doc = ProcessedDocument(doc)
-        processed_doc.processDocument()
-        # (order_tsv_buf, order_tsv_raw), (orderitems_tsv_buf, orderitems_tsv_raw), accnt_no = processDocument(doc)
+        processed_doc.processDocument(template_name=template_name)
         return make_response(processed_doc._orderitem_tsv)
     except Exception as exc:
         traceback.print_exc()
@@ -82,13 +82,13 @@ def upload_invoice():
     error = False
     try:
         file_name = request.get_json()['file_name']
+        template_name = request.get_json()['template_name']
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
         processed_doc = ProcessedDocument(doc)
         # Processing Document
-        processed_doc.processDocument()
-        # (order_tsv_buf, order_tsv_raw), (orderitems_tsv_buf, orderitems_tsv_raw), accnt_no = processDocument(doc)
+        processed_doc.processDocument(template_name=template_name)
         # Pulling buffers and account number for upload
         order_tsv_buf = processed_doc._order_buf
         orderitems_tsv_buf = processed_doc._orderitem_buf

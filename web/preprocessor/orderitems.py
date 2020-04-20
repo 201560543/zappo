@@ -22,14 +22,14 @@ class OrderitemsDF():
     def TableDataFrame(self):
         return self._TableDataFrame
 
-    def create_TableDataFrame(self):
+    def create_TableDataFrame(self, template_name):
         """
         Converts json from OCR to pandas DataFrame
         """
         df = pd.DataFrame([[cell.text for cell in row.cells] for row in self._Table.rows])
         print('=====BEFORE PROCESSING=====')
         print(df)
-        return update_column_headers(df)
+        return update_column_headers(df, template_name=template_name)
     
     def remove_nonitem_rows(self):
         """
@@ -218,12 +218,12 @@ class OrderitemsDF():
             else:
                 pass
 
-    def evaluate_expectations(self):
+    def evaluate_expectations(self, template_name):
         """
         Iterates through expected columns, checks if columns were read, runs unbleed on columns, and converts to correct data type
         """
         # Get all expectations (num tokens, data types, and column order)
-        expec_tokens, expec_dtypes, expected_columns, expec_regex = get_lineitem_expectations(template_name='sysco.json')
+        expec_tokens, expec_dtypes, expected_columns, expec_regex = get_lineitem_expectations(template_name=template_name)
         # Insert all expected columns if missed
         inserted_columns = self.insert_missing_cols(expected_columns=expected_columns)
         # Lowercase all string columns
@@ -259,12 +259,12 @@ class OrderitemsDF():
         self._TableDataFrame[column_name] = self._TableDataFrame[column_name].apply(lambda x: re.findall(regex, x)[0])
 
 
-    def set_orderitems_dataframe(self, table_obj):
+    def set_orderitems_dataframe(self, table_obj, template_name='sysco.json'):
         # Set Table object
         self._Table = table_obj
         # Set DataFrame
         current_app.logger.info("Creating DataFrame")
-        self._TableDataFrame = self.create_TableDataFrame()
+        self._TableDataFrame = self.create_TableDataFrame(template_name=template_name)
         if self._TableDataFrame.empty:
             current_app.logger.warning("Detected Empty Table after updating column headers.")
             return None
@@ -280,7 +280,7 @@ class OrderitemsDF():
 
         # Run expectations method - checks read DF against template expectations
         current_app.logger.info("Evaluating Expectations")
-        self.evaluate_expectations()
+        self.evaluate_expectations(template_name=template_name)
 
         # Remove non items again in case unbleed rearranged an invalid value under item_number
         current_app.logger.info("Removing Nonitem Rows")

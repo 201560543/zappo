@@ -8,7 +8,7 @@ pd.set_option('max_columns', 12)
 pd.options.display.width = 0
 
 
-class ProcessedDocument():
+class ProcessedDocument:
     """
     Class used to hold raw Document object from trp and processed outputs (buffer and tsv files for database upload)
     Buffer files are sent to S3, tsv is sent back to client
@@ -34,7 +34,7 @@ class ProcessedDocument():
     def set_account_number(self, account_number):
         self._account_number = account_number
 
-    def processDocument(self):
+    def processDocument(self, template_name='sysco.json'):
         for page in self._raw_doc.pages:
         #     print("PAGE\n====================")
             # for line in page.lines:
@@ -77,7 +77,7 @@ class ProcessedDocument():
             print("=========Header-Level Information=========")
             print("==========================================")
             order = Order()
-            order.set_order_values(page)
+            order.set_order_values(page, template_name=template_name)
             invoice_num = order._invoice_number
             supplier = order._supplier
             ## LINES BELOW TEMPORARY 
@@ -94,7 +94,7 @@ class ProcessedDocument():
             for table in page.tables:
                 try:
                     orderitems = OrderitemsDF()
-                    orderitems.set_orderitems_dataframe(table)
+                    orderitems.set_orderitems_dataframe(table, template_name=template_name)
                     df = orderitems.TableDataFrame
                     if df.empty:
                         continue
