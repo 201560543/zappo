@@ -147,11 +147,10 @@ def get_lineitem_expectations(template_name='sysco.json'):
     template_data = fetch_json(template_name)
     # Fetch the expectations from template
     expectations = template_data.get('expectation_checks')
-    print(expectations)
     # Fetch expected tokens
     expec_tokens = {exp: val.get('num_tokens') for exp, val in expectations.items()}
     # Fetch expected dtypes
-    expec_dtypes = {exp: val.get('d_types') for exp, val in expectations.items()}
+    expec_dtypes = {exp: val.get('data_type') for exp, val in expectations.items()}
     # Fetch expected column order
     expec_col_order = template_data.get('column_order')
     # Fetch custom regex expectations (if any)
