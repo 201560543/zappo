@@ -1,5 +1,6 @@
 import traceback
 from flask import Flask, render_template, jsonify, request, abort, make_response, current_app
+import logging
 from preprocessor.trp_test import run, ProcessedDocument
 from preprocessor.trp import Document
 from connections.s3_connection import S3Interface
