@@ -4,6 +4,7 @@ import copy
 from preprocessor.utils import fetch_json, prefix_dictionary_search, convert_form_to_dict, failover
 from preprocessor.constants import ORDER_HEADER_COLUMN_ORDER
 from io import StringIO
+from flask import current_app
 
 class Order():
     def __init__(self):
@@ -94,8 +95,7 @@ class Order():
         try:
             self._invoice_date = self._invoice_date.replace(" ","-")
         except:
-            # If invoice date was not read, pass in as None
-            pass
+            current_app.logger.warning("Invoice date was not picked.")
 
     def set_order_values(self, page_obj, template_name = 'sysco.json'):
         # Set Page object
