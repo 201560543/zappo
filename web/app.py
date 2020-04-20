@@ -1,5 +1,5 @@
 import traceback
-from flask import Flask, render_template, jsonify, request, abort, make_response
+from flask import Flask, render_template, jsonify, request, abort, make_response, current_app
 from preprocessor.trp_test import run, ProcessedDocument
 from preprocessor.trp import Document
 from connections.s3_connection import S3Interface
@@ -8,6 +8,7 @@ from constants import S3_BUCKET_NAME, S3_PREPROCESSED_INVOICES_BUCKET
 
 
 app = Flask(__name__)
+logger = logging.getLogger(__name__)
 
 # signal definition
 def log_request(sender, **extra):
@@ -52,6 +53,7 @@ def preprocess():
 @app.route('/connection', methods=['GET'])
 def connection():
     try:
+        current_app.logger.info('Testing logging capabalities for db connection')
         obj = DBConn()
         result = obj.get_query('show databases;', True)
         return make_response(jsonify({'query_result': result}))

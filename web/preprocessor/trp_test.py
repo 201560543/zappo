@@ -30,6 +30,9 @@ class ProcessedDocument():
     def set_orderitem(self, orderitem_buf, orderitem_tsv):
         self._orderitem_buf = orderitem_buf
         self._orderitem_tsv = orderitem_tsv
+    
+    def set_account_number(self, account_number):
+        self._account_number = account_number
 
     def processDocument(self):
         for page in self._raw_doc.pages:
@@ -80,7 +83,7 @@ class ProcessedDocument():
             ## LINES BELOW TEMPORARY 
             TEMPORARY_ACCNT_NO = 'debddd37-82a9-11ea-b51c-0aedbe94' # Used to temporarily assign account until frontend can send accnt info
             order._account_number = TEMPORARY_ACCNT_NO # Order needs account number stored so it is stored as a column in the Memsql DB
-            self._account_number = TEMPORARY_ACCNT_NO
+            self.set_account_number(TEMPORARY_ACCNT_NO)
             ## LINES ABOVE TEMPORARY
             order_tsv_buf, order_header_raw_tsv = order.convert_to_tsv()
             self.set_order(order_tsv_buf, order_header_raw_tsv)
