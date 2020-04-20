@@ -60,6 +60,5 @@ def get_current_date():
     Utility function for tagging uploaded files with current date
     """
     now = dt.now()
-    year, month, day, hour, minute, second = now.year, now.month, now.day, now.hour, now.minute, now.second
-    date = '/' + str(year) + '/' + str(month) + '/' + str(day) + '/' + str(hour) + '-' + str(minute) + '-' + str(second)
+    date = now.strftime("/%d/%m/%y/%H-%M-%S")
     return date
