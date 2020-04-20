@@ -1,6 +1,6 @@
 import traceback
 from flask import Flask, render_template, jsonify, request, abort, make_response
-from preprocessor.trp_test import run, processDocument
+from preprocessor.trp_test import run, ProcessedDocument
 from preprocessor.trp import Document
 from connections.s3_connection import S3Interface
 from connections.DBConnection import DBConn
@@ -42,8 +42,9 @@ def preprocess():
     try:
         # print(request.args)
         # print(request.view_args)
-        run()
-        return make_response(jsonify({'hello': 'world'}))
+        orderitem_tsv = run()
+
+        return make_response(orderitem_tsv)
     except Exception as exc:
         traceback.print_exc()
         return abort(400)
@@ -65,8 +66,10 @@ def s3_connect():
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
-        (order_tsv_buf, order_tsv_raw), (orderitems_tsv_buf, orderitems_tsv_raw), accnt_no = processDocument(doc)
-        return make_response(orderitems_tsv_raw)
+        processed_doc = ProcessedDocument(doc)
+        processed_doc.processDocument()
+        # (order_tsv_buf, order_tsv_raw), (orderitems_tsv_buf, orderitems_tsv_raw), accnt_no = processDocument(doc)
+        return make_response(processed_doc._orderitem_tsv)
     except Exception as exc:
         traceback.print_exc()
         return abort(400)
@@ -79,7 +82,15 @@ def upload_invoice():
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
-        (order_tsv_buf, order_tsv_raw), (orderitems_tsv_buf, orderitems_tsv_raw), accnt_no = processDocument(doc)
+        processed_doc = ProcessedDocument(doc)
+        # Processing Document
+        processed_doc.processDocument()
+        # (order_tsv_buf, order_tsv_raw), (orderitems_tsv_buf, orderitems_tsv_raw), accnt_no = processDocument(doc)
+        # Pulling buffers and account number for upload
+        order_tsv_buf = processed_doc._order_buf
+        orderitems_tsv_buf = processed_doc._orderitem_buf
+        orderitems_tsv_raw = processed_doc._orderitem_tsv
+        accnt_no = processed_doc._account_number
         # Uploading header
         s3_obj.upload_file(order_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,type='header')
         # Uploading orderitems

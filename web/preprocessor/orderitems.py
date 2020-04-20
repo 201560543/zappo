@@ -26,7 +26,6 @@ class OrderitemsDF():
         Converts json from OCR to pandas DataFrame
         """
         df = pd.DataFrame([[cell.text for cell in row.cells] for row in self._Table.rows])
-        print(df)
         return update_column_headers(df)
     
     def remove_nonitem_rows(self):
@@ -72,7 +71,7 @@ class OrderitemsDF():
 
     def unbleed_single_column(self, target_column, num_expected_tokens = 1):
         """
-        Warning: This assumes that Textract only accidentally misreads values to the left
+        Warning: This assumes that Textract only accidentally misreads values to the left and that Textract successfully reads values
         
         Used to unbleed columns (when a column's value gets read into column to the left)
         Moves stray tokens (words or numbers without spaces) into subsequent column if expected number of tokens is reached
@@ -246,6 +245,7 @@ class OrderitemsDF():
         Checks on all the constraints defined by a template and removes redundant values using
         regex
         """
+        print("===Running Regex Parsing===")
         for column_name, dtype in expected_dtypes.items():
             if column_name not in self._TableDataFrame or dtype not in REGEX_MAP:
                 continue
@@ -304,6 +304,7 @@ class OrderitemsDF():
         """
         try:
             print("Re-arranging column order for export")
+            # self._TableDataFrame['status'] = None # Status is used for MemSQL staging
             self._TableDataFrame = self._TableDataFrame[ORDERITEMS_COLUMN_ORDER]
         except:
             print("Error occurred when returning proper column order.")
@@ -362,9 +363,3 @@ class Orderitem():
         for key, val in data.items():
             if hasattr(self, key):
                 setattr(self, f'{key}', val)
-
-    
-
-
-
-        
