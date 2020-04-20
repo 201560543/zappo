@@ -26,48 +26,35 @@
 		}
 	},
 	"expectation_checks": {
-		"num_tokens": {
-			"item_number": 1,
-			"order_quantity": 1,
-			"shipped_quantity": 1,
-			"broken": 1,
-			"unit": 1,
-			"size": null,
-			"brand": null,
-			"description": null,
-			"weight": null,
-			"price": null,
-			"total_price": null
-		},
-		"d_types": {
-			"item_number": "int",
-			"order_quantity": "int",
-			"shipped_quantity": "int",
-			"broken": "string",
-			"unit": "int",
-			"size": "string",
-			"brand": "string",
-			"description": "string",
-			"weight": "float",
-			"price": "float",
-			"total_price": "float"
-		},
-		"column_order": ["item_number",
-						"order_quantity",
-						"shipped_quantity",
-						"broken",
-						"unit",
-						"size",
-						"brand",
-						"description",
-						"weight",
-						"price",
-						"total_price"],
-		"regex": {
-			"size": {
+		"item_number": {"num_tokens": 1, "data_type": "int"},
+		"order_quantity": {"num_tokens": 1, "data_type": "int"},
+		"shipped_quantity": {"num_tokens": 1, "data_type": "int"},
+		"broken": {"num_tokens": 1, "data_type": "string"},
+		"unit": {"num_tokens": 1, "data_type": "int"},
+		"size": {
+			"num_tokens": null, "data_type": "string",
+			"regex_summary": {
 				"regex":"([0-9]*\\-?\\.?[0-9]*)\\s?([a-zA-Z#]*)",
 				"capture_group_columns": ["size", "measure"]
 			}
-		}
-	}
+		},
+		"brand": {"num_tokens": null, "data_type": "string"},
+		"description": {"num_tokens": null, "data_type": "string"},
+		"weight": {"num_tokens": null, "data_type": "float"},
+		"price": {"num_tokens": null, "data_type": "float"},
+		"total_price": {"num_tokens": null, "data_type": "float"}
+	},
+	"column_order": [
+		"item_number",
+		"order_quantity",
+		"shipped_quantity",
+		"broken",
+		"unit",
+		"size",
+		"brand",
+		"description",
+		"weight",
+		"price",
+		"total_price"
+	]
 }
