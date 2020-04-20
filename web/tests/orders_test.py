@@ -1,7 +1,7 @@
 import json
 import unittest
 from preprocessor.trp import Document 
-from preprocessor.trp_test import processDocument
+from preprocessor.trp_test import ProcessedDocument
 from preprocessor.orders import Order 
 
 # For testing purposes, so that it can run normally
