@@ -1,0 +1,54 @@
+{
+	"mapper": {
+		"order": {
+			"invoice:": "invoice_number",
+			"invoice": "invoice_number",
+			"customer account no": "customer_account_number",
+			"invoice mo": "invoice_date",
+			"terms": "invoice_term_name",
+			"sold to": "raw_sold_to_info"
+		},
+		"order_item": {
+			"item no": "item_number",
+			"quantity ordered": "order_quantity",
+			"quantity shipped": "shipped_quantity",
+			"unit": "unit",
+			"size": "size",
+			"brand": "brand",
+			"item description": "description",
+			"unit weight": "weight",
+			"ext weight": "total_weight",
+			"unit price": "price",
+			"ext price": "total_price"			
+		}
+	},
+	"expectation_checks": {
+		"item_number": {"num_tokens": 1, "data_type": "int"},
+		"order_quantity": {"num_tokens": 1, "data_type": "int"},
+		"shipped_quantity": {"num_tokens": 1, "data_type": "int"},
+		"unit": {"num_tokens": 1, "data_type": "int"},
+		"size": {
+			"num_tokens": null, "data_type": "string",
+			"regex_summary": {
+				"regex":"([0-9]*\\-?\\.?[0-9]*)\\s?([a-zA-Z#]*)",
+				"capture_group_columns": ["size", "measure"]
+			}
+		},
+		"brand": {"num_tokens": null, "data_type": "string"},
+		"description": {"num_tokens": null, "data_type": "string"},
+		"weight": {"num_tokens": null, "data_type": "float"},
+		"price": {"num_tokens": null, "data_type": "float"},
+		"total_price": {"num_tokens": null, "data_type": "float"}
+	},
+	"column_order": [
+		"item_number",
+		"order_quantity",
+		"shipped_quantity",
+		"unit",
+		"size",
+		"description",
+		"weight",
+		"price",
+		"total_price"
+	]
+}

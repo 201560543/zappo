@@ -27,7 +27,7 @@ class OrderitemsDF():
         Converts json from OCR to pandas DataFrame
         """
         df = pd.DataFrame([[cell.text for cell in row.cells] for row in self._Table.rows])
-        print('=====BEFORE PROCESSING=====')
+        print('=====BEFORE CREATING THE DATAFRAME=====')
         print(df)
         return update_column_headers(df, template_name=template_name)
     
@@ -299,10 +299,15 @@ class OrderitemsDF():
     
     def set_column_order_for_export(self):
         """
-        Setting the expected column order for MemSQL Raw Tables
+        Setting the expected column order for MemSQL Raw Tables. If the columns are missing
+        then make sure that we return that column as an empty string.
         """
         try:
             current_app.logger.info("Re-arranging column order for export")
+            missing_cols = [col for col in ORDERITEMS_COLUMN_ORDER\
+                            if col not in self._TableDataFrame]
+            for _col in missing_cols:
+                self._TableDataFrame[_col] = ''
             self._TableDataFrame = self._TableDataFrame[ORDERITEMS_COLUMN_ORDER]
         except:
             current_app.logger.error(f"Error occurred when returning proper column order. \
