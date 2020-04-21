@@ -36,6 +36,11 @@ def prefix_dictionary_search(key: str, template_data: Dict) -> str:
     Checks which key matches with present json 
     """
     # Smart check to check if the value matches together
+    if key in template_data:
+        # Pop perfect fits
+        val = template_data.pop(key)
+        return val
+
     clean_key = remove_special_characters(key)
 
     find_all_spaces = find(clean_key, ' ')
