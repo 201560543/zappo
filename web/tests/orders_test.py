@@ -52,8 +52,9 @@ class OrderClassTest(unittest.TestCase):
             resp = json.loads(document.read())
         doc = Document(resp)
         first_page = doc.pages[0]
-        order = Order()
-        order.set_order_values(first_page)
+        with self.assertRaises(Exception):
+            order = Order()
+            order.set_order_values(first_page)
 
         self.assertEqual(order._customer_account_number, '17165')
         self.assertEqual(order._invoice_number, '709955')
