@@ -37,7 +37,8 @@ class OrderitemsDF():
         Assumes anything without an item_number is not an item
         """
         df = self._TableDataFrame
-        self._TableDataFrame = df[df['item_number'] != '']
+        if 'item_number' in df:
+            self._TableDataFrame = df[df['item_number'] != '']
     
     def strip_col(self, target_column):
         """
@@ -283,7 +284,7 @@ class OrderitemsDF():
         self.evaluate_expectations(template_name=template_name)
 
         # Remove non items again in case unbleed rearranged an invalid value under item_number
-        current_app.logger.info("Removing Nonitem Rows")
+        current_app.logger.info("Removing Nonitem Rows in case unbleed rearranged")
         self.remove_nonitem_rows()
 
     def set_header_values(self, invoice_number, account_number, supplier):
