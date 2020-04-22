@@ -27,7 +27,7 @@ class OrderitemsDF():
         Converts json from OCR to pandas DataFrame
         """
         df = pd.DataFrame([[cell.text for cell in row.cells] for row in self._Table.rows])
-        print('=====BEFORE PROCESSING=====')
+        print('=====BEFORE CREATING THE DATAFRAME=====')
         print(df)
         return update_column_headers(df, template_name=template_name)
     
@@ -37,7 +37,8 @@ class OrderitemsDF():
         Assumes anything without an item_number is not an item
         """
         df = self._TableDataFrame
-        self._TableDataFrame = df[df['item_number'] != '']
+        if 'item_number' in df:
+            self._TableDataFrame = df[df['item_number'] != '']
     
     def strip_col(self, target_column):
         """
@@ -283,7 +284,7 @@ class OrderitemsDF():
         self.evaluate_expectations(template_name=template_name)
 
         # Remove non items again in case unbleed rearranged an invalid value under item_number
-        current_app.logger.info("Removing Nonitem Rows")
+        current_app.logger.info("Removing Nonitem Rows in case unbleed rearranged")
         self.remove_nonitem_rows()
 
     def set_header_values(self, invoice_number, account_number, supplier):
@@ -299,10 +300,15 @@ class OrderitemsDF():
     
     def set_column_order_for_export(self):
         """
-        Setting the expected column order for MemSQL Raw Tables
+        Setting the expected column order for MemSQL Raw Tables. If the columns are missing
+        then make sure that we return that column as an empty string.
         """
         try:
             current_app.logger.info("Re-arranging column order for export")
+            missing_cols = [col for col in ORDERITEMS_COLUMN_ORDER\
+                            if col not in self._TableDataFrame]
+            for _col in missing_cols:
+                self._TableDataFrame[_col] = ''
             self._TableDataFrame = self._TableDataFrame[ORDERITEMS_COLUMN_ORDER]
         except:
             current_app.logger.error(f"Error occurred when returning proper column order. \

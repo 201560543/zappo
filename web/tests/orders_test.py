@@ -41,6 +41,7 @@ class OrderClassTest(unittest.TestCase):
 
         self.assertEqual(order._customer_account_number, '25651')
         self.assertEqual(order._invoice_number, '9897186')
+        self.assertEqual(order._invoice_date, '14-02-2018')
         self.assertTrue(order._raw_sold_to_info.startswith('fuud foods inc.'))
 
     def test_order_object_with_another_file(self):
@@ -52,8 +53,9 @@ class OrderClassTest(unittest.TestCase):
             resp = json.loads(document.read())
         doc = Document(resp)
         first_page = doc.pages[0]
-        order = Order()
-        order.set_order_values(first_page)
+        with self.assertRaises(Exception):
+            order = Order()
+            order.set_order_values(first_page)
 
         self.assertEqual(order._customer_account_number, '17165')
         self.assertEqual(order._invoice_number, '709955')
