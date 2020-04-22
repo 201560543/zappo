@@ -41,6 +41,7 @@ class OrderClassTest(unittest.TestCase):
 
         self.assertEqual(order._customer_account_number, '25651')
         self.assertEqual(order._invoice_number, '9897186')
+        self.assertEqual(order._invoice_date, '14-02-2018')
         self.assertTrue(order._raw_sold_to_info.startswith('fuud foods inc.'))
 
     def test_order_object_with_another_file(self):

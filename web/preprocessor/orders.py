@@ -103,8 +103,8 @@ class Order():
         """
         try:
             if self.date_format:
-                self._invoice_date = dt.strptime(self._invoice_date, self.date_format)
-                self._invoice_date = dt.strftime(DB_DATE_FORMAT, self._invoice_date)
+                _date = dt.strptime(self._invoice_date, self.date_format)
+                self._invoice_date = dt.strftime(_date, DB_DATE_FORMAT)
             else:
                 # In case there is no date_format, then simply replace the characters.
                 self._invoice_date = self._invoice_date.replace(" ","-")
