@@ -39,3 +39,5 @@ ORDER_HEADER_COLUMN_ORDER = ['account_number' ,
 							'supplier' ,
 							'customer_account_number' ,
 							'sold_to']
+
+DB_DATE_FORMAT = ["%d-%m-%Y"]
