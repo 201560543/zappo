@@ -50,5 +50,6 @@
 		"weight",
 		"price",
 		"total_price"
-	]
+	],
+	"date_format": "%d1%m1%y"
 }

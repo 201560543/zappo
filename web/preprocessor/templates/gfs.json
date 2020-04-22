@@ -5,7 +5,7 @@
 			"invoice #": "invoice_number",
 			"customer": "customer_account_number",
 			"customer #": "customer_account_number",
-			"date": "invoice_date",
+			"date:": "invoice_date",
 			"terms": "invoice_term_name",
 			"ship to": "raw_sold_to_info"
 		},
@@ -52,5 +52,6 @@
 		"weight",
 		"price",
 		"total_price"
-	]
+    ],
+	"date_format": "%d/%m/%Y"    
 }
