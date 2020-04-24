@@ -1,8 +1,11 @@
 import re
 import pandas as pd
 import numpy as np
-from web.preprocessor.constants import REGEX_MAP
+from io import StringIO
+from flask import current_app
+from web.preprocessor.constants import REGEX_MAP, ORDERITEMS_COLUMN_ORDER
 from web.preprocessor.utils import update_column_headers, get_lineitem_expectations
+
 
 class OrderitemsDF():
     """
@@ -20,12 +23,14 @@ class OrderitemsDF():
     def TableDataFrame(self):
         return self._TableDataFrame
 
-    def create_TableDataFrame(self):
+    def create_TableDataFrame(self, template_name):
         """
         Converts json from OCR to pandas DataFrame
         """
         df = pd.DataFrame([[cell.text for cell in row.cells] for row in self._Table.rows])
-        return update_column_headers(df)
+        print('=====BEFORE CREATING THE DATAFRAME=====')
+        print(df)
+        return update_column_headers(df, template_name=template_name)
     
     def remove_nonitem_rows(self):
         """
@@ -33,39 +38,49 @@ class OrderitemsDF():
         Assumes anything without an item_number is not an item
         """
         df = self._TableDataFrame
-        self._TableDataFrame = df[df['item_number'] != '']
+        if 'item_number' in df:
+            self._TableDataFrame = df[df['item_number'] != '']
     
     def strip_col(self, target_column):
         """
         Helper function to strip leading and trailing whitespace
         """
-        self._TableDataFrame[target_column] = self._TableDataFrame[target_column].apply(lambda x: x.strip())
+        try:
+            self._TableDataFrame[target_column] = self._TableDataFrame[target_column].apply(lambda x: x.strip())
+            # Returning False as a check for duplicate columns
+            return False
+        except AttributeError:
+            current_app.logger.warning('Detected duplicate columns. update_column_headers method mapped two columns into one name.')
+            return True
     
     def strip_all_cols(self):
         """
         Stips all leading and trailing whitespace from each column in the DataFrame
         """
         for col in self._TableDataFrame.columns:
-            self.strip_col(col)
-
+            res = self.strip_col(col)
+            if res == True:
+                current_app.logger.info("Emptying Current DataFrame. Original Table:")
+                current_app.logger.info(self._TableDataFrame)
+                self._TableDataFrame = pd.DataFrame([])
+    
     def lowercase_all_str_cols(self, expected_columns, expec_dtypes):
         """
         Used to convert string columns to lowercase.
         """
         for column in expected_columns:
             if expec_dtypes[column] == 'string':
-                print(f'Converting {column} to lowercase.')
+                current_app.logger.info(f'Converting {column} to lowercase.')
                 self._TableDataFrame[column] = self._TableDataFrame[column].str.lower()
 
     def unbleed_single_column(self, target_column, num_expected_tokens = 1):
         """
-        Warning: This assumes that Textract only accidentally misreads values to the left
+        Warning: This assumes that Textract only accidentally misreads values to the left and that Textract successfully reads values
         
         Used to unbleed columns (when a column's value gets read into column to the left)
         Moves stray tokens (words or numbers without spaces) into subsequent column if expected number of tokens is reached
         """
-        # Print for debugging
-        print(f"Running Unbleed: Column '{target_column} has expected number of tokens: {num_expected_tokens}.'")
+        current_app.logger.info(f"Running Unbleed: Column '{target_column} has expected number of tokens: {num_expected_tokens}.'")
         split_rows = self._TableDataFrame[target_column].apply(lambda x: x.split())
         expected_tokens, extra_tokens = [], []
         for row in split_rows:
@@ -108,7 +123,7 @@ class OrderitemsDF():
         inserted_columns = []
         for idx, column in enumerate(expected_columns):
             if column not in self._TableDataFrame.columns:
-                print(f"Detected missing column: {column} | Inserting in position {idx}")
+                current_app.logger.info(f"Detected missing column: {column} | Inserting in position {idx}")
                 # Inserts column with an empty value
                 self._TableDataFrame.insert(idx, column, '')
                 inserted_columns.append(column)
@@ -146,13 +161,13 @@ class OrderitemsDF():
         regex = expec_regex.get('regex')
         # Getting columns
         regex_cap_group_cols = expec_regex.get('capture_group_columns')
-        print(f'Regex expectation for {column} detected. Creating new columns: {regex_cap_group_cols}.')
+        current_app.logger.info(f'Regex expectation for {column} detected. Creating new columns: {regex_cap_group_cols}.')
         # Extracting groups and creating new columns
         extracted_groups = self._TableDataFrame[column].str.extract(regex, expand=True)
-        self._TableDataFrame[regex_cap_group_cols] = extracted_groups
         if drop_original==True:
-            print(f'Dropped {column}.')
+            current_app.logger.info(f'Dropped {column}.')
             self._TableDataFrame = self._TableDataFrame.drop(column, axis=1)
+        self._TableDataFrame[regex_cap_group_cols] = extracted_groups
 
     def unbleed_columns(self, expected_columns, expec_tokens, expec_dtypes, inserted_columns, expec_regex):
         """
@@ -171,7 +186,6 @@ class OrderitemsDF():
         None - edits the self._TableDataFrame inplace 
         """
         # Iterate through columns for cleaning algorithm
-        print(f"Running Unbleed for columns with an expected number of tokens...")
         for col_idx, column in enumerate(expected_columns):
             # Get expected num tokens, expected dtype, and regex
             num_expected_tokens = expec_tokens.get(column)
@@ -182,8 +196,7 @@ class OrderitemsDF():
                 # Handling reinserted columns with an expected number of tokens as a special case because these
                 # ...will be empty if unbleed does not push values into them
                 if column in inserted_columns:
-                    print(f"Detected column with an expected number of columns that was not read by OCR")
-                    print(f"\tColumn: {column} | Expected Tokens: {num_expected_tokens}")
+                    current_app.logger.info(f"Detected column with an expected number of columns that was not read by OCR: Column: {column} | Expected Tokens: {num_expected_tokens}")
                     # Checking if row has required tokens
                     # Setting a counter to check if values were pulled for debugging
                     values_pulled = 0
@@ -196,7 +209,7 @@ class OrderitemsDF():
                         else:
                             pass
                     if values_pulled > 0:
-                        print(f"Column '{column}' pulled from {values_pulled} rows because expected tokens were not met.")
+                        current_app.logger.info(f"Column '{column}' pulled from {values_pulled} rows because expected tokens were not met.")
                 # If we have num_expected_tokens, run unbleed
                 else:
                     self.unbleed_single_column(column, num_expected_tokens=num_expected_tokens)
@@ -207,12 +220,12 @@ class OrderitemsDF():
             else:
                 pass
 
-    def evaluate_expectations(self):
+    def evaluate_expectations(self, template_name):
         """
         Iterates through expected columns, checks if columns were read, runs unbleed on columns, and converts to correct data type
         """
         # Get all expectations (num tokens, data types, and column order)
-        expec_tokens, expec_dtypes, expected_columns, expec_regex = get_lineitem_expectations(template_name='sysco.json')
+        expec_tokens, expec_dtypes, expected_columns, expec_regex = get_lineitem_expectations(template_name=template_name)
         # Insert all expected columns if missed
         inserted_columns = self.insert_missing_cols(expected_columns=expected_columns)
         # Lowercase all string columns
@@ -244,47 +257,83 @@ class OrderitemsDF():
         Parses all the records in the columns and returns the first pattern match.
         If there is no match then it will return an empty string.
         """
+        current_app.logger.info(f'Running Regex Parsing on column "{column_name}".')
         self._TableDataFrame[column_name] = self._TableDataFrame[column_name].apply(lambda x: re.findall(regex, x)[0])
 
-    
-    def remove_line_junk(self):
-        """
-        NOTE: Short term fix. Need to find a smarter solution for this later
-        Used to remove known strings that may get misread into certain columns
-        """
-        line_junk = ['bottle deposit', 'recycling fee']
 
-
-    def set_orderitems_dataframe(self, table_obj):
+    def set_orderitems_dataframe(self, table_obj, template_name='sysco.json'):
         # Set Table object
         self._Table = table_obj
         # Set DataFrame
-        self._TableDataFrame = self.create_TableDataFrame()
-        if len(self._TableDataFrame) == 0:
-            print("Detected Empty Table.")
+        current_app.logger.info("Creating DataFrame")
+        self._TableDataFrame = self.create_TableDataFrame(template_name=template_name)
+        if self._TableDataFrame.empty:
+            current_app.logger.warning("Detected Empty Table after updating column headers.")
             return None
         # Strip all columns of whitespace
+        current_app.logger.info("Stripping Columns")
         self.strip_all_cols()
+        if self._TableDataFrame.empty:
+            current_app.logger.warning("Detected Empty Table after stripping columns.")
+            return None
         # Remove non items (like categories or totals)
+        current_app.logger.info("Removing Nonitem Rows")
         self.remove_nonitem_rows()
 
         # Run expectations method - checks read DF against template expectations
-        self.evaluate_expectations()
+        current_app.logger.info("Evaluating Expectations")
+        self.evaluate_expectations(template_name=template_name)
 
+        # Remove non items again in case unbleed rearranged an invalid value under item_number
+        current_app.logger.info("Removing Nonitem Rows in case unbleed rearranged")
+        self.remove_nonitem_rows()
 
+    def set_header_values(self, invoice_number, account_number, supplier):
+        self._TableDataFrame['invoice_number'] = invoice_number
+        self._TableDataFrame['account_number'] = account_number
+        self._TableDataFrame['supplier'] = supplier
 
     def convert_DF_to_Orderitem_objs(self):
         # To handle cyclic imports importing the model in the function
         from web.models.order_items import OrderItem
-
+        
         for idx in range(len(self._TableDataFrame)):
-            orderitem = OrderItem()
+            orderitem = Orderitem()
             row_dict = self._TableDataFrame.iloc[idx,:].to_dict()
             orderitem.set_attributes(row_dict)
-
-            # For debugging
-            # print(orderitem)
-        print(self._TableDataFrame)
+    
+    def set_column_order_for_export(self):
+        """
+        Setting the expected column order for MemSQL Raw Tables. If the columns are missing
+        then make sure that we return that column as an empty string.
+        """
+        try:
+            current_app.logger.info("Re-arranging column order for export")
+            missing_cols = [col for col in ORDERITEMS_COLUMN_ORDER\
+                            if col not in self._TableDataFrame]
+            for _col in missing_cols:
+                self._TableDataFrame[_col] = ''
+            self._TableDataFrame = self._TableDataFrame[ORDERITEMS_COLUMN_ORDER]
+        except:
+            current_app.logger.error(f"Error occurred when returning proper column order. \
+                \nOriginal Columns: {self._TableDataFrame.columns} \
+                \nRearragned columns: {ORDERITEMS_COLUMN_ORDER}")
+            raise Exception
+    
+    def export_items_as_tsv(self):
+        """
+        Used to export dataframe as a tsv file. Returns both raw string format and buf
+        """
+        # TO DO: refactor - consider using avro in the future
+        try:
+            self.set_column_order_for_export()
+            tsv_buf = StringIO()
+            self._TableDataFrame.to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)
+            raw_tsv = self._TableDataFrame.to_csv(path_or_buf=None, sep='\t', header=False, index=False)
+            return tsv_buf, raw_tsv
+        except:
+            current_app.logger.error("Error occurred when exporting orderitems to buffer and tsv")
+            raise Exception
 
 
     

@@ -1,13 +1,15 @@
 import os
 import traceback
-from flask import jsonify, request, abort, make_response, render_template
+import logging
+from flask import jsonify, request, abort, make_response, render_template, current_app
 from . import api
-from web.preprocessor.trp_test import run, processDocument
+from web.preprocessor.trp_test import run, ProcessedDocument
 from web.preprocessor.trp import Document
 from web.connections.s3_connection import S3Interface
 from web.connections.DBConnection import DBConn
 from web.constants import S3_BUCKET_NAME
 
+logger = logging.getLogger(__name__)
 
 # signal definition
 def log_request(sender, **extra):
@@ -59,11 +61,41 @@ def connection():
 def s3_connect():
     try:
         file_name = request.args.get('file_name')
+        template_name = request.args.get('template_name')+'.json' # TO DO: need to discuss whether we will detect template or take template as a parameter
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
-        resp = processDocument(doc)
-        return make_response(resp)
+        processed_doc = ProcessedDocument(doc)
+        processed_doc.processDocument(template_name=template_name)
+        return make_response(processed_doc._orderitem_tsv)
     except Exception as exc:
         traceback.print_exc()
         return abort(400)
+
+@api.route('/s3-upload', methods=['POST'])
+def upload_invoice():
+    error = False
+    try:
+        file_name = request.get_json()['file_name']
+        template_name = request.get_json()['template_name']
+        s3_obj = S3Interface(S3_BUCKET_NAME)
+        resp = s3_obj.get_file(file_name)
+        doc = Document(resp)
+        processed_doc = ProcessedDocument(doc)
+        # Processing Document
+        processed_doc.processDocument(template_name=template_name)
+        # Pulling buffers and account number for upload
+        order_tsv_buf = processed_doc._order_buf
+        orderitems_tsv_buf = processed_doc._orderitem_buf
+        orderitems_tsv_raw = processed_doc._orderitem_tsv
+        accnt_no = processed_doc._account_number
+        # Uploading header
+        s3_obj.upload_file(order_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,type='header')
+        # Uploading orderitems
+        s3_obj.upload_file(orderitems_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,type='lineitem')
+    except:
+        error = True
+        traceback.print_exc()
+        return abort(500) 
+    
+    return make_response(orderitems_tsv_raw), 200

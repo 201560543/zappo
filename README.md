@@ -9,7 +9,7 @@ To re-run, after making changes please use ```docker-compose build``` before ```
 2. Using dockerfile     
 In our parent directory, if you notice there is a *Dockerfile* as well. You can use this to build your image as well      
 ```docker build -t <tag> .```   
-```docker run <tag>```   
+```docker run -p 5000:5000 <tag>```   
   
 To check all your docker images use:  
 ```docker ps```  

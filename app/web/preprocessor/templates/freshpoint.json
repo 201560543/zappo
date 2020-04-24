@@ -2,35 +2,30 @@
 	"mapper": {
 		"order": {
 			"invoice:": "invoice_number",
-			"invoice": "invoice_number",
-			"customer account no": "customer_account_number",
-			"invoice mo": "invoice_date",
-			"date": "invoice_date",
+			"invoice no": "invoice_number",
+			"customer no.": "customer_account_number",
+			"invoice date": "invoice_date",
 			"terms": "invoice_term_name",
-			"sold to": "raw_sold_to_info"
+			"ship to": "raw_sold_to_info"
 		},
 		"order_item": {
-			"no.": "item_number",
 			"item no": "item_number",
-			"qty ord": "order_quantity",
-			"oty ord": "order_quantity",
-			"qty shpd": "shipped_quantity",
-			"oty. shpd.": "shipped_quantity",
+			"quantity ordered": "order_quantity",
+			"quantity shipped": "shipped_quantity",
 			"unit": "unit",
-			"pack size": "size",
-			"b unit": "unit",
+			"size": "size",
 			"brand": "brand",
-			"description": "description",
-			"weight": "weight",
-			"price": "price",
-			"extension": "total_price"			
+			"item description": "description",
+			"unit weight": "weight",
+			"ext weight": "total_weight",
+			"unit price": "price",
+			"ext price": "total_price"			
 		}
 	},
 	"expectation_checks": {
 		"item_number": {"num_tokens": 1, "data_type": "int"},
 		"order_quantity": {"num_tokens": 1, "data_type": "int"},
 		"shipped_quantity": {"num_tokens": 1, "data_type": "int"},
-		"broken": {"num_tokens": 1, "data_type": "string"},
 		"unit": {"num_tokens": 1, "data_type": "int"},
 		"size": {
 			"num_tokens": null, "data_type": "string",
@@ -49,14 +44,12 @@
 		"item_number",
 		"order_quantity",
 		"shipped_quantity",
-		"broken",
 		"unit",
 		"size",
-		"brand",
 		"description",
 		"weight",
 		"price",
 		"total_price"
 	],
-	"date_format": "%Y %m %d"
+	"date_format": "%d1%m1%y"
 }

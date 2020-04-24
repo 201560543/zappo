@@ -1,7 +1,6 @@
 import json
 import unittest
 from web.preprocessor.trp import Document 
-from web.preprocessor.trp_test import processDocument
 from web.models.orders import Order 
 from web.tests.constants import TEST_DIR
 
@@ -10,6 +9,7 @@ from web.tests.constants import TEST_DIR
 # as the flask application.
 import os
 os.chdir(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
 
 class OrderClassTest(unittest.TestCase):
     def setUp(self):
@@ -38,25 +38,27 @@ class OrderClassTest(unittest.TestCase):
         order = Order()
         order.set_order_values(first_page)
 
-        self.assertEqual(order._customer_account_number, '25651')
-        self.assertEqual(order._invoice_number, '9897186')
-        self.assertTrue(order._raw_sold_to_info.startswith('fuud foods inc.'))
+        self.assertEqual(order.customer_account_number, '25651')
+        self.assertEqual(order.invoice_number, '9897186')
+        self.assertTrue(order.raw_sold_to_info.startswith('fuud foods inc.'))
 
     def test_order_object_with_another_file(self):
         """
         Test the entries in orders
         """
+
         resp = {}
         with open("../data/s3_responses/INV_044_17165_709955_20191106.PDF_0.png.json", 'r') as document:
             resp = json.loads(document.read())
         doc = Document(resp)
         first_page = doc.pages[0]
-        order = Order()
-        order.set_order_values(first_page)
+        with self.assertRaises(Exception):
+            order = Order()
+            order.set_order_values(first_page)
 
-        self.assertEqual(order._customer_account_number, '17165')
-        self.assertEqual(order._invoice_number, '709955')
-        self.assertTrue(order._raw_sold_to_info.startswith('TRUFFLES FINE FOODS LTD'))
+        self.assertEqual(order.customer_account_number, '17165')
+        self.assertEqual(order.invoice_number, '709955')
+        self.assertTrue(order.raw_sold_to_info.startswith('TRUFFLES FINE FOODS LTD'))
 
 
     def tearDown(self):

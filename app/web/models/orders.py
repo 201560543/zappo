@@ -1,11 +1,19 @@
+import pandas as pd
+from io import StringIO
+from flask import current_app
+from datetime import datetime as dt
 from flask_sqlalchemy import SQLAlchemy
 from web import db
-from web.preprocessor.utils import fetch_json, prefix_dictionary_search, convert_form_to_dict, failover
+from web.preprocessor.constants import ORDER_HEADER_COLUMN_ORDER, DB_DATE_FORMAT
+from web.preprocessor.utils import fetch_json, prefix_dictionary_search,\
+    convert_form_to_dict, failover
 
 class Order(db.Model):
+    account_number = db.Column(db.String(32))
     invoice_number = db.Column(db.String(32), primary_key = True)
     invoice_term_name = db.Column(db.String(32))
     invoice_date = db.Column(db.String(32))
+    supplier = db.Column(db.String(32))
 
     customer_account_number = db.Column(db.String(32))
     vendor = db.Column(db.String(32))
@@ -33,16 +41,24 @@ class Order(db.Model):
         return self._Form_dict
 
     def add_order_items(self, order_item):
-        self._order_items.append(order_item)
+        self.order_items.append(order_item)
+    
 
-    def extract_keys_using_template(self, template_name = 'sysco.json'):
+    def set_order_template(self, template_name):
         """
-        Extract keys from Page object's Form Fields, search template for matches, and return matches with their corresponding indices
+        Function to set the order template
         """
         # Fetch the required template type
         template_data = fetch_json(template_name)
-        # Fetch the order item template
-        order_template = template_data.get('mapper').get('order')
+        # Fetch the order and date template
+        self.order_template = template_data.get('mapper').get('order')
+        self.date_format = template_data.get('date_format')
+
+    def extract_keys_using_template(self):
+        """
+        Extract keys from Page object's Form Fields, search template for matches, and return matches with their corresponding indices
+        """
+        order_template = self.order_template
         # For each extracted key, search for relevant keys from the json template
         matched_keys_raw = {prefix_dictionary_search(field_key, order_template):self.Form_dict[field_key]
                             for field_key, val
@@ -54,23 +70,56 @@ class Order(db.Model):
 
         return {**matched_keys_raw, **failover(matched_keys_raw, order_template, self._Page)}
     
+    def format_date(self):
+        """
+        Textract may read dates as "YYY MM DD". Reformat to "YYYY-MM-DD" for DB insertion.
+        If our template provides a date format then use it for conversion.
+        """
+        try:
+            if self.date_format:
+                _date = dt.strptime(self.invoice_date, self.date_format)
+                self.invoice_date = dt.strftime(_date, DB_DATE_FORMAT)
+            else:
+                # In case there is no date_format, then simply replace the characters.
+                self.invoice_date = self.invoice_date.replace(" ","-")
+        except:
+            current_app.logger.warning("Invoice date was not picked.")
 
     def set_order_values(self, page_obj, template_name = 'sysco.json'):
+        # Set the order template to the class
+        self.set_order_template(template_name)
         # Set Page object
         self.Page = page_obj
         # Get Page's Form 
-        searched_form_dict = self.extract_keys_using_template(template_name)
-        # Set attributes using matched dict
-        # self._customer_account_number = searched_form_dict.get('customer_account_number')
-        # self._invoice_date = searched_form_dict.get('invoice_date')
-        # self._invoice_term_name = searched_form_dict.get('invoice_term_name')
-        # self._raw_sold_to_info = searched_form_dict.get('raw_sold_to_info')
+        searched_form_dict = self.extract_keys_using_template()
+        # Set attributes using extracted keys
         self.set_attributes(searched_form_dict)
+        # Set supplier using template
+        self.supplier = template_name[:-5]
+        # Format Date
+        self.format_date()
 
-        print(self.__dict__)
-        return 
+        for k,v in self.__dict__.items():
+            if k not in ['_Page', '_Form_dict']:
+                print(k,':',v) 
 
     def set_attributes(self, data):
         for key, val in data.items():
             if hasattr(self, key):
-                setattr(self, f'_{key}', val)
+                setattr(self, key, val)
+
+    def convert_to_tsv(self):
+        """
+        Used to export Header values as a tsv file. Returns both raw string format and buf
+        """
+        # TO DO: refactor - consider using avro in the future
+
+        vals = []
+        for key in ORDER_HEADER_COLUMN_ORDER:
+            vals.append(self.__dict__.get(key))
+        
+        tsv_buf = StringIO()
+        pd.DataFrame([vals]).to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)
+        raw_tsv = pd.DataFrame([vals]).to_csv(path_or_buf=None, sep='\t', header=False, index=False)
+        return tsv_buf, raw_tsv
+
