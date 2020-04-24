@@ -36,6 +36,11 @@ def prefix_dictionary_search(key: str, template_data: Dict) -> str:
     Checks which key matches with present json 
     """
     # Smart check to check if the value matches together
+    if key in template_data:
+        # Pop perfect fits
+        val = template_data.pop(key)
+        return val
+
     clean_key = remove_special_characters(key)
 
     find_all_spaces = find(clean_key, ' ')
@@ -103,7 +108,7 @@ def spread_columns(df):
 
     return df
 
-def update_column_headers(df, template_name='sysco.json'):
+def update_column_headers(df, template_name):
     column_headers = df.iloc[0]
     # Strip all whitespaces and change to lowercase
     column_headers = [header.strip().lower() for header in column_headers]
@@ -133,7 +138,7 @@ def convert_form_to_dict(form_obj):
     values = [field.value.text.lower() if field.value is not None else None for field in fields]
     return dict(zip(keys,values))
 
-def get_lineitem_expectations(template_name='sysco.json'):
+def get_lineitem_expectations(template_name):
     """
     For a given template, fetch expectations for line item structure. (number of tokens, data type, and order)
     Format...

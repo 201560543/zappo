@@ -1,9 +1,11 @@
+import copy 
 import pandas as pd
 from typing import List
-import copy 
+from datetime import datetime as dt
 from preprocessor.utils import fetch_json, prefix_dictionary_search, convert_form_to_dict, failover
-from preprocessor.constants import ORDER_HEADER_COLUMN_ORDER
+from preprocessor.constants import ORDER_HEADER_COLUMN_ORDER, DB_DATE_FORMAT
 from io import StringIO
+from flask import current_app
 
 class Order():
     def __init__(self):
@@ -68,14 +70,21 @@ class Order():
     def add_order_items(self, order_item):
         self._order_items.append(order_item)
 
-    def extract_keys_using_template(self, template_name = 'sysco.json'):
+    def set_order_template(self, template_name):
         """
-        Extract keys from Page object's Form Fields, search template for matches, and return matches with their corresponding indices
+        Function to set the order template
         """
         # Fetch the required template type
         template_data = fetch_json(template_name)
-        # Fetch the order item template
-        order_template = template_data.get('mapper').get('order')
+        # Fetch the order and date template
+        self.order_template = template_data.get('mapper').get('order')
+        self.date_format = template_data.get('date_format')
+
+    def extract_keys_using_template(self):
+        """
+        Extract keys from Page object's Form Fields, search template for matches, and return matches with their corresponding indices
+        """
+        order_template = self.order_template
         # For each extracted key, search for relevant keys from the json template
         matched_keys_raw = {prefix_dictionary_search(field_key, order_template):self.Form_dict[field_key]
                             for field_key, val
@@ -89,19 +98,26 @@ class Order():
     
     def format_date(self):
         """
-        Textract may read dates as "YYY MM DD". Reformat to "YYYY-MM-DD" for DB insertion
+        Textract may read dates as "YYY MM DD". Reformat to "YYYY-MM-DD" for DB insertion.
+        If our template provides a date format then use it for conversion.
         """
         try:
-            self._invoice_date = self._invoice_date.replace(" ","-")
+            if self.date_format:
+                _date = dt.strptime(self._invoice_date, self.date_format)
+                self._invoice_date = dt.strftime(_date, DB_DATE_FORMAT)
+            else:
+                # In case there is no date_format, then simply replace the characters.
+                self._invoice_date = self._invoice_date.replace(" ","-")
         except:
-            # If invoice date was not read, pass in as None
-            pass
+            current_app.logger.warning("Invoice date was not picked.")
 
     def set_order_values(self, page_obj, template_name = 'sysco.json'):
+        # Set the order template to the class
+        self.set_order_template(template_name)
         # Set Page object
         self.Page = page_obj
         # Get Page's Form 
-        searched_form_dict = self.extract_keys_using_template(template_name)
+        searched_form_dict = self.extract_keys_using_template()
         # Set attributes using extracted keys
         self.set_attributes(searched_form_dict)
         # Set supplier using template
