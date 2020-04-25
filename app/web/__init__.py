@@ -1,3 +1,4 @@
+import os
 from flask import Flask, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -11,7 +12,11 @@ def create_app(config_name):
 
     # add configuration
     app.config.from_object(config_name)
-
+    
+    # Check if the env exists
+    host = os.environ.get('DB_HOST')
+    if host:
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root@{host}/'
     # register extensions
     # db.app = app
     db.init_app(app)
