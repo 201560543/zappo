@@ -7,7 +7,7 @@ from web.preprocessor.trp_test import run, ProcessedDocument
 from web.preprocessor.trp import Document
 from web.connections.s3_connection import S3Interface
 from web.connections.DBConnection import DBConn
-from web.constants import S3_BUCKET_NAME
+from web.constants import S3_BUCKET_NAME, S3_IMAGE_BUCKET_NAME
 
 logger = logging.getLogger(__name__)
 
@@ -56,12 +56,31 @@ def connection():
         traceback.print_exc()
         return make_response(jsonify({'host': obj.host}))
 
+# TO DO: Add functionality to parse the account number and supplier id from the file name
+# TO DO: Make sure line items are uploaded to S3 with file name
+# TO DO: Replace supplier with supplier_id
+def parse_file_name(textract_file_name, S3_IMAGE_BUCKET_NAME):
+    """
+    Given Textract json response filename, return the s3 key (including the bucket) for the corresponding image, the account number, and the supplier_id
+    """
+    # Image file name is same as Textract filename with ".json appended to the end"
+    image_file_name = textract_file_name[:-5]
+    # S3 image file name will be sent to the DataBase with each lineitem, so bucket name and filename is used
+    s3_image_file_name = S3_IMAGE_BUCKET_NAME+'/'+image_file_name
+    # Account number will always be the first portion of the file name, separated by "/"
+    account_number = textract_file_name.split('/')[0]
+    # Supplier Id will be at the end of the file, separated by "-"
+    supplier_id = image_file_name.split['-'][-1]
+    return s3_image_file_name, account_number, supplier_id
 
 @api.route('/s3-connect', methods=['GET'])
 def s3_connect():
     try:
         file_name = request.args.get('file_name')
-        template_name = request.args.get('template_name')+'.json' # TO DO: need to discuss whether we will detect template or take template as a parameter
+        template_name = request.args.get('template_name')+'.json' 
+        
+        s3_image_file_name, account_number, supplier_id = parse_file_name(textract_file_name=file_name, S3_IMAGE_BUCKET_NAME=S3_IMAGE_BUCKET_NAME)
+
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
