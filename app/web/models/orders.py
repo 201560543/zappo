@@ -1,30 +1,31 @@
-import copy 
 import pandas as pd
-from typing import List
-from datetime import datetime as dt
-from preprocessor.utils import fetch_json, prefix_dictionary_search, convert_form_to_dict, failover
-from preprocessor.constants import ORDER_HEADER_COLUMN_ORDER, DB_DATE_FORMAT
 from io import StringIO
 from flask import current_app
+from datetime import datetime as dt
+from flask_sqlalchemy import SQLAlchemy
+from web import db
+from web.preprocessor.constants import ORDER_HEADER_COLUMN_ORDER, DB_DATE_FORMAT
+from web.preprocessor.utils import fetch_json, prefix_dictionary_search,\
+    convert_form_to_dict, failover
 
-class Order():
+class Order(db.Model):
+    account_number = db.Column(db.String(32))
+    invoice_number = db.Column(db.String(32), primary_key = True)
+    invoice_term_name = db.Column(db.String(32))
+    invoice_date = db.Column(db.String(32))
+    supplier = db.Column(db.String(32))
+
+    customer_account_number = db.Column(db.String(32))
+    vendor = db.Column(db.String(32))
+    order_items = db.Column(db.String(32))
+    raw_sold_to_info = db.Column(db.String(32))
+
     def __init__(self):
         self._Page = None
         self._Form_dict = None
 
-        self._account_number = None # ZappoTrack accnt number
-        self._invoice_number = None
-        self._invoice_term_name = None
-        self._invoice_date = None
-        self._supplier = None
-
-        self._customer_account_number = None # Customer's accnt number with supplier
-        self._order_items = []
-        self._raw_sold_to_info = None
-
-
-    def __str__(self):
-        return f'{self._invoice_number}, number of items: {len(self._order_items)}'
+    def __repr__(self):
+        return '<Order {0}>'.format(self.invoice_number)
 
     @property
     def Page(self):
@@ -39,36 +40,9 @@ class Order():
     def Form_dict(self):
         return self._Form_dict
 
-    @property
-    def invoice_number(self):
-        return self._invoice_number
-
-    @property
-    def invoice_term_name(self):
-        return self._invoice_term_name
-
-    @property
-    def customer_account_number(self):
-        return self._customer_account_number
-
-    @property
-    def invoice_date(self):
-        return self._invoice_date
-
-    @property
-    def order_items(self):
-        return [order_item for order_item in self._order_items]
-
-    @property
-    def raw_sold_to_info(self):
-        return self._raw_sold_to_info
-
-    @property
-    def supplier(self):
-        return self._supplier
-
     def add_order_items(self, order_item):
-        self._order_items.append(order_item)
+        self.order_items.append(order_item)
+    
 
     def set_order_template(self, template_name):
         """
@@ -103,11 +77,11 @@ class Order():
         """
         try:
             if self.date_format:
-                _date = dt.strptime(self._invoice_date, self.date_format)
-                self._invoice_date = dt.strftime(_date, DB_DATE_FORMAT)
+                _date = dt.strptime(self.invoice_date, self.date_format)
+                self.invoice_date = dt.strftime(_date, DB_DATE_FORMAT)
             else:
                 # In case there is no date_format, then simply replace the characters.
-                self._invoice_date = self._invoice_date.replace(" ","-")
+                self.invoice_date = self.invoice_date.replace(" ","-")
         except:
             current_app.logger.warning("Invoice date was not picked.")
 
@@ -121,7 +95,7 @@ class Order():
         # Set attributes using extracted keys
         self.set_attributes(searched_form_dict)
         # Set supplier using template
-        self._supplier = template_name[:-5]
+        self.supplier = template_name[:-5]
         # Format Date
         self.format_date()
 
@@ -132,7 +106,7 @@ class Order():
     def set_attributes(self, data):
         for key, val in data.items():
             if hasattr(self, key):
-                setattr(self, f'_{key}', val)
+                setattr(self, key, val)
 
     def convert_to_tsv(self):
         """
@@ -142,8 +116,7 @@ class Order():
 
         vals = []
         for key in ORDER_HEADER_COLUMN_ORDER:
-            key_prefixed = '_'+key
-            vals.append(self.__dict__.get(key_prefixed))
+            vals.append(self.__dict__.get(key))
         
         tsv_buf = StringIO()
         pd.DataFrame([vals]).to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)

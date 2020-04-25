@@ -1,12 +1,11 @@
 import json
 import pandas as pd
-from preprocessor.trp import Document
-from preprocessor.utils import update_column_headers, convert_form_to_dict
-from preprocessor.orders import Order
-from preprocessor.orderitems import OrderitemsDF
+from web.preprocessor.trp import Document
+from web.preprocessor.utils import update_column_headers, convert_form_to_dict
+from web.preprocessor.orderitems import OrderitemsDF
+
 pd.set_option('max_columns', 12)
 pd.options.display.width = 0
-
 
 class ProcessedDocument:
     """
@@ -76,13 +75,14 @@ class ProcessedDocument:
             print("==========================================")
             print("=========Header-Level Information=========")
             print("==========================================")
+            from web.models.orders import Order
             order = Order()
             order.set_order_values(page, template_name=template_name)
-            invoice_num = order._invoice_number
-            supplier = order._supplier
+            invoice_num = order.invoice_number
+            supplier = order.supplier
             ## LINES BELOW TEMPORARY 
             TEMPORARY_ACCNT_NO = 'debddd37-82a9-11ea-b51c-0aedbe94' # Used to temporarily assign account until frontend can send accnt info
-            order._account_number = TEMPORARY_ACCNT_NO # Order needs account number stored so it is stored as a column in the Memsql DB
+            order.account_number = TEMPORARY_ACCNT_NO # Order needs account number stored so it is stored as a column in the Memsql DB
             self.set_account_number(TEMPORARY_ACCNT_NO)
             ## LINES ABOVE TEMPORARY
             order_tsv_buf, order_header_raw_tsv = order.convert_to_tsv()

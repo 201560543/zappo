@@ -1,6 +1,6 @@
 import json
 import unittest
-from preprocessor.trp import Document 
+from web.preprocessor.trp import Document 
 
 class TrpClassTest(unittest.TestCase):
     def setUp(self):

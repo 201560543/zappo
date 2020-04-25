@@ -13,8 +13,12 @@ RUN apt-get install -y openssh-server
 ARG DB_HOST
 ENV DB_HOST ${DB_HOST}
 
-COPY ./web /app
+COPY ./app /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt
-ENTRYPOINT ["python3"]
-CMD ["app.py"]
+
+# Migrations
+# RUN python3 manage.py db upgrade
+
+CMD ["gunicorn","-b","0.0.0.0:5000","wsgi"]
+

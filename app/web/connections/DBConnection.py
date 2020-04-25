@@ -1,7 +1,7 @@
 import os
 import mysql.connector
 import contextlib
-from constants import DEFAULT_DB_HOST, DEFAULT_DB_PORT
+from web.constants import DEFAULT_DB_HOST, DEFAULT_DB_PORT
 
 class DBConn(object):
     """
@@ -51,7 +51,7 @@ class DBConn(object):
 
     def execute_statement(self, statement:str, return_val:bool=False, commit:bool=False, execute_many:bool=False):
         """
-        Creates a context manager and manages all connections.
+        Creates a context manager and manages all web.connections.
         It also closes this after the cursor has been executed
         """
         with contextlib.closing(self.connection if self.connection else self.create_connection()) as conn: # auto-closes

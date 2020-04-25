@@ -1,10 +1,11 @@
 import re
 import pandas as pd
 import numpy as np
-from preprocessor.constants import REGEX_MAP, ORDERITEMS_COLUMN_ORDER
-from preprocessor.utils import update_column_headers, get_lineitem_expectations
 from io import StringIO
 from flask import current_app
+from web.preprocessor.constants import REGEX_MAP, ORDERITEMS_COLUMN_ORDER
+from web.preprocessor.utils import update_column_headers, get_lineitem_expectations
+
 
 class OrderitemsDF():
     """
@@ -293,6 +294,9 @@ class OrderitemsDF():
         self._TableDataFrame['supplier'] = supplier
 
     def convert_DF_to_Orderitem_objs(self):
+        # To handle cyclic imports importing the model in the function
+        from web.models.order_items import OrderItem
+        
         for idx in range(len(self._TableDataFrame)):
             orderitem = Orderitem()
             row_dict = self._TableDataFrame.iloc[idx,:].to_dict()
@@ -331,37 +335,9 @@ class OrderitemsDF():
             current_app.logger.error("Error occurred when exporting orderitems to buffer and tsv")
             raise Exception
 
-class Orderitem():
-    """
-    Used to store item-level information
-    """
-    def __init__(self):
-        self.item_number = None
-        self.order_quantity = None
-        self.shipped_quantity = None
-        self.unit = None
-        self.size = None
-        self.brand = None
-        self.description = None
-        self.weight = None
-        self.price = None
-        self.total_price = None
+
     
-    def __repr__(self):
-        return f'''{[
-            self.item_number,
-            self.order_quantity,
-            self.shipped_quantity,
-            self.unit,
-            self.size,
-            self.brand,
-            self.description,
-            self.weight,
-            self.price,
-            self.total_price
-            ]}'''
-    
-    def set_attributes(self, data):
-        for key, val in data.items():
-            if hasattr(self, key):
-                setattr(self, f'{key}', val)
+
+
+
+        
