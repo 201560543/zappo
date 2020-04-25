@@ -7,7 +7,7 @@ RUN apt-get update \
   && ln -s /usr/bin/python3 python \
   && pip3 install --upgrade pip
 
-# ENV DEBIAN_FRONTEND=noninteractive 
+ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get install -y openssh-server
 
 # TODO: Check if docker compose can do this
