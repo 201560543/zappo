@@ -17,13 +17,13 @@ To check all your docker images use:
 
 ### To run migrations:
 1. First time init
-```python manage.py db init```
+```python3 manage.py db init``` (This is a one time task.)
 
 2. Migrate new changes
-```python manage.py db migrate```
+```python3 manage.py db migrate```
 
 3. Upgrade / Get new changes
-```python manage.py db upgrade```
+```python3 manage.py db upgrade```
 
 
 ### Running locally
@@ -65,7 +65,7 @@ This has been done so that our parent directory is as clean as possible.
 
 # Configuration to run S3 APIs
 ```
-pip3 install web/requirements.txt
+pip3 install app/requirements.txt
 ```
 
 Before you can begin using Boto 3, you should set up authentication credentials. Credentials for your AWS account can be found in the IAM Console. You can create or use an existing user. Go to manage access keys and generate a new set of keys.
