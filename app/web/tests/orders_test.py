@@ -1,8 +1,14 @@
 import json
 import unittest
+<<<<<<< HEAD:app/web/tests/orders_test.py
 from web.preprocessor.trp import Document 
 from web.models.orders import Order 
 from web.tests.constants import TEST_DIR
+=======
+from preprocessor.trp import Document 
+from preprocessor.trp_test import ProcessedDocument
+from preprocessor.orders import Order 
+>>>>>>> b576d686586ee7d1a9f9fc28d45afd8f0e0c021a:web/tests/orders_test.py
 
 # For testing purposes, so that it can run normally
 # we have to update the directory to conform in the same way
@@ -38,9 +44,16 @@ class OrderClassTest(unittest.TestCase):
         order = Order()
         order.set_order_values(first_page)
 
+<<<<<<< HEAD:app/web/tests/orders_test.py
         self.assertEqual(order.customer_account_number, '25651')
         self.assertEqual(order.invoice_number, '9897186')
         self.assertTrue(order.raw_sold_to_info.startswith('fuud foods inc.'))
+=======
+        self.assertEqual(order._customer_account_number, '25651')
+        self.assertEqual(order._invoice_number, '9897186')
+        self.assertEqual(order._invoice_date, '14-02-2018')
+        self.assertTrue(order._raw_sold_to_info.startswith('fuud foods inc.'))
+>>>>>>> b576d686586ee7d1a9f9fc28d45afd8f0e0c021a:web/tests/orders_test.py
 
     def test_order_object_with_another_file(self):
         """
