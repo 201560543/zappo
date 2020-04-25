@@ -8,4 +8,6 @@ s3_responses/
 s3_uploads/
 s3_responses_sysco/
 
+app/zappo_env/
+
 .vscode/
