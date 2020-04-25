@@ -20,5 +20,5 @@ RUN pip3 install -r requirements.txt
 # Migrations
 # RUN python3 manage.py db upgrade
 
-ENTRYPOINT ["python3"]
-CMD ["run.py"]
+CMD ["gunicorn","-b","0.0.0.0:5000","wsgi"]
+
