@@ -21,6 +21,7 @@ class ProcessedDocument:
         self._orderitem_buf = None
         self._orderitem_tsv = None
         self._account_number = None
+        self._s3_image_key = None
 
     def set_order(self, order_buf, order_tsv):
         self._order_buf = order_buf
@@ -32,6 +33,9 @@ class ProcessedDocument:
     
     def set_account_number(self, account_number):
         self._account_number = account_number
+
+    def set_s3_image_key(self, image_key):
+        self._s3_image_key = image_key
 
     def processDocument(self, template_name='sysco.json'):
         for page in self._raw_doc.pages:
@@ -101,7 +105,7 @@ class ProcessedDocument:
                     print(df)
                     print("Returning Preprocessed DataFrame and Headers")
                     # Setting header values in DataFrame of orderitems
-                    orderitems.set_header_values(invoice_number=invoice_num, account_number=TEMPORARY_ACCNT_NO, supplier=supplier)
+                    orderitems.set_header_values(invoice_number=invoice_num, account_number=TEMPORARY_ACCNT_NO, supplier=supplier, s3_image_key=self._s3_image_key)
                     # Exporting as buffer and raw tsv
                     orderitems_tsv_buf, orderitems_raw_tsv = orderitems.export_items_as_tsv()
                     self.set_orderitem(orderitems_tsv_buf, orderitems_raw_tsv)

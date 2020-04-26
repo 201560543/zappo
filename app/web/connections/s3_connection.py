@@ -2,6 +2,7 @@ import json
 import boto3
 from botocore.exceptions import ClientError
 from datetime import datetime as dt
+import random
 
 class S3Interface():
     """
@@ -57,8 +58,11 @@ class S3Interface():
 
 def get_current_date():
     """
-    Utility function for tagging uploaded files with current date
+    Utility function for tagging uploaded files with current date plus a random integer
     """
     now = dt.now()
-    date = now.strftime("/%d/%m/%y/%H-%M-%S")
-    return date
+    date = now.strftime("/%y/%m/%d-%H-%M-%S_")
+    # Generating a random number to help guarantee unique file names
+    rand_int = str(random.randint(1, 10000))
+
+    return date+rand_int

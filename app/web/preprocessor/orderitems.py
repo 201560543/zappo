@@ -288,10 +288,11 @@ class OrderitemsDF():
         current_app.logger.info("Removing Nonitem Rows in case unbleed rearranged")
         self.remove_nonitem_rows()
 
-    def set_header_values(self, invoice_number, account_number, supplier):
+    def set_header_values(self, invoice_number, account_number, supplier, s3_image_key):
         self._TableDataFrame['invoice_number'] = invoice_number
         self._TableDataFrame['account_number'] = account_number
         self._TableDataFrame['supplier'] = supplier
+        self._TableDataFrame['s3_image_key'] = s3_image_key
 
     def convert_DF_to_Orderitem_objs(self):
         # To handle cyclic imports importing the model in the function
