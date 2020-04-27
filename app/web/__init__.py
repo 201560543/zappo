@@ -1,10 +1,8 @@
 import os
 from flask import Flask, g
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from web.api.routes import api
-
-db = SQLAlchemy()
+from .database import db
 
 def create_app(config_name):
     # create app instance

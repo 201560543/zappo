@@ -1,8 +1,12 @@
+import os
 from flask_sqlalchemy import SQLAlchemy
-from web import db
+from web.database import db
 
 class Account(db.Model):
     __tablename__="account"
+    if os.environ.get('MYSQL_DB_BIND'):
+        __bind_key__ = 'mysql_db'
+    
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     organization_id = db.Column(db.Integer, nullable=False)
     account_number = db.Column(db.String(32), nullable=False)

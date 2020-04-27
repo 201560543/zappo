@@ -3,7 +3,7 @@ from io import StringIO
 from flask import current_app
 from datetime import datetime as dt
 from flask_sqlalchemy import SQLAlchemy
-from web import db
+from web.database import db
 from web.preprocessor.constants import ORDER_HEADER_COLUMN_ORDER, DB_DATE_FORMAT
 from web.preprocessor.utils import fetch_json, prefix_dictionary_search,\
     convert_form_to_dict, failover

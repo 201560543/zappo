@@ -1,8 +1,14 @@
 from flask_sqlalchemy import SQLAlchemy
-from web import db
+from web.database import db
+import os
 
 class Supplier(db.Model):
     __tablename__="supplier"
+
+    if os.environ.get('MYSQL_DB_BIND'):
+        __bind_key__ = 'mysql_db'
+
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     organization_id = db.Column(db.Integer, nullable=False)
     supplier_name = db.Column(db.String(100), nullable=False)
