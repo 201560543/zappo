@@ -8,6 +8,7 @@ from web.preprocessor.trp import Document
 from web.connections.s3_connection import S3Interface
 from web.connections.DBConnection import DBConn
 from web.constants import S3_BUCKET_NAME
+from web.models.account import Account
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +52,9 @@ def connection():
     try:
         obj = DBConn()
         result = obj.get_query('show databases;', True)
+        
+        print(Account.query.all())
+
         return make_response(jsonify({'query_result': result}))
     except Exception as exc:
         traceback.print_exc()

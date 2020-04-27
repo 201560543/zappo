@@ -1,4 +1,4 @@
-from web import db
+from web.database import db
 
 class OrderItem(db.Model):
     """
