@@ -15,4 +15,5 @@ if __name__ == '__main__':
     from web.models.user import User
     from web.models.orders import Order
     from web.models.order_items import OrderItem
+    from web.models.account import Account
     manager.run()
