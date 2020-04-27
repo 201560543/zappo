@@ -1,27 +1,27 @@
 from flask_sqlalchemy import SQLAlchemy
 from web import db
 
-class Account(db.Model):
-    __tablename__="account"
+class Supplier(db.Model):
+    __tablename__="supplier"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     organization_id = db.Column(db.Integer, nullable=False)
-    account_number = db.Column(db.String(32), nullable=False)
-    account_name = db.Column(db.String(50), nullable=False)
-    is_active = db.Column(db.Integer, nullable=False, default=1)
+    supplier_name = db.Column(db.String(100), nullable=False)
+    business_name = db.Column(db.String(100), default='')
     created_at = db.Column(db.DateTime(), nullable=False)
     updated_at = db.Column(db.DateTime(), default='')
     is_deleted = db.Column(db.Integer, nullable=False, default=0)
-    timezone_name = db.Column(db.String(50), nullable=False)
+    logo_path = db.Column(db.String(100), default='')
+    url = db.Column(db.String(100), default='')
 
     def __repr__(self):
         return f'''{[
             self.id,
             self.organization_id,
-            self.account_number,
-            self.account_name,
-            self.is_active,
+            self.supplier_name,
+            self.business_name,
             self.created_at,
             self.updated_at,
             self.is_deleted,
-            self.timezone_name
+            self.logo_path,
+            self.url
             ]}'''
