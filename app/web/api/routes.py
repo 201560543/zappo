@@ -9,6 +9,9 @@ from web.connections.s3_connection import S3Interface
 from web.connections.DBConnection import DBConn
 from web.constants import S3_BUCKET_NAME
 from web.models.account import Account
+from web.models.country import Country
+from web.database import db, Base
+from datetime import datetime as dt
 
 logger = logging.getLogger(__name__)
 
@@ -52,13 +55,16 @@ def connection():
     try:
         obj = DBConn()
         result = obj.get_query('show databases;', True)
-        
-        print(Account.query.all())
+        # country = Base.classes.Country
+        # print(db.session.query(country).all())
+
+        countries = db.session.query(Country).all()
+        print([c.__dict__ for c in countries])
 
         return make_response(jsonify({'query_result': result}))
     except Exception as exc:
         traceback.print_exc()
-        return make_response(jsonify({'host': obj.host}))
+        return make_response(jsonify({'Error': exc}))
 
 
 @api.route('/s3-connect', methods=['GET'])
