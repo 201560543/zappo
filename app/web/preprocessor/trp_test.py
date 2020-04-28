@@ -3,6 +3,7 @@ import pandas as pd
 from web.preprocessor.trp import Document
 from web.preprocessor.utils import update_column_headers, convert_form_to_dict
 from web.preprocessor.orderitems import OrderitemsDF
+from web.models.orders import Order
 
 pd.set_option('max_columns', 12)
 pd.options.display.width = 0
@@ -79,7 +80,6 @@ class ProcessedDocument:
             print("==========================================")
             print("=========Header-Level Information=========")
             print("==========================================")
-            from web.models.orders import Order
             order = Order()
             order.set_order_values(page, template_name=template_name)
             invoice_num = order.invoice_number
