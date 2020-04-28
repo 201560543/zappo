@@ -8,7 +8,8 @@ from web.preprocessor.trp import Document
 from web.connections.s3_connection import S3Interface
 from web.connections.DBConnection import DBConn
 from web.constants import S3_BUCKET_NAME, S3_IMAGE_BUCKET_NAME, S3_PREPROCESSED_INVOICES_BUCKET
-from web.models.account import Account
+# from web.models.account import Account
+from web.database import db, prepare_automap_base, create_autogen_table
 
 logger = logging.getLogger(__name__)
 
@@ -52,9 +53,17 @@ def connection():
     try:
         obj = DBConn()
         result = obj.get_query('show databases;', True)
-        
-        print(Account.query.all())
+        Base = prepare_automap_base(db)
+        Account = Base.classes.account
 
+        # Using automap object
+        for account in db.session.query(Account).all():
+            print(account.account_number)
+        
+        # Using autoloaded table
+        Supplier = create_autogen_table(db,'supplier')
+        print(db.session.query(Supplier).all())
+        
         return make_response(jsonify({'query_result': result}))
     except Exception as exc:
         traceback.print_exc()

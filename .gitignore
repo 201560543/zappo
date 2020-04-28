@@ -13,3 +13,5 @@ app/zappo_env/
 .vscode/
 
 url
+
+temp/
