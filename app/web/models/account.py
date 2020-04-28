@@ -1,5 +1,5 @@
 import os
-from web.database import Base
+from web.models.custom_base import CustomBase
 ## TO DO: Delete bottom commonts
 # from flask_sqlalchemy import SQLAlchemy
 # from web.database import db
@@ -32,16 +32,7 @@ from web.database import Base
 #             self.timezone_name
 #             ]}'''
 
-class Account(Base):
+class Account(CustomBase):
     __tablename__="account"
     if os.environ.get('MYSQL_DB_BIND'):
         __bind_key__ = 'mysql_db'
-    
-    def __repr__(self):
-        return str(self.__dict__)
-
-    def __str__(self):
-        return str(self.__dict__)
-    
-    def as_dict(self):
-       return {c.name: getattr(self, c.name) for c in self.__table__.columns}

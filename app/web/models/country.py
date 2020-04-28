@@ -1,11 +1,5 @@
-from web.database import Base
+from web.database.custom_base import CustomBase
 
-class Country(Base):
+class Country(CustomBase):
     __tablename__ = 'country'
-    
-    def __repr__(self):
-        return str(self.__dict__)
-    
-    def __str__(self):
-        return str(self.__dict__)
     
