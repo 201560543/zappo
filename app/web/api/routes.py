@@ -58,8 +58,8 @@ def connection():
         # country = Base.classes.Country
         # print(db.session.query(country).all())
 
-        countries = db.session.query(Country).all()
-        print([c.__dict__ for c in countries])
+        # countries = db.session.query(Country).all()
+        # print([c.__dict__ for c in countries])
 
         return make_response(jsonify({'query_result': result}))
     except Exception as exc:
