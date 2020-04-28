@@ -3,6 +3,7 @@ import re
 from flask import Flask, g
 from flask_migrate import Migrate
 from web.api.routes import api
+from web.api.account_routes import account
 from flask_sqlalchemy import SQLAlchemy
 from .database import db, Base
 
@@ -36,6 +37,7 @@ def create_app(config_name):
 
     # register blueprints
     app.register_blueprint(api, url_prefix='/api')
+    app.register_blueprint(account, url_prefix='/account')
 
 
     return app

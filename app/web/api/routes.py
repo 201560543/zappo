@@ -57,7 +57,7 @@ def connection():
         result = obj.get_query('show databases;', True)
         # country = Base.classes.Country
         # print(db.session.query(country).all())
-
+        import pdb; pdb.set_trace()
         countries = db.session.query(Country).all()
         print([c.__dict__ for c in countries])
 
