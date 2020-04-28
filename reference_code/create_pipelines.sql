@@ -1,3 +1,4 @@
+# Create pipeliens
 -- Pipeline Creation
 CREATE OR REPLACE PIPELINE order_headers_s3
 AS LOAD DATA S3 'invoiceupload-memsql/export/header'
@@ -12,7 +13,7 @@ CONFIG '{"region": "us-west-2"}'
 INTO TABLE `invoice_lineitem_final_test`
 FIELDS TERMINATED BY '\t'
 (`account_number`, `supplier`, `invoice_number`, `item_number`, `order_quantity`, `shipped_quantity`, `size`, `measure`, 
-    `broken`, `unit`, `brand`, `description`, `weight`, `price`, `total_price`);
+    `broken`, `unit`, `brand`, `description`, `weight`, `price`, `total_price`,`s3_image_key`);
 
 -- See what files are picked up
 SELECT * FROM information_schema.PIPELINES_FILES;
@@ -26,7 +27,9 @@ DELETE FROM invoice_lineitem_final_test;
 ALTER PIPELINE order_lineitems_s3 SET OFFSETS EARLIEST;
 START PIPELINE order_lineitems_s3;
 
--- Stop pipeline commands
+-- Stop and drop pipeline commands
 STOP PIPELINE order_headers_s3;
-STOP PIPELINE order_lineitems_s3
+STOP PIPELINE order_lineitems_s3;
 
+DROP PIPELINE order_headers_s3;
+DROP PIPELINE order_lineitems_s3;
