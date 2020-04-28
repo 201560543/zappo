@@ -1,11 +1,8 @@
-from web.database import Base
+from web.database import Base, BaseMixin
+import os
 
-class Country(Base):
+class Country(Base, BaseMixin):
     __tablename__ = 'country'
-    
-    def __repr__(self):
-        return str(self.__dict__)
-    
-    def __str__(self):
-        return str(self.__dict__)
+    if os.environ.get('MYSQL_DB_BIND'):
+        __bind_key__ = 'mysql_db'
     

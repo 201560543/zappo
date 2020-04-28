@@ -4,7 +4,7 @@ from web.api.api_utils import converter
 from web.database import db
 import json
 
-@account.route('/accounts', methods=['GET'])
+@account.route('/', methods=['GET'])
 def get_all_accounts(return_json=True):
     # TO DO: Add error handling
     results = db.session.query(Account).all()
@@ -14,7 +14,7 @@ def get_all_accounts(return_json=True):
     else:
         return result_dicts
 
-@account.route('/accounts/<account_number>', methods=['GET'])
+@account.route('/<account_number>', methods=['GET'])
 def get_account_by_account_number(account_number, return_json=True):
     # TO DO: Add error handling
     results = db.session.query(Account).filter_by(account_number=account_number).all()

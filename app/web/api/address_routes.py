@@ -7,12 +7,11 @@ from web.database import db
 import json
 from flask import jsonify, request
 
-@address.route('/addresses', methods=['GET'])
+@address.route('/', methods=['GET'])
 def get_all_accounts(return_json=True):
     # TO DO: Add error handling
     results = db.session.query(Address).all()
     result_dicts = [adr.as_dict() for adr in results]
-    import pdb;pdb.set_trace()
     if return_json == True:
         return json.dumps(result_dicts, default=converter)
     else:
