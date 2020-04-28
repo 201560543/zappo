@@ -1,8 +1,9 @@
-from flask_sqlalchemy import SQLAlchemy
-from web.database.custom_base import CustomBase
 import os
+from flask_sqlalchemy import SQLAlchemy
+from web.database import Base
+from web.models.mixin import BaseMixin
 
-class Supplier(CustomBase):
+class Supplier(BaseMixin, Base):
     __tablename__="supplier"
 
     if os.environ.get('MYSQL_DB_BIND'):

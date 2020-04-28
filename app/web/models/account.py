@@ -1,5 +1,6 @@
 import os
-from web.models.custom_base import CustomBase
+from web.database import Base
+from web.models.mixin import BaseMixin
 ## TO DO: Delete bottom commonts
 # from flask_sqlalchemy import SQLAlchemy
 # from web.database import db
@@ -32,7 +33,7 @@ from web.models.custom_base import CustomBase
 #             self.timezone_name
 #             ]}'''
 
-class Account(CustomBase):
+class Account(BaseMixin, Base):
     __tablename__="account"
     if os.environ.get('MYSQL_DB_BIND'):
         __bind_key__ = 'mysql_db'

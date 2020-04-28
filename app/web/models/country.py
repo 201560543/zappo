@@ -1,5 +1,6 @@
-from web.database.custom_base import CustomBase
+from web.database import Base
+from web.models.mixin import BaseMixin
 
-class Country(CustomBase):
+class Country(BaseMixin, Base):
     __tablename__ = 'country'
     

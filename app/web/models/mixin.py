@@ -1,6 +1,4 @@
-from web.database import Base
-
-class CustomBase(Base):
+class BaseMixin():
     def __repr__(self):
         return str(self.__dict__)
 
