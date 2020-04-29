@@ -6,8 +6,7 @@ RUN apt-get update \
   && cd /usr/local/bin \
   && ln -s /usr/bin/python3 python \
   && pip3 install --upgrade pip\
-  && apt-get install -y libmysqlclient-dev\
-  && pip3 install mysqlclient
+  && apt-get install -y libmysqlclient-dev
 
 ENV DEBIAN_FRONTEND=noninteractive 
 RUN apt-get install -y openssh-server
