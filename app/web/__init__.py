@@ -23,6 +23,7 @@ def create_app(config_name):
     # add configuration
     app.config.from_object(config_name)
 
+    app.logger.setLevel(logging.DEBUG)
 
     app.config['SQLALCHEMY_BINDS'] = {
         'mysql_db': 'mysql://sa_data_engineer:L3kmmstUqskja7Bfea8F@zappotrack-maindb-dev.col2svw5zgj8.us-west-2.rds.amazonaws.com/zappo_track',
@@ -34,14 +35,13 @@ def create_app(config_name):
     if host:
         app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root@{host}/zappo_stage'
 
-    app.logger.setLevel(logging.DEBUG)
     app.logger.info(os.environ)
     app.logger.info(f'mysql://root@{host}/zappo_stage')
+    app.logger.info(app.config)
 
     # register extensions
     db.app = app
     db.init_app(app)
-
 
     Base.prepare(db.engine, reflect=True, classname_for_table=camelize_classname)
     # Migrate(app, db)
