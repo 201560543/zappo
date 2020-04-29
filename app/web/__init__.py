@@ -30,6 +30,7 @@ def create_app(config_name):
 
     app.logger.setLevel(logging.DEBUG)
     app.logger.info(os.environ)
+    app.logger.info(f'mysql://root@{host}/zappo_stage')
     # register extensions
     db.app = app
     db.init_app(app)
