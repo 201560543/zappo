@@ -22,6 +22,12 @@ def create_app(config_name):
 
     # add configuration
     app.config.from_object(config_name)
+
+
+    app.config['SQLALCHEMY_BINDS'] = {
+        'mysql_db': 'mysql://sa_data_engineer:L3kmmstUqskja7Bfea8F@zappotrack-maindb-dev.col2svw5zgj8.us-west-2.rds.amazonaws.com/zappo_track',
+        'memsql_db': 'mysql://root@172.31.18.191/zappo_stage'
+    }
     
     # Check if the env exists
     host = os.environ.get('DB_HOST')
@@ -31,6 +37,7 @@ def create_app(config_name):
     app.logger.setLevel(logging.DEBUG)
     app.logger.info(os.environ)
     app.logger.info(f'mysql://root@{host}/zappo_stage')
+
     # register extensions
     db.app = app
     db.init_app(app)
