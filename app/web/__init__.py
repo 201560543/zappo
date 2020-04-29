@@ -21,9 +21,9 @@ def create_app(config_name):
     app.config.from_object(config_name)
     
     # Check if the env exists
-    # host = os.environ.get('DB_HOST')
-    # if host:
-    #     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root@{host}/'
+    host = os.environ.get('DB_HOST')
+    if host:
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root@{host}/zappo_stage'
     # register extensions
     db.app = app
     db.init_app(app)
