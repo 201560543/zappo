@@ -1,10 +1,13 @@
 import os
 import re
+import logging
 from flask import Flask, g
 from flask_migrate import Migrate
 from web.api.routes import api
 from flask_sqlalchemy import SQLAlchemy
 from .database import db, Base
+
+logger = logging.getLogger(__name__)
 
 def camelize_classname(base, tablename, table):
     "Produce a 'camelized' class name, e.g. "
@@ -21,12 +24,17 @@ def create_app(config_name):
     app.config.from_object(config_name)
     
     # Check if the env exists
-    # host = os.environ.get('DB_HOST')
-    # if host:
-    #     app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root@{host}/zappo_stage'
+    host = os.environ.get('DB_HOST')
+    if host:
+        app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root@{host}/zappo_stage'
+
+    app.logger.setLevel(logging.DEBUG)
+    app.logger.info(os.environ)
     # register extensions
     db.app = app
     db.init_app(app)
+
+
     Base.prepare(db.engine, reflect=True, classname_for_table=camelize_classname)
     # Migrate(app, db)
 
