@@ -15,6 +15,12 @@ RUN apt-get install -y openssh-server
 ARG DB_HOST
 ENV DB_HOST ${DB_HOST}
 
+ARG MYSQL_DB_BIND
+ENV MYSQL_DB_BIND ${MYSQL_DB_BIND}
+
+ARG MEMSQL_DB_BIND
+ENV MEMSQL_DB_BIND ${MEMSQL_DB_BIND}
+
 COPY ./app /app
 WORKDIR /app
 RUN pip3 install -r requirements.txt
