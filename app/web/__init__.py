@@ -31,9 +31,9 @@ def create_app(config_name):
     }
     
     # Check if the env exists
-    host = os.environ.get('DB_HOST')
-    if host:
-        app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root@{host}/zappo_stage'
+    # host = os.environ.get('DB_HOST')
+    # if host:
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://sa_data_engineer:L3kmmstUqskja7Bfea8F@zappotrack-maindb-dev.col2svw5zgj8.us-west-2.rds.amazonaws.com/zappo_track'
 
     app.logger.info(os.environ)
     app.logger.info(app.config)
@@ -42,7 +42,7 @@ def create_app(config_name):
     db.app = app
     db.init_app(app)
 
-    Base.prepare(db.engine, reflect=True, classname_for_table=camelize_classname)
+    Base.prepare(db.engine, reflect=True)
 
 
     result = db.engine.execute('show tables')
