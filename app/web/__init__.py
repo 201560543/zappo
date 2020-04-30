@@ -36,7 +36,6 @@ def create_app(config_name):
         app.config['SQLALCHEMY_DATABASE_URI'] = f'mysql://root@{host}/zappo_stage'
 
     app.logger.info(os.environ)
-    app.logger.info(f'mysql://root@{host}/zappo_stage')
     app.logger.info(app.config)
 
     # register extensions
@@ -44,6 +43,12 @@ def create_app(config_name):
     db.init_app(app)
 
     Base.prepare(db.engine, reflect=True, classname_for_table=camelize_classname)
+
+
+    result = db.engine.execute('show tables')
+    names = [row[0] for row in result]
+
+    print(names)
     # Migrate(app, db)
 
     # # importing the models to make sure they are known to Flask-Migrate
