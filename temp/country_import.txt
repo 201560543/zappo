@@ -1,0 +1,13 @@
+SK_Country	CountryName	Alpha3Code
+1	Andorra	and
+2	Afghanistan	afg
+3	Antigua and Barbuda	atg
+4	Anguilla	aia
+5	Albania	alb
+6	Armenia	arm
+7	Angola	ago
+8	Antarctica	ata
+9	Argentina	arg
+10	American Samoa	asm
+11	Australia	aus
+12	Aruba	abw

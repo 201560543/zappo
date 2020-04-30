@@ -1,0 +1,6 @@
+id	organization_id	restaurant_name	created_at	updated_at	is_deleted
+1	1	Trffles Cafe	2020-04-17 16:30:06	\N	0
+2	5	Truffles Truck 2	2020-04-20 01:47:28	\N	0
+3	6	Truffles Cafe Anvil Cntr	2020-04-20 01:51:05	\N	0
+4	8	Oscar's Pub	2020-04-20 01:56:45	\N	0
+5	10	FUUD FOODS	2020-04-20 02:01:28	\N	0

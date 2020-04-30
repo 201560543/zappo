@@ -1,0 +1,249 @@
+SK_Country	CountryName	Alpha3Code
+1	Andorra	and
+2	Afghanistan	afg
+3	Antigua and Barbuda	atg
+4	Anguilla	aia
+5	Albania	alb
+6	Armenia	arm
+7	Angola	ago
+8	Antarctica	ata
+9	Argentina	arg
+10	American Samoa	asm
+11	Australia	aus
+12	Aruba	abw
+13	Åland Islands	ala
+14	Azerbaijan	aze
+15	Austria	aut
+16	Algeria	dza
+17	Bahamas	bhs
+18	Bahrain	bhr
+19	Bangladesh	bgd
+20	Barbados	brb
+21	Belarus	blr
+22	Belgium	bel
+23	Belize	blz
+24	Benin	ben
+25	Bermuda	bmu
+26	Bhutan	btn
+27	Plurinational State of Bolivia	bol
+28	Sint Eustatius and Saba Bonaire	bes
+29	Bosnia and Herzegowina	bih
+30	Botswana	bwa
+31	Bouvet Island	bvt
+32	Brazil	bra
+33	British Indian Ocean Territory	iot
+34	Brunei Darussalam	brn
+35	Bulgaria	bgr
+36	Burkina Faso	bfa
+37	Burundi	bdi
+38	Cambodia	khm
+39	Cameroon	cmr
+40	Canada	can
+41	Cape Verde	cpv
+42	Cayman Islands	cym
+43	Central African Republic	caf
+44	Chad	tcd
+45	Chile	chl
+46	China	chn
+47	Christmas Island	cxr
+48	Cocos  Islands	cck
+49	Colombia	col
+50	Comoros	com
+51	Congo	cog
+52	The Democratic Republic of The Congo	cod
+53	Cook Islands	cok
+54	Costa Rica	cri
+55	Côte d'Ivoire	civ
+56	Croatia 	hrv
+57	Cuba	cub
+58	Curaçao	cuw
+59	Cyprus	cyp
+60	Czech Republic	cze
+61	Denmark	dnk
+62	Djibouti	dji
+63	Dominica	dma
+64	Dominican Republic	dom
+65	Ecuador	ecu
+66	Egypt	egy
+67	El Salvador	slv
+68	Equatorial Guinea	gnq
+69	Eritrea	eri
+70	Estonia	est
+71	Ethiopia	eth
+72	Falkland Islands 	flk
+73	Faroe Islands	fro
+74	Fiji	fji
+75	Finland	fin
+76	France	fra
+77	French Guiana	guf
+78	French Polynesia	pyf
+79	French Southern Territories	atf
+80	Gabon	gab
+81	Gambia	gmb
+82	Georgia	geo
+83	Germany	deu
+84	Ghana	gha
+85	Gibraltar	gib
+86	Greece	grc
+87	Greenland	grl
+88	Grenada	grd
+89	Guadeloupe	glp
+90	Guam	gum
+91	Guatemala	gtm
+92	Guernsey	ggy
+93	Guinea	gin
+94	Guinea-bissau	gnb
+95	Guyana	guy
+96	Haiti	hti
+97	Heard and McDonald Islands	hmd
+98	Holy See 	vat
+99	Honduras	hnd
+100	Hong Kong	hkg
+101	Hungary	hun
+102	Iceland	isl
+103	India	ind
+104	Indonesia	idn
+105	Iran 	irn
+106	Iraq	irq
+107	Ireland	irl
+108	Isle of Man	imn
+109	Israel	isr
+110	Italy	ita
+111	Jamaica	jam
+112	Japan	jpn
+113	Jersey	jey
+114	Jordan	jor
+115	Kazakhstan	kaz
+116	Kenya	ken
+117	Kiribati	kir
+118	Democratic People's Republic of Korea	prk
+119	Republic of Korea	kor
+120	Kuwait	kwt
+121	Kyrgyzstan	kgz
+122	Lao People's Democratic Republic	lao
+123	Latvia	lva
+124	Lebanon	lbn
+125	Lesotho	lso
+126	Liberia	lbr
+127	Libya	lby
+128	Liechtenstein	lie
+129	Lithuania	ltu
+130	Luxembourg	lux
+131	Macao	mac
+132	The Former Yugoslav Republic of Macedonia	mkd
+133	Madagascar	mdg
+134	Malawi	mwi
+135	Malaysia	mys
+136	Maldives	mdv
+137	Mali	mli
+138	Malta	mlt
+139	Marshall Islands	mhl
+140	Martinique	mtq
+141	Mauritania	mrt
+142	Mauritius	mus
+143	Mayotte	myt
+144	Mexico	mex
+145	Federated States of Micronesia	fsm
+146	Republic of Moldova	mda
+147	Monaco	mco
+148	Mongolia	mng
+149	Montenegro	mne
+150	Montserrat	msr
+151	Morocco	mar
+152	Mozambique	moz
+153	Myanmar	mmr
+154	Namibia	nam
+155	Nauru	nru
+156	Nepal	npl
+157	Netherlands	nld
+158	New Caledonia	ncl
+159	New Zealand	nzl
+160	Nicaragua	nic
+161	Niger	ner
+162	Nigeria	nga
+163	Niue	niu
+164	Norfolk Island	nfk
+165	Northern Mariana Islands	mnp
+166	Norway	nor
+167	Oman	omn
+168	Pakistan	pak
+169	Palau	plw
+170	State of Palestine	pse
+171	Panama	pan
+172	Papua New Guinea	png
+173	Paraguay	pry
+174	Peru	per
+175	Philippines	phl
+176	Pitcairn	pcn
+177	Poland	pol
+178	Portugal	prt
+179	Puerto Rico	pri
+180	Qatar	qat
+181	Réunion	reu
+182	Romania	rou
+183	Russian Federation	rus
+184	Rwanda	rwa
+185	Ascension and Tristan Da Cunha Saint Helena	shn
+186	Saint Barthélemy	blm
+187	Saint Kitts and Nevis	kna
+188	Saint Lucia	lca
+189	Saint Pierre and Miquelon	spm
+190	Saint Vincent and The Grenadines	vct
+191	Samoa	wsm
+192	San Marino	smr
+193	Sao Tome and Principe	stp
+194	Saudi Arabia	sau
+195	Senegal	sen
+196	Serbia	srb
+197	Seychelles	syc
+198	Sierra Leone	sle
+199	Singapore	sgp
+200	Sint Maarten 	sxm
+201	Slovakia	svk
+202	Slovenia	svn
+203	Solomon Islands	slb
+204	Somalia	som
+205	South Africa	zaf
+206	South Georgia and The South Sandwich Islands	sgs
+207	South Sudan	ssd
+208	Spain	esp
+209	Sri Lanka	lka
+210	Sudan	sdn
+211	Suriname	sur
+212	Svalbard and Jan Mayen Islands	sjm
+213	Swaziland	swz
+214	Sweden	swe
+215	Switzerland	che
+216	Syrian Arab Republic	syr
+217	Province of China Taiwan	twn
+218	Tajikistan	tjk
+219	United Republic of Tanzania	tza
+220	Thailand	tha
+221	Timor-leste	tls
+222	Togo	tgo
+223	Tokelau	tkl
+224	Tonga	ton
+225	Trinidad and Tobago	tto
+226	Tunisia	tun
+227	Turkey	tur
+228	Turkmenistan	tkm
+229	Turks and Caicos Islands	tca
+230	Tuvalu	tuv
+231	Uganda	uga
+232	Ukraine	ukr
+233	United Arab Emirates	are
+234	United Kingdom	gbr
+235	United States	usa
+236	United States Minor Outlying Islands	umi
+237	Uruguay	ury
+238	Uzbekistan	uzb
+239	Vanuatu	vut
+240	Bolivarian Republic of Venezuela	ven
+241	Vietnam	vnm
+242	Virgin Islands (British)	vgb
+243	Virgin Islands (US)	vir
+244	Wallis and Futuna Islands	wlf
+245	Western Sahara	esh
+246	Yemen	yem
+247	Zambia	zmb
+248	Zimbabwe	zwe

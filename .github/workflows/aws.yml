@@ -56,12 +56,14 @@ jobs:
         ECR_REPOSITORY: preprocessor
         IMAGE_TAG: ${{ github.sha }}
         DB_HOST: ${{ secrets.DB_HOST }}
+        MYSQL_DB_BIND: ${{ secrets.MYSQL_DB_BIND }}
+        MEMSQL_DB_BIND: ${{ secrets.MEMSQL_DB_BIND }}
       run: |
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
         echo pwd
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg DB_HOST=${DB_HOST} .
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg DB_HOST=${DB_HOST} --build-arg MYSQL_DB_BIND=${MYSQL_DB_BIND} --build-arg MEMSQL_DB_BIND=${MEMSQL_DB_BIND} .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 

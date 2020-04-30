@@ -9,6 +9,7 @@ SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 if os.environ.get('MYSQL_DB_BIND') and os.environ.get('MEMSQL_DB_BIND'):
     # https://flask-sqlalchemy.palletsprojects.com/en/2.x/binds/
+    SQLALCHEMY_DATABASE_URI = os.environ.get('MYSQL_DB_BIND')
     SQLALCHEMY_BINDS = {
         'mysql_db': os.environ.get('MYSQL_DB_BIND'),
         'memsql_db': os.environ.get('MEMSQL_DB_BIND')
