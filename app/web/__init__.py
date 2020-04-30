@@ -22,19 +22,7 @@ def create_app(config_name):
 
     # add configuration
     app.config.from_object(config_name)
-
     app.logger.setLevel(logging.DEBUG)
-
-    app.config['SQLALCHEMY_BINDS'] = {
-        'mysql_db': 'mysql://sa_data_engineer:L3kmmstUqskja7Bfea8F@zappotrack-maindb-dev.col2svw5zgj8.us-west-2.rds.amazonaws.com/zappo_track',
-        'memsql_db': 'mysql://root@172.31.18.191/zappo_stage'
-    }
-    
-    # Check if the env exists
-    # host = os.environ.get('DB_HOST')
-    # if host:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql://sa_data_engineer:L3kmmstUqskja7Bfea8F@zappotrack-maindb-dev.col2svw5zgj8.us-west-2.rds.amazonaws.com/zappo_track'
-
     app.logger.info(os.environ)
     app.logger.info(app.config)
 
@@ -44,11 +32,6 @@ def create_app(config_name):
 
     Base.prepare(db.engine, reflect=True)
 
-
-    result = db.engine.execute('show tables')
-    names = [row[0] for row in result]
-
-    print(names)
     # Migrate(app, db)
 
     # # importing the models to make sure they are known to Flask-Migrate
