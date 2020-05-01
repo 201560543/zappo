@@ -4,5 +4,8 @@ app:
     - "5000:5000"
   volumes:
     - .:/code
+  environment:
+    - MYSQL_DB_BIND=mysql://sa_data_engineer:L3kmmstUqskja7Bfea8F@zappotrack-maindb-dev.col2svw5zgj8.us-west-2.rds.amazonaws.com/zappo_track
+    - MEMSQL_DB_BIND=mysql://root@172.31.18.191/zappo_stage
   env_file:
     - .env
