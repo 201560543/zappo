@@ -5,13 +5,14 @@ from datetime import date as d
 from datetime import datetime as dt
 from web.database import db
 import json
-from flask import jsonify, request
+from flask import jsonify, request, current_app
 
 @address.route('/', methods=['GET'])
 def get_all_accounts(return_json=True):
     # TO DO: Add error handling
     results = db.session.query(Address).all()
     result_dicts = [adr.as_dict() for adr in results]
+    current_app.logger.info(result_dicts)
     if return_json == True:
         return json.dumps(result_dicts, default=converter)
     else:
@@ -46,6 +47,7 @@ def create_address():
 
     db.session.add(new_address)
     db.session.commit()
+    current_app.logger.info('Inserted record:\n',new_address)
     db.session.close()
     body['success']=True
     return jsonify(body)

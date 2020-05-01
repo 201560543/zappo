@@ -1,5 +1,0 @@
-id	organization_type_name	is_active	created_at	updated_at
-1	Zappo Track	1	2020-04-17 16:30:06	\N
-2	Restaurant	1	2020-04-17 16:30:06	\N
-3	Supplier	1	2020-04-17 16:30:06	\N
-4	Corporation	1	2020-04-17 16:30:06	\N

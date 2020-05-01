@@ -1,4 +1,0 @@
-id	address_type_name	created_at	updated_at
-1	Sold To Address	2020-04-17 16:40:59	\N
-2	Ship To Address	2020-04-17 16:40:59	\N
-3	Regular Address	2020-04-17 16:40:59	\N
