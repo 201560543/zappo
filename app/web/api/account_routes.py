@@ -5,18 +5,6 @@ from web.api.api_utils import converter, exception_handler
 from web.database import db
 from flask import current_app
 
-@account.app_errorhandler(404)
-def page_not_found(e):
-    current_app.logger.warn(f'404 not found')
-    current_app.logger.warn(e)
-    return 'Account API not Found', 404
-
-@account.app_errorhandler(500)
-def server_error(e):
-    current_app.logger.warn('500 internal server error')
-    current_app.logger.warn(e)
-    return '500 Internal Server Error', 500
-
 @account.route('/', methods=['GET'])
 @exception_handler(custom_msg='Issues in fetching')
 def get_all_accounts(return_json=True):

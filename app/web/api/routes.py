@@ -24,15 +24,18 @@ def log_request(sender, **extra):
     sender.logger.info(message)
 
 # custom 404 error handler
-@api.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'detail': 'Not found'}), 404)
+@api.app_errorhandler(404)
+def page_not_found(e):
+    current_app.logger.warn(f'404 not found: {request.path}')
+    current_app.logger.warn(e)
+    return 'API not Found', 404
 
-
-# custom 400 error handler
-@api.errorhandler(400)
-def bad_request(error):
-    return make_response(jsonify({'detail': 'Bad request'}), 400)
+# custom 500 error handler
+@api.app_errorhandler(500)
+def server_error(e):
+    current_app.logger.warn('500 internal server error')
+    current_app.logger.warn(e)
+    return '500 Internal Server Error', 500
 
 
 @api.route('/')
