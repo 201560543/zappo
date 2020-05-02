@@ -28,13 +28,13 @@ def get_all_accounts(return_json=True):
     else:
         return result_dicts
 
-@account.route('/<int:account_number>/', methods=['GET'])
+@account.route('/<account_number>', methods=['GET'])
 @exception_handler()
 def get_account_by_account_number(account_number, return_json=True):
-    results = db.session.query(Account).filter_by(account_number=account_number).all()
-    result_dicts = [acnt.as_dict() for acnt in results]
-    current_app.logger.info(result_dicts)
+    result = db.session.query(Account).filter_by(account_number=account_number).one_or_none()
+    result_dict = result.as_dict()
+    current_app.logger.info(result_dict)
     if return_json == True:
-        return json.dumps(result_dicts, default=converter)
+        return json.dumps(result_dict, default=converter)
     else:
-        return result_dicts
+        return result_dict
