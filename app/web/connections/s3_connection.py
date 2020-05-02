@@ -2,6 +2,7 @@ import json
 import boto3
 from botocore.exceptions import ClientError
 from datetime import datetime as dt
+import random
 
 class S3Interface():
     """

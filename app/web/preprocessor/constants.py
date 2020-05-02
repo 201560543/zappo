@@ -30,7 +30,8 @@ ORDERITEMS_COLUMN_ORDER = ['account_number' ,
 							'description', 
 							'weight', 
 							'price',
-							'total_price']
+							'total_price',
+							's3_image_key']
 
 ORDER_HEADER_COLUMN_ORDER = ['account_number' ,
 							'invoice_number' ,

@@ -1,4 +1,4 @@
-# Create pipeliens
+# Create pipelines
 -- Pipeline Creation
 CREATE OR REPLACE PIPELINE order_headers_s3
 AS LOAD DATA S3 'invoiceupload-memsql/export/header'
