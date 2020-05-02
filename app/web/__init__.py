@@ -7,6 +7,7 @@ from web.api.routes import api
 from web.api.account_routes import account
 from web.api.address_routes import address
 from web.api.organization_routes import organization
+from web.api.supplier_routes import supplier
 from flask_sqlalchemy import SQLAlchemy
 from .database import db, Base
 
@@ -46,6 +47,7 @@ def create_app(config_name):
     app.register_blueprint(account, url_prefix='/account')
     app.register_blueprint(address, url_prefix='/address')
     app.register_blueprint(organization, url_prefix='/organization')
+    app.register_blueprint(supplier, url_prefix='/supplier')
 
 
     return app
