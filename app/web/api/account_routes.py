@@ -1,5 +1,4 @@
 import json
-import request
 from . import account
 from web.models.account import Account
 from web.api.api_utils import converter, exception_handler
