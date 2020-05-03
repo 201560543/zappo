@@ -81,7 +81,7 @@ def parse_file_name(textract_file_name):
     organization_number = image_file_name.split('-')[-1]
     # TO DO: Remove below lines. These were placed here before organization number was appended to the end of the file
     organization_number = 'd7a8755d85ce11eab51c0aedbe94' # <- temp: sysco org number
-    account_number = 'debddd37-82a9-11ea-b51c-0aedbe94' # <- temp: account number
+    account_number = '7d6ad4d0-80c9-11ea-b51c-0aedbe94' # <- temp: account number
     return s3_image_key, account_number, organization_number
 
 @api.route('/s3-connect', methods=['GET'])
