@@ -54,7 +54,8 @@ class OrderClassTest(unittest.TestCase):
         doc = Document(resp)
         first_page = doc.pages[0]
         with self.assertRaises(Exception):
-            order = Order()
+            order = Order(supplier_organization_number = TEST_ORG_NUM, 
+                            account_number=TEST_ACCNT_NUM)
             order.set_order_values(first_page)
 
         self.assertEqual(order.customer_account_number, '17165')
