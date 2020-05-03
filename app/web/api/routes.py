@@ -3,7 +3,7 @@ import traceback
 import logging
 from flask import jsonify, request, abort, make_response, render_template, current_app
 from . import api
-from web.api.api_utils import get_supplier_obj
+from web.api.api_utils import get_supplier_obj, concatenate_order_responses
 from web.preprocessor.trp_test import run, ProcessedDocument
 from web.preprocessor.trp import Document
 from web.connections.s3_connection import S3Interface
@@ -99,7 +99,7 @@ def s3_connect():
                                         account_number=account_number,
                                         template_name=template_name)
         processed_doc.processDocument()
-        return make_response(processed_doc._orderitem_tsv)
+        return concatenate_order_responses(processed_doc._order_tsv,processed_doc._orderitem_tsv), 200
     except Exception as exc:
         traceback.print_exc()
         return abort(400)
@@ -126,7 +126,6 @@ def upload_invoice():
         # Pulling buffers and account number for upload
         order_tsv_buf = processed_doc._order_buf
         orderitems_tsv_buf = processed_doc._orderitem_buf
-        orderitems_tsv_raw = processed_doc._orderitem_tsv
         accnt_no = processed_doc._account_number
         # Uploading header
         s3_obj.upload_file(order_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,type='header')
@@ -137,4 +136,4 @@ def upload_invoice():
         traceback.print_exc()
         return abort(500) 
     
-    return make_response(orderitems_tsv_raw), 200
+    return concatenate_order_responses(processed_doc._order_tsv,processed_doc._orderitem_tsv), 200

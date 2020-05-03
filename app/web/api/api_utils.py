@@ -1,6 +1,6 @@
 from datetime import datetime, date
 from functools import wraps
-from flask import current_app, abort
+from flask import current_app, abort, make_response
 from web.database import db
 from web.models.organization import Organization
 from web.models.supplier import Supplier
@@ -43,6 +43,15 @@ def exception_handler(**kw):
                 abort(400, description='Kindly contact your dev team to handle this error')
         return inner
     return handler
+
+def concatenate_order_responses(order_tsv, orderitem_tsv):
+    """
+    For api response, concatenate both order header and orderitem TSVs for the response
+    """
+    pre_head = "\n=====ORDER HEADER=====\n"
+    pre_item = "\n\n=====ORDERITEMS=====\n"
+    raw_resp = pre_head + order_tsv + pre_item + orderitem_tsv
+    return make_response(raw_resp)
 
 def get_supplier_obj(supplier_organization_number):
     """
