@@ -2,7 +2,7 @@ import json
 import unittest
 from web.preprocessor.trp import Document 
 from web.models.orders import Order 
-from web.tests.constants import TEST_DIR
+from web.tests.constants import TEST_DIR, TEST_ACCNT_NUM, TEST_ORG_NUM
 
 # For testing purposes, so that it can run normally
 # we have to update the directory to conform in the same way
@@ -35,7 +35,8 @@ class OrderClassTest(unittest.TestCase):
         """
         doc = Document(self.response)
         first_page = doc.pages[0]
-        order = Order()
+        order = Order(supplier_organization_number = TEST_ORG_NUM, 
+                            account_number=TEST_ACCNT_NUM)
         order.set_order_values(first_page)
 
         self.assertEqual(order.customer_account_number, '25651')
