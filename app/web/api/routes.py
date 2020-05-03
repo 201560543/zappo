@@ -3,15 +3,13 @@ import traceback
 import logging
 from flask import jsonify, request, abort, make_response, render_template, current_app
 from . import api
+from web.api.api_utils import get_supplier_obj
 from web.preprocessor.trp_test import run, ProcessedDocument
 from web.preprocessor.trp import Document
 from web.connections.s3_connection import S3Interface
 from web.connections.DBConnection import DBConn
 from web.constants import S3_BUCKET_NAME, S3_IMAGE_BUCKET_NAME, S3_PREPROCESSED_INVOICES_BUCKET
-from web.models.account import Account
-from web.models.country import Country
-from web.database import db, Base
-from datetime import datetime as dt
+from web.database import db
 
 logger = logging.getLogger(__name__)
 
@@ -65,8 +63,7 @@ def connection():
         return make_response(jsonify({'Error': exc}))
 
 
-# TO DO: Add functionality to parse the account number and supplier id from the file name
-# TO DO: Make sure line items are uploaded to S3 with file name
+# TO DO: Move this to api_utils when finished
 def parse_file_name(textract_file_name):
     """
     Given Textract json response filename, return the s3 key (including the bucket) for the corresponding image, the account number, and the supplier_id
@@ -81,17 +78,17 @@ def parse_file_name(textract_file_name):
     organization_number = image_file_name.split('-')[-1]
     # TO DO: Remove below lines. These were placed here before organization number was appended to the end of the file
     organization_number = 'd7a8755d85ce11eab51c0aedbe94' # <- temp: sysco org number
-    account_number = '7d6ad4d0-80c9-11ea-b51c-0aedbe94' # <- temp: account number
+    account_number = 'debddd37-82a9-11ea-b51c-0aedbe94' # <- temp: account number
     return s3_image_key, account_number, organization_number
 
 @api.route('/s3-connect', methods=['GET'])
 def s3_connect():
     try:
         file_name = request.args.get('file_name')
-        # TO DO: Deprecate this parameter when we have query functionality on supplier table with a template name and org_id can be parsed from file_name
-        template_name = request.args.get('template_name')+'.json' 
         s3_image_key, account_number, supplier_organization_number = parse_file_name(textract_file_name=file_name)
-        # template_name = supplier_organization_number # TO DO: fetch template name given supplier organization number
+        # Fetch template
+        template_name = get_supplier_obj(supplier_organization_number).template_name
+        # Fetch Textract response
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
@@ -112,10 +109,10 @@ def upload_invoice():
     error = False
     try:
         file_name = request.get_json()['file_name']
-        # TO DO: Deprecate this parameter when we have query functionality on supplier table and supplier_id can be parsed from file_name
-        template_name = request.get_json()['template_name']+'.json'
         s3_image_key, account_number, supplier_organization_number = parse_file_name(textract_file_name=file_name)
-        # template_name = supplier_organization_number # TO DO: fetch template name given supplier organization number
+        # Fetch template
+        template_name = get_supplier_obj(supplier_organization_number).template_name
+        # Fetch Textract response
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
