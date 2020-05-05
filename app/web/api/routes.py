@@ -12,7 +12,7 @@ from web.models.account import Account
 from web.models.country import Country
 from web.database import db, Base
 from datetime import datetime as dt
-from web.auth import auth0
+import web.auth as auth
 
 logger = logging.getLogger(__name__)
 
@@ -136,11 +136,17 @@ def upload_invoice():
     
     return make_response(orderitems_tsv_raw), 200
 
+@api.route('/login')
+def login():
+    # import pdb;pdb.set_trace()
+    return auth.auth0.authorize_redirect(redirect_uri='http://localhost:5000/api/callback')
+
+
 @api.route('/callback')
 def callback_handling():
     # Handles response from token endpoint
-    auth0.authorize_access_token()
-    resp = auth0.get('userinfo')
+    auth.auth0.authorize_access_token()
+    resp = auth.auth0.get('userinfo')
     userinfo = resp.json()
 
     # Store the user information in flask session.
@@ -150,4 +156,4 @@ def callback_handling():
         'name': userinfo['name'],
         'picture': userinfo['picture']
     }
-    return 200
+    return make_response('yes', 200)
