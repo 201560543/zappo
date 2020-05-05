@@ -6,8 +6,11 @@
 			"customer account no": "customer_account_number",
 			"invoice mo": "invoice_date",
 			"date": "invoice_date",
+			"invoice date": "invoice_date",
 			"terms": "invoice_term_name",
-			"sold to": "raw_sold_to_info"
+			"sold to": "raw_sold_to_info",
+			"order total": "order_total",
+			"sub total": "sub_total"
 		},
 		"order_item": {
 			"no.": "item_number",
