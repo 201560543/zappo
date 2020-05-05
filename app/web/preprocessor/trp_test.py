@@ -15,14 +15,16 @@ class ProcessedDocument:
     Corresponding Account Number is stored as well in order to use as a prefix for S3 object key
     """
 
-    def __init__(self, doc):
+    def __init__(self, doc, s3_image_key, supplier_org_num, account_number, template_name):
         self._raw_doc = doc
+        self._s3_image_key = s3_image_key
+        self._supplier_org_num = supplier_org_num
+        self._template_name = template_name
+        self._account_number = account_number
         self._order_buf = None
         self._order_tsv = None
         self._orderitem_buf = None
         self._orderitem_tsv = None
-        self._account_number = None
-        self._s3_image_key = None
 
     def set_order(self, order_buf, order_tsv):
         self._order_buf = order_buf
@@ -31,14 +33,8 @@ class ProcessedDocument:
     def set_orderitem(self, orderitem_buf, orderitem_tsv):
         self._orderitem_buf = orderitem_buf
         self._orderitem_tsv = orderitem_tsv
-    
-    def set_account_number(self, account_number):
-        self._account_number = account_number
 
-    def set_s3_image_key(self, image_key):
-        self._s3_image_key = image_key
-
-    def processDocument(self, template_name='sysco.json'):
+    def processDocument(self):
         for page in self._raw_doc.pages:
         #     print("PAGE\n====================")
             # for line in page.lines:
@@ -50,45 +46,15 @@ class ProcessedDocument:
         #         for r, row in enumerate(table.rows):
         #             for c, cell in enumerate(row.cells):
         #                 print("Table[{}][{}] = {}-{}".format(r, c, cell.text, ' '))
-        #     print("Form (key/values)\n====================")
-        #     print('*'*20)
-        #     for field in page.form.fields:
-        #         k = ""
-        #         v = ""
-        #         if(field.key):
-        #             k = field.key.text
-        #         if(field.value):
-        #             v = field.value.text
-        #         print("Field: Key: {}, Value: {}".format(k,v))
 
-        #     #Get field by key
-        #     key = "Phone Number:"
-        #     print("\nGet field by key ({}):\n====================".format(key))
-        #     f = page.form.getFieldByKey(key)
-        #     if(f):
-        #         print("Field: Key: {}, Value: {}".format(f.key.text, f.value.text))
-
-
-            #Search field by key
-            # key = "CUSTOMER ACCOUNT NO."
-
-            # fields = page.form.searchFieldsByKey(key)
-            # print(page.form)
-            # for field in fields:
-            #     print("Field: Key: {}, Value: {}".format(field.key, field.value))
-            # Getting Header Info
             print("==========================================")
             print("=========Header-Level Information=========")
             print("==========================================")
-            order = Order()
-            order.set_order_values(page, template_name=template_name)
+            order = Order(supplier_organization_number = self._supplier_org_num, 
+                            account_number=self._account_number)
+            order.set_order_values(page, template_name=self._template_name)
             invoice_num = order.invoice_number
-            supplier = order.supplier
-            ## LINES BELOW TEMPORARY 
-            TEMPORARY_ACCNT_NO = 'debddd37-82a9-11ea-b51c-0aedbe94' # Used to temporarily assign account until frontend can send accnt info
-            order.account_number = TEMPORARY_ACCNT_NO # Order needs account number stored so it is stored as a column in the Memsql DB
-            self.set_account_number(TEMPORARY_ACCNT_NO)
-            ## LINES ABOVE TEMPORARY
+            
             order_tsv_buf, order_header_raw_tsv = order.convert_to_tsv()
             self.set_order(order_tsv_buf, order_header_raw_tsv)
             # Turning invoice line items into a DF
@@ -98,14 +64,17 @@ class ProcessedDocument:
             for table in page.tables:
                 try:
                     orderitems = OrderitemsDF()
-                    orderitems.set_orderitems_dataframe(table, template_name=template_name)
+                    orderitems.set_orderitems_dataframe(table, template_name=self._template_name)
                     df = orderitems.TableDataFrame
                     if df.empty:
                         continue
                     print(df)
                     print("Returning Preprocessed DataFrame and Headers")
                     # Setting header values in DataFrame of orderitems
-                    orderitems.set_header_values(invoice_number=invoice_num, account_number=TEMPORARY_ACCNT_NO, supplier=supplier, s3_image_key=self._s3_image_key)
+                    orderitems.set_header_values(invoice_number=invoice_num, 
+                                                account_number=self._account_number, 
+                                                supplier_org_num=self._supplier_org_num, 
+                                                s3_image_key=self._s3_image_key)
                     # Exporting as buffer and raw tsv
                     orderitems_tsv_buf, orderitems_raw_tsv = orderitems.export_items_as_tsv()
                     self.set_orderitem(orderitems_tsv_buf, orderitems_raw_tsv)

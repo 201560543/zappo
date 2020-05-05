@@ -7,18 +7,6 @@ from web.database import db
 import json
 from flask import jsonify, request, current_app, abort
 
-@address.app_errorhandler(404)
-def page_not_found(e):
-    current_app.logger.warn(f'404 not found')
-    current_app.logger.warn(e)
-    return 'Address API not Found', 404
-
-@address.app_errorhandler(500)
-def server_error(e):
-    current_app.logger.warn('500 internal server error')
-    current_app.logger.warn(e)
-    return '500 Internal Server Error', 500
-
 @address.route('/', methods=['GET'])
 @exception_handler(custom_msg='Issue in fetching all addresses')
 def get_all_adresses(return_json=True):
