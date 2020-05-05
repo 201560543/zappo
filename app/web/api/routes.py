@@ -1,7 +1,7 @@
 import os
 import traceback
 import logging
-from flask import jsonify, request, abort, make_response, render_template, current_app
+from flask import jsonify, request, abort, make_response, render_template, current_app, session
 from . import api
 from web.preprocessor.trp_test import run, ProcessedDocument
 from web.preprocessor.trp import Document
@@ -12,6 +12,7 @@ from web.models.account import Account
 from web.models.country import Country
 from web.database import db, Base
 from datetime import datetime as dt
+from web.auth import auth0
 
 logger = logging.getLogger(__name__)
 
@@ -134,3 +135,19 @@ def upload_invoice():
         return abort(500) 
     
     return make_response(orderitems_tsv_raw), 200
+
+@api.route('/callback')
+def callback_handling():
+    # Handles response from token endpoint
+    auth0.authorize_access_token()
+    resp = auth0.get('userinfo')
+    userinfo = resp.json()
+
+    # Store the user information in flask session.
+    session['jwt_payload'] = userinfo
+    session['profile'] = {
+        'user_id': userinfo['sub'],
+        'name': userinfo['name'],
+        'picture': userinfo['picture']
+    }
+    return 200

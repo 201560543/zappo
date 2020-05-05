@@ -8,6 +8,7 @@ from web.api.account_routes import account
 from web.api.address_routes import address
 from flask_sqlalchemy import SQLAlchemy
 from .database import db, Base
+from .auth import auth0, create_auth
 
 logger = logging.getLogger(__name__)
 
@@ -28,6 +29,11 @@ def create_app(config_name):
     app.logger.info(os.environ)
     app.logger.info(app.config)
 
+    # Authentication
+    print(auth0)
+    create_auth(app)
+    print(auth0)
+
     # register extensions
     db.app = app
     db.init_app(app)
@@ -47,5 +53,4 @@ def create_app(config_name):
 
 
     return app
-
 
