@@ -22,29 +22,28 @@ class MyTest(LiveServerTestCase):
         response = requests.get(f'{self.get_server_url()}/api')
         self.assertEqual(response.status_code, 200)
     
-    def test_account_api_save(self):
-        try:
-            new_accnt = Account(
-                    organization_id=1,
-                    # address_id=2,
-                    account_number='3',
-                    account_name='4',
-                    created_at=dt.now(),
-                    timezone_name='tz_name' 
-                )
+    # def test_account_api_save(self):
+    #     try:
+    #         new_accnt = Account(
+    #                 organization_id=1,
+    #                 # address_id=2,
+    #                 account_number='3',
+    #                 account_name='4',
+    #                 created_at=dt.now(),
+    #                 timezone_name='tz_name' 
+    #             )
 
-            db.session.add(new_accnt)
-            db.session.commit()
-        except Exception as exc:
-            print(exc)
-            import pdb;pdb.set_trace()
-        res = db.session.query(Account).all()
-        self.assertEqual(len(res), 1)
+    #         db.session.add(new_accnt)
+    #         db.session.commit()
+    #     except Exception as exc:
+    #         print(exc)
+    #     res = db.session.query(Account).all()
+    #     self.assertEqual(len(res), 1)
 
     
-    def test_account_api(self):
-        res = db.session.query(Account).all()
-        self.assertEqual(res, True)
+    # def test_account_api(self):
+    #     res = db.session.query(Account).all()
+    #     self.assertEqual(res, True)
 
     def setUp(self):
         db.create_all()
