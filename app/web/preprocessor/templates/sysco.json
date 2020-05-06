@@ -10,7 +10,7 @@
 			"terms": "invoice_term_name",
 			"sold to": "raw_sold_to_info",
 			"order total": "order_total",
-			"sub total": "sub_total"
+			"inv subtotal before taxes": "invoice_subtotal"
 		},
 		"order_item": {
 			"no.": "item_number",

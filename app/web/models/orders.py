@@ -19,6 +19,7 @@ class Order(db.Model):
     vendor = db.Column(db.String(32))
     order_items = db.Column(db.String(32))
     raw_sold_to_info = db.Column(db.String(32))
+    invoice_subtotal = db.Column(db.String(32))
 
     def __init__(self, supplier_organization_number, account_number):
         self._Page = None
