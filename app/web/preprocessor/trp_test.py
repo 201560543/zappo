@@ -5,7 +5,7 @@ from web.preprocessor.utils import update_column_headers, convert_form_to_dict
 from web.preprocessor.orderitems import OrderitemsDF
 from web.models.orders import Order
 
-pd.set_option('max_columns', 12)
+pd.set_option('display.max_columns', None)
 pd.options.display.width = 0
 
 class ProcessedDocument:
