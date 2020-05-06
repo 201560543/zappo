@@ -288,10 +288,10 @@ class OrderitemsDF():
         current_app.logger.info("Removing Nonitem Rows in case unbleed rearranged")
         self.remove_nonitem_rows()
 
-    def set_header_values(self, invoice_number, account_number, supplier, s3_image_key):
+    def set_header_values(self, invoice_number, account_number, supplier_org_num, s3_image_key):
         self._TableDataFrame['invoice_number'] = invoice_number
         self._TableDataFrame['account_number'] = account_number
-        self._TableDataFrame['supplier'] = supplier
+        self._TableDataFrame['organization_number'] = supplier_org_num
         self._TableDataFrame['s3_image_key'] = s3_image_key
 
     def convert_DF_to_Orderitem_objs(self):
@@ -329,8 +329,8 @@ class OrderitemsDF():
         try:
             self.set_column_order_for_export()
             tsv_buf = StringIO()
-            self._TableDataFrame.to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)
-            raw_tsv = self._TableDataFrame.to_csv(path_or_buf=None, sep='\t', header=False, index=False)
+            self._TableDataFrame.to_csv(path_or_buf=tsv_buf, sep='\t', header=True, index=False)
+            raw_tsv = self._TableDataFrame.to_csv(path_or_buf=None, sep='\t', header=True, index=False)
             return tsv_buf, raw_tsv
         except:
             current_app.logger.error("Error occurred when exporting orderitems to buffer and tsv")

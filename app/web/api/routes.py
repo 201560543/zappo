@@ -3,15 +3,13 @@ import traceback
 import logging
 from flask import jsonify, request, abort, make_response, render_template, current_app
 from . import api
+from web.api.api_utils import get_supplier_obj, concatenate_order_responses
 from web.preprocessor.trp_test import run, ProcessedDocument
 from web.preprocessor.trp import Document
 from web.connections.s3_connection import S3Interface
 from web.connections.DBConnection import DBConn
 from web.constants import S3_BUCKET_NAME, S3_IMAGE_BUCKET_NAME, S3_PREPROCESSED_INVOICES_BUCKET
-from web.models.account import Account
-from web.models.country import Country
-from web.database import db, Base
-from datetime import datetime as dt
+from web.database import db
 
 logger = logging.getLogger(__name__)
 
@@ -24,15 +22,18 @@ def log_request(sender, **extra):
     sender.logger.info(message)
 
 # custom 404 error handler
-@api.errorhandler(404)
-def not_found(error):
-    return make_response(jsonify({'detail': 'Not found'}), 404)
+@api.app_errorhandler(404)
+def page_not_found(e):
+    current_app.logger.warn(f'404 not found: {request.path}')
+    current_app.logger.warn(e)
+    return 'API not Found', 404
 
-
-# custom 400 error handler
-@api.errorhandler(400)
-def bad_request(error):
-    return make_response(jsonify({'detail': 'Bad request'}), 400)
+# custom 500 error handler
+@api.app_errorhandler(500)
+def server_error(e):
+    current_app.logger.warn('500 internal server error')
+    current_app.logger.warn(e)
+    return '500 Internal Server Error', 500
 
 
 @api.route('/')
@@ -55,11 +56,6 @@ def connection():
     try:
         obj = DBConn()
         result = obj.get_query('show databases;', True)
-        # country = Base.classes.Country
-        # print(db.session.query(country).all())
-
-        # countries = db.session.query(Country).all()
-        # print([c.__dict__ for c in countries])
 
         return make_response(jsonify({'query_result': result}))
     except Exception as exc:
@@ -67,10 +63,8 @@ def connection():
         return make_response(jsonify({'Error': exc}))
 
 
-# TO DO: Add functionality to parse the account number and supplier id from the file name
-# TO DO: Make sure line items are uploaded to S3 with file name
-# TO DO: Replace supplier with supplier_id
-def parse_file_name(textract_file_name, S3_IMAGE_BUCKET_NAME):
+# TO DO: Move this to api_utils when finished
+def parse_file_name(textract_file_name):
     """
     Given Textract json response filename, return the s3 key (including the bucket) for the corresponding image, the account number, and the supplier_id
     """
@@ -81,24 +75,31 @@ def parse_file_name(textract_file_name, S3_IMAGE_BUCKET_NAME):
     # Account number will always be the first portion of the file name, separated by "/"
     account_number = textract_file_name.split('/')[0]
     # Supplier Id will be at the end of the file, separated by "-"
-    supplier_id = image_file_name.split('-')[-1]
-    return s3_image_key, account_number, supplier_id
+    organization_number = image_file_name.split('-')[-1]
+    # TO DO: Remove below lines. These were placed here before organization number was appended to the end of the file
+    organization_number = 'd7a8755d85ce11eab51c0aedbe94' # <- temp: sysco org number
+    account_number = 'debddd37-82a9-11ea-b51c-0aedbe94' # <- temp: account number
+    return s3_image_key, account_number, organization_number
 
 @api.route('/s3-connect', methods=['GET'])
 def s3_connect():
     try:
         file_name = request.args.get('file_name')
-        template_name = request.args.get('template_name')+'.json' # TO DO: Deprecate this parameter when we have query functionality on supplier table and supplier_id can be parsed from file_name
-        
-        # # TO DO: Implement this after implementing GET api on supplier information
-        s3_image_key, _, _ = parse_file_name(textract_file_name=file_name, S3_IMAGE_BUCKET_NAME=S3_IMAGE_BUCKET_NAME)
+        s3_image_key, account_number, supplier_organization_number = parse_file_name(textract_file_name=file_name)
+        # Fetch template
+        template_name = get_supplier_obj(supplier_organization_number).template_name
+        # Fetch Textract response
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
-        processed_doc = ProcessedDocument(doc)
-        processed_doc.set_s3_image_key(s3_image_key)
-        processed_doc.processDocument(template_name=template_name)
-        return make_response(processed_doc._orderitem_tsv)
+        
+        processed_doc = ProcessedDocument(doc=doc,
+                                        s3_image_key=s3_image_key, 
+                                        supplier_org_num= supplier_organization_number,
+                                        account_number=account_number,
+                                        template_name=template_name)
+        processed_doc.processDocument()
+        return concatenate_order_responses(processed_doc._order_tsv,processed_doc._orderitem_tsv), 200
     except Exception as exc:
         traceback.print_exc()
         return abort(400)
@@ -108,21 +109,23 @@ def upload_invoice():
     error = False
     try:
         file_name = request.get_json()['file_name']
-        template_name = request.get_json()['template_name']+'.json'
-        # # TO DO: Implement this after implementing GET api on supplier information
-        s3_image_key, _, _ = parse_file_name(textract_file_name=file_name, S3_IMAGE_BUCKET_NAME=S3_IMAGE_BUCKET_NAME)
+        s3_image_key, account_number, supplier_organization_number = parse_file_name(textract_file_name=file_name)
+        # Fetch template
+        template_name = get_supplier_obj(supplier_organization_number).template_name
+        # Fetch Textract response
         s3_obj = S3Interface(S3_BUCKET_NAME)
         resp = s3_obj.get_file(file_name)
         doc = Document(resp)
-        processed_doc = ProcessedDocument(doc)
-        # Setting image key
-        processed_doc.set_s3_image_key(s3_image_key)
-        # Processing Document
-        processed_doc.processDocument(template_name=template_name)
+        
+        processed_doc = ProcessedDocument(doc=doc,
+                                        s3_image_key=s3_image_key, 
+                                        supplier_org_num= supplier_organization_number,
+                                        account_number=account_number,
+                                        template_name=template_name)
+        processed_doc.processDocument()
         # Pulling buffers and account number for upload
         order_tsv_buf = processed_doc._order_buf
         orderitems_tsv_buf = processed_doc._orderitem_buf
-        orderitems_tsv_raw = processed_doc._orderitem_tsv
         accnt_no = processed_doc._account_number
         # Uploading header
         s3_obj.upload_file(order_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,type='header')
@@ -133,4 +136,4 @@ def upload_invoice():
         traceback.print_exc()
         return abort(500) 
     
-    return make_response(orderitems_tsv_raw), 200
+    return concatenate_order_responses(processed_doc._order_tsv,processed_doc._orderitem_tsv), 200

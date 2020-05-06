@@ -17,7 +17,7 @@ REGEX_MAP = {
 
 # Required to create tsv files in the right order
 ORDERITEMS_COLUMN_ORDER = ['account_number' , 
-							'supplier' ,
+							'organization_number' ,
 							'invoice_number' ,
 							'item_number' ,
 							'order_quantity' ,
@@ -34,10 +34,10 @@ ORDERITEMS_COLUMN_ORDER = ['account_number' ,
 							's3_image_key']
 
 ORDER_HEADER_COLUMN_ORDER = ['account_number' ,
+							'organization_number',
 							'invoice_number' ,
 							'invoice_term_name' ,
 							'invoice_date' ,
-							'supplier' ,
 							'customer_account_number' ,
 							'sold_to']
 
