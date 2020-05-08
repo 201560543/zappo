@@ -39,6 +39,7 @@ ORDER_HEADER_COLUMN_ORDER = ['account_number' ,
 							'invoice_term_name' ,
 							'invoice_date' ,
 							'customer_account_number' ,
+							'invoice_subtotal' ,
 							'sold_to']
 
-DB_DATE_FORMAT = "%d-%m-%Y"
+DB_DATE_FORMAT = "%Y-%m-%d"

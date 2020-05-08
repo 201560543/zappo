@@ -77,8 +77,8 @@ def parse_file_name(textract_file_name):
     # Supplier Id will be at the end of the file, separated by "-"
     organization_number = image_file_name.split('-')[-1]
     # TO DO: Remove below lines. These were placed here before organization number was appended to the end of the file
-    # organization_number = 'd7a8755d85ce11eab51c0aedbe94' # <- temp: sysco org number 
-    organization_number = '2c9fb715f5c21ec8f8618efd31b7' # <- temp: freshpoint org number 
+    organization_number = 'd7a8755d85ce11eab51c0aedbe94' # <- temp: sysco org number 
+    # organization_number = '2c9fb715f5c21ec8f8618efd31b7' # <- temp: freshpoint org number 
     account_number = 'debddd37-82a9-11ea-b51c-0aedbe94' # <- temp: account number
     return s3_image_key, account_number, organization_number
 
@@ -128,10 +128,11 @@ def upload_invoice():
         order_tsv_buf = processed_doc._order_buf
         orderitems_tsv_buf = processed_doc._orderitem_buf
         accnt_no = processed_doc._account_number
+        invoice_num = processed_doc.invoice_number
         # Uploading header
-        s3_obj.upload_file(order_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,type='header')
+        s3_obj.upload_file(order_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,filetype='header', invoice_number=invoice_num)
         # Uploading orderitems
-        s3_obj.upload_file(orderitems_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,type='lineitem')
+        s3_obj.upload_file(orderitems_tsv_buf, S3_PREPROCESSED_INVOICES_BUCKET, accnt_no,filetype='lineitem', invoice_number=invoice_num)
     except:
         error = True
         traceback.print_exc()
