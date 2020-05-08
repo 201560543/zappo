@@ -1,7 +1,7 @@
 import os
 import traceback
 import logging
-from flask import jsonify, request, abort, make_response, render_template, current_app
+from flask import jsonify, request, abort, make_response, render_template, current_app, session
 from . import api
 from web.preprocessor.trp_test import run, ProcessedDocument
 from web.preprocessor.trp import Document
@@ -12,6 +12,8 @@ from web.models.account import Account
 from web.models.country import Country
 from web.database import db, Base
 from datetime import datetime as dt
+import web.auth as auth
+from web.auth import requires_auth
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +38,7 @@ def bad_request(error):
 
 
 @api.route('/')
+@requires_auth
 def hello_whale():
     return render_template("whale_hello.html")
 
@@ -134,3 +137,25 @@ def upload_invoice():
         return abort(500) 
     
     return make_response(orderitems_tsv_raw), 200
+
+@api.route('/login')
+def login():
+    # import pdb;pdb.set_trace()
+    return auth.auth0.authorize_redirect(redirect_uri='http://localhost:5000/api/callback')
+
+
+@api.route('/callback')
+def callback_handling():
+    # Handles response from token endpoint
+    auth.auth0.authorize_access_token()
+    resp = auth.auth0.get('userinfo')
+    userinfo = resp.json()
+
+    # Store the user information in flask session.
+    session['jwt_payload'] = userinfo
+    session['profile'] = {
+        'user_id': userinfo['sub'],
+        'name': userinfo['name'],
+        'picture': userinfo['picture']
+    }
+    return make_response('yes', 200)
