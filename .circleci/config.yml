@@ -12,6 +12,7 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.6.1
+      - image: circleci/mysql:8.0.4
 
     working_directory: ~/repo
 
@@ -31,6 +32,8 @@ jobs:
             virtualenv venv
             . venv/bin/activate
             pip install -r app/requirements.txt
+            sudo apt-get install default-mysql-client
+            mysql -h 127.0.0.1 -u root < data/sql_data/dummy.sql
 
       - save_cache:
           paths:
