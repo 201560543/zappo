@@ -50,7 +50,12 @@ def concatenate_order_responses(order_tsv, orderitem_tsv):
     """
     pre_head = "\n=====ORDER HEADER=====\n"
     pre_item = "\n\n=====ORDERITEMS=====\n"
-    raw_resp = pre_head + order_tsv + pre_item + orderitem_tsv
+    no_items = "\n\n=====NO ITEMS=====\n"
+    if orderitem_tsv == None:
+        raw_resp = pre_head + order_tsv + no_items
+    else:
+        raw_resp = pre_head + order_tsv + pre_item + orderitem_tsv
+
     return make_response(raw_resp)
 
 def get_supplier_obj(supplier_organization_number):

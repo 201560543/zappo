@@ -7,10 +7,9 @@ from flask import current_app, request
 
 @organization.route('/', methods=['GET'])
 @exception_handler(custom_msg='Issues in fetching all organizations')
-def get_all_suppliers(return_json=True):
+def get_all_organizations(return_json=True):
     results = db.session.query(Organization).all()
-    # Return only suppliers (organization_type_id==3)
-    result_dicts = [acnt.as_dict() for acnt in results if acnt.organization_type_id==3]
+    result_dicts = [acnt.as_dict() for acnt in results if acnt.organization_type_id]
     current_app.logger.info(result_dicts)
     if return_json == True:
         return json.dumps(result_dicts, default=converter)

@@ -5,7 +5,7 @@ from web.preprocessor.utils import update_column_headers, convert_form_to_dict
 from web.preprocessor.orderitems import OrderitemsDF
 from web.models.orders import Order
 
-pd.set_option('max_columns', 12)
+pd.set_option('display.max_columns', None)
 pd.options.display.width = 0
 
 class ProcessedDocument:
@@ -36,16 +36,24 @@ class ProcessedDocument:
 
     def processDocument(self):
         for page in self._raw_doc.pages:
-        #     print("PAGE\n====================")
+            # print("PAGE\n====================")
             # for line in page.lines:
-            #     print("Line: {}--{}".format(line.text, ' '))
+            #     # print("Line: {}--{}".format(line.text, ' '))
             #     for word in line.words:
             #         print("Word: {}--{}".format(word.text, ' '))
-        #     for table in page.tables:
-        #         print("TABLE\n====================")
-        #         for r, row in enumerate(table.rows):
-        #             for c, cell in enumerate(row.cells):
-        #                 print("Table[{}][{}] = {}-{}".format(r, c, cell.text, ' '))
+            # for table in page.tables:
+            #     print("TABLE\n====================")
+            #     for r, row in enumerate(table.rows):
+            #         for c, cell in enumerate(row.cells):
+            #             print("Table[{}][{}] = {}-{}".format(r, c, cell.text, ' '))
+            for field in page.form.fields:
+                k = ""
+                v = ""
+                if(field.key):
+                    k = field.key.text
+                if(field.value):
+                    v = field.value.text
+                print("Field: Key: {}, Value: {}".format(k,v))
 
             print("==========================================")
             print("=========Header-Level Information=========")
