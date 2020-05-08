@@ -9,16 +9,12 @@ from web.preprocessor.trp import Document
 from web.connections.s3_connection import S3Interface
 from web.connections.DBConnection import DBConn
 from web.constants import S3_BUCKET_NAME, S3_IMAGE_BUCKET_NAME, S3_PREPROCESSED_INVOICES_BUCKET
-<<<<<<< HEAD
 from web.models.account import Account
 from web.models.country import Country
 from web.database import db, Base
 from datetime import datetime as dt
 import web.auth as auth
 from web.auth import requires_auth
-=======
-from web.database import db
->>>>>>> 2fa941ac476ff8a95e074f89941c76cef8f1cf20
 
 logger = logging.getLogger(__name__)
 
