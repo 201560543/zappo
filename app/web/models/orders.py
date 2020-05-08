@@ -99,6 +99,8 @@ class Order(db.Model):
         self.set_attributes(searched_form_dict)
         # Format Date
         self.format_date()
+        # Perform validation
+        self.validate()
 
         for k,v in self.__dict__.items():
             if k not in ['_Page', '_Form_dict']:
@@ -108,6 +110,12 @@ class Order(db.Model):
         for key, val in data.items():
             if hasattr(self, key):
                 setattr(self, key, val)
+    
+    def validate(self):
+        """
+        Function to perform validation
+        """
+        assert self.invoice_number not in (None, 'None', '')
 
     def convert_to_tsv(self):
         """
