@@ -25,6 +25,7 @@ class ProcessedDocument:
         self._order_tsv = None
         self._orderitem_buf = None
         self._orderitem_tsv = None
+        self.invoice_number = None
 
     def set_order(self, order_buf, order_tsv):
         self._order_buf = order_buf
@@ -61,7 +62,7 @@ class ProcessedDocument:
             order = Order(supplier_organization_number = self._supplier_org_num, 
                             account_number=self._account_number)
             order.set_order_values(page, template_name=self._template_name)
-            invoice_num = order.invoice_number
+            self.invoice_number = order.invoice_number
             
             order_tsv_buf, order_header_raw_tsv = order.convert_to_tsv()
             self.set_order(order_tsv_buf, order_header_raw_tsv)
@@ -79,7 +80,7 @@ class ProcessedDocument:
                     print(df)
                     print("Returning Preprocessed DataFrame and Headers")
                     # Setting header values in DataFrame of orderitems
-                    orderitems.set_header_values(invoice_number=invoice_num, 
+                    orderitems.set_header_values(invoice_number=self.invoice_number, 
                                                 account_number=self._account_number, 
                                                 supplier_org_num=self._supplier_org_num, 
                                                 s3_image_key=self._s3_image_key)

@@ -13,20 +13,31 @@
 			"inv subtotal before taxes": "invoice_subtotal"
 		},
 		"order_item": {
+			"article": "item_number",
 			"no.": "item_number",
 			"item no": "item_number",
 			"qty ord": "order_quantity",
+			"qty. ord.": "order_quantity",
 			"oty ord": "order_quantity",
+			"commande": "order_quantity",
 			"qty shpd": "shipped_quantity",
+			"shpd.": "shipped_quantity",
+			"qty. shpd.": "shipped_quantity",
 			"oty. shpd.": "shipped_quantity",
 			"unit": "unit",
 			"pack size": "size",
+			"format": "size",
 			"b unit": "unit",
+			"c unit": "unit",
 			"brand": "brand",
+			"marque": "brand",
 			"description": "description",
 			"weight": "weight",
+			"poids": "weight",
 			"price": "price",
-			"extension": "total_price"			
+			"prix": "price",
+			"extension": "total_price",
+			"monant": "total_price"			
 		}
 	},
 	"expectation_checks": {
