@@ -19,8 +19,12 @@ class MyTest(LiveServerTestCase):
         return app
 
     def test_server_is_up_and_running(self):
-        response = requests.get(f'{self.get_server_url()}/api')
+        response = requests.get(f'{self.get_server_url()}/account')
         self.assertEqual(response.status_code, 200)
+
+    def test_server_is_auth_check(self):
+        response = requests.get(f'{self.get_server_url()}/api')
+        self.assertEqual(response.status_code, 401)
     
     # def test_account_api_save(self):
     #     try:
