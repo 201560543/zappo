@@ -29,7 +29,7 @@ def remove_special_characters(text, extra_attr=''):
     """
     Remove special characters
     """
-    return re.sub(f'[^A-Za-z0-9 {extra_attr}]+', '', text)
+    return re.sub(f'[^A-Za-z0-9\. {extra_attr}]+', '', text)
 
 def prefix_dictionary_search(key: str, template_data: Dict) -> str:
     """
@@ -79,7 +79,6 @@ def fetch_page_lines(lines, missing_header):
 
 def failover(current_data, template_data, page_obj):
     missed_headers = missing_headers(current_data, template_data)
-
     if not missed_headers:
         return {}
 
