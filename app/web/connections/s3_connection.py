@@ -36,18 +36,20 @@ class S3Interface():
         contents = data['Body'].read().decode('utf-8')
         return json.loads(contents)
 
-    def upload_file(self, raw_file, bucket_name, object_name, type):
+    def upload_file(self, raw_file, bucket_name, object_name, filetype, invoice_number):
         """
         Uploads a given file into a bucket under a given key (S3 file name)
         :param raw_file: Raw file to be uploaded
         :param bucket_name: Bucket to upload to
         :param object_name: S3 object name. This expects the account number of the uploader
+        :param type: Whether it is a header or line item. 
+        :param invoice_number: Invoice number associated with file. Appended to end of filename after random number
         """
         try:
             raw_file.seek(0)
             # Appending prefix and suffix
-            prefix = 'export/'+type+'/'
-            object_name = prefix + object_name + get_current_date()
+            prefix = 'export/'+filetype+'/'
+            object_name = prefix + object_name + get_current_date() + '_' + str(invoice_number)
             # resp = self.s3_client.upload_file(file_name, bucket_name, object_name)
             self.s3_client.put_object(Bucket=bucket_name, Body=raw_file.getvalue(), Key=object_name)
         except ClientError as e:
@@ -61,7 +63,8 @@ def get_current_date():
     Utility function for tagging uploaded files with current date plus a random integer
     """
     now = dt.now()
-    date = now.strftime("/%y/%m/%d-%H-%M-%S_")
+    # Filename includes microsecond to help guarantee unique file names
+    date = now.strftime("/%y/%m/%d-%H-%M-%S-%f_")
     # Generating a random number to help guarantee unique file names
     rand_int = str(random.randint(1, 10000))
 

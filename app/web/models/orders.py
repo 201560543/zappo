@@ -19,10 +19,13 @@ class Order(db.Model):
     vendor = db.Column(db.String(32))
     order_items = db.Column(db.String(32))
     raw_sold_to_info = db.Column(db.String(32))
+    invoice_subtotal = db.Column(db.String(32))
 
-    def __init__(self):
+    def __init__(self, supplier_organization_number, account_number):
         self._Page = None
         self._Form_dict = None
+        self.organization_number = supplier_organization_number
+        self.account_number = account_number
 
     def __repr__(self):
         return '<Order {0}>'.format(self.invoice_number)
@@ -94,8 +97,6 @@ class Order(db.Model):
         searched_form_dict = self.extract_keys_using_template()
         # Set attributes using extracted keys
         self.set_attributes(searched_form_dict)
-        # Set supplier using template
-        self.supplier = template_name[:-5]
         # Format Date
         self.format_date()
 
@@ -119,7 +120,7 @@ class Order(db.Model):
             vals.append(self.__dict__.get(key))
         
         tsv_buf = StringIO()
-        pd.DataFrame([vals]).to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)
-        raw_tsv = pd.DataFrame([vals]).to_csv(path_or_buf=None, sep='\t', header=False, index=False)
+        pd.DataFrame([vals], columns=ORDER_HEADER_COLUMN_ORDER).to_csv(path_or_buf=tsv_buf, sep='\t', header=True, index=False)
+        raw_tsv = pd.DataFrame([vals], columns=ORDER_HEADER_COLUMN_ORDER).to_csv(path_or_buf=None, sep='\t', header=True, index=False)
         return tsv_buf, raw_tsv
 

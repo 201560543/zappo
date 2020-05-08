@@ -31,7 +31,12 @@ jobs:
             virtualenv venv
             . venv/bin/activate
             pip install -r app/requirements.txt
-
+            sudo apt-get update
+            sudo apt-get install mysql-server
+            sudo service mysql start
+            sudo mysql -e "show databases; create database zappo;"
+            sudo mysql zappo < ./data/sql_data/dummy.sql
+    
       - save_cache:
           paths:
             - ./venv

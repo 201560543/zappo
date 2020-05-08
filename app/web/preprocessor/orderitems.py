@@ -169,6 +169,25 @@ class OrderitemsDF():
             self._TableDataFrame = self._TableDataFrame.drop(column, axis=1)
         self._TableDataFrame[regex_cap_group_cols] = extracted_groups
 
+    def iter_row_and_pull(self, column, col_idx, num_expected_tokens):
+        """
+        If an expected token is violated, iterate through rows and pull values from next column
+        """
+        current_app.logger.info(f"Detected column with an expected number of columns that was not read by OCR: Column: {column} | Expected Tokens: {num_expected_tokens}")
+        # Checking if row has required tokens
+        # Setting a counter to check if values were pulled for debugging
+        values_pulled = 0
+        for row_idx in range(len(self._TableDataFrame)):
+            row_vals = self._TableDataFrame.iloc[row_idx,col_idx].split()
+            if len(row_vals) < num_expected_tokens:
+                values_pulled += 1
+                missing_tokens = num_expected_tokens-len(row_vals)
+                self.pull_from_next_col(target_row_idx=row_idx, target_col_idx=col_idx, missing_tokens=missing_tokens)
+            else:
+                pass
+        if values_pulled > 0:
+            current_app.logger.info(f"Column '{column}' pulled from {values_pulled} rows because expected tokens were not met.")
+
     def unbleed_columns(self, expected_columns, expec_tokens, expec_dtypes, inserted_columns, expec_regex):
         """
         Unbleed algorithm...
@@ -196,20 +215,24 @@ class OrderitemsDF():
                 # Handling reinserted columns with an expected number of tokens as a special case because these
                 # ...will be empty if unbleed does not push values into them
                 if column in inserted_columns:
-                    current_app.logger.info(f"Detected column with an expected number of columns that was not read by OCR: Column: {column} | Expected Tokens: {num_expected_tokens}")
-                    # Checking if row has required tokens
-                    # Setting a counter to check if values were pulled for debugging
-                    values_pulled = 0
-                    for row_idx in range(len(self._TableDataFrame)):
-                        row_vals = self._TableDataFrame.iloc[row_idx,col_idx].split()
-                        if len(row_vals) < num_expected_tokens:
-                            values_pulled += 1
-                            missing_tokens = num_expected_tokens-len(row_vals)
-                            self.pull_from_next_col(target_row_idx=row_idx, target_col_idx=col_idx, missing_tokens=missing_tokens)
-                        else:
-                            pass
-                    if values_pulled > 0:
-                        current_app.logger.info(f"Column '{column}' pulled from {values_pulled} rows because expected tokens were not met.")
+
+                    self.iter_row_and_pull(column, col_idx, num_expected_tokens)
+                # TO DO: Delete below lines if the method above breaks (Note: moved below code into iter_row_and_pull to clean this up)
+                #     current_app.logger.info(f"Detected column with an expected number of columns that was not read by OCR: Column: {column} | Expected Tokens: {num_expected_tokens}")
+                #     # Checking if row has required tokens
+                #     # Setting a counter to check if values were pulled for debugging
+                #     values_pulled = 0
+                #     for row_idx in range(len(self._TableDataFrame)):
+                #         row_vals = self._TableDataFrame.iloc[row_idx,col_idx].split()
+                #         if len(row_vals) < num_expected_tokens:
+                #             values_pulled += 1
+                #             missing_tokens = num_expected_tokens-len(row_vals)
+                #             self.pull_from_next_col(target_row_idx=row_idx, target_col_idx=col_idx, missing_tokens=missing_tokens)
+                #         else:
+                #             pass
+                #     if values_pulled > 0:
+                #         current_app.logger.info(f"Column '{column}' pulled from {values_pulled} rows because expected tokens were not met.")
+                
                 # If we have num_expected_tokens, run unbleed
                 else:
                     self.unbleed_single_column(column, num_expected_tokens=num_expected_tokens)
@@ -282,16 +305,18 @@ class OrderitemsDF():
 
         # Run expectations method - checks read DF against template expectations
         current_app.logger.info("Evaluating Expectations")
+        print('=====BEFORE EXPECTATIONS=====')
+        print(self._TableDataFrame)
         self.evaluate_expectations(template_name=template_name)
 
         # Remove non items again in case unbleed rearranged an invalid value under item_number
         current_app.logger.info("Removing Nonitem Rows in case unbleed rearranged")
         self.remove_nonitem_rows()
 
-    def set_header_values(self, invoice_number, account_number, supplier, s3_image_key):
+    def set_header_values(self, invoice_number, account_number, supplier_org_num, s3_image_key):
         self._TableDataFrame['invoice_number'] = invoice_number
         self._TableDataFrame['account_number'] = account_number
-        self._TableDataFrame['supplier'] = supplier
+        self._TableDataFrame['organization_number'] = supplier_org_num
         self._TableDataFrame['s3_image_key'] = s3_image_key
 
     def convert_DF_to_Orderitem_objs(self):
@@ -329,8 +354,8 @@ class OrderitemsDF():
         try:
             self.set_column_order_for_export()
             tsv_buf = StringIO()
-            self._TableDataFrame.to_csv(path_or_buf=tsv_buf, sep='\t', header=False, index=False)
-            raw_tsv = self._TableDataFrame.to_csv(path_or_buf=None, sep='\t', header=False, index=False)
+            self._TableDataFrame.to_csv(path_or_buf=tsv_buf, sep='\t', header=True, index=False)
+            raw_tsv = self._TableDataFrame.to_csv(path_or_buf=None, sep='\t', header=True, index=False)
             return tsv_buf, raw_tsv
         except:
             current_app.logger.error("Error occurred when exporting orderitems to buffer and tsv")

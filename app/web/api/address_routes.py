@@ -1,17 +1,18 @@
 from . import address
 from web.models.address import Address
-from web.api.api_utils import converter
+from web.api.api_utils import converter, exception_handler
 from datetime import date as d
 from datetime import datetime as dt
 from web.database import db
 import json
-from flask import jsonify, request, current_app
+from flask import jsonify, request, current_app, abort
 
 @address.route('/', methods=['GET'])
-def get_all_accounts(return_json=True):
+@exception_handler(custom_msg='Issue in fetching all addresses')
+def get_all_adresses(return_json=True):
     # TO DO: Add error handling
     results = db.session.query(Address).all()
-    result_dicts = [adr.as_dict() for adr in results]
+    result_dicts = [adr.as_dict() for adr in results if adr.is_deleted==0] # Condition to not reveal soft-deleted address to client
     current_app.logger.info(result_dicts)
     if return_json == True:
         return json.dumps(result_dicts, default=converter)
@@ -19,6 +20,7 @@ def get_all_accounts(return_json=True):
         return result_dicts
 
 @address.route('/create', methods=['POST'])
+@exception_handler(custom_msg='Issue in POSTing new address')
 def create_address():
     # TODO: Add error handling
     body = {}
@@ -51,4 +53,22 @@ def create_address():
     db.session.close()
     body['success']=True
     return jsonify(body)
+
+@address.route('/delete/<int:address_id>', methods=['DELETE'])
+@exception_handler(custom_msg='Issue in soft DELETE-ing address')
+def soft_delete_address(address_id):
+    result = db.session.query(Address).filter_by(id=address_id).one_or_none()
+    if result == None:
+        abort(404)
+    current_app.logger.info(f"Record to be soft deleted: Address.id={address_id}")
+    # Set delete flag
+    result.is_deleted=1
+    # Commit changes
+    db.session.commit()
+    body = {
+        "success": True,
+        "message": "Record set to deleted",
+        "record": result.as_dict()
+    }
+    return jsonify(body), 202
 
