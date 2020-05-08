@@ -13,6 +13,7 @@
 			"item no": "item_number",
 			"item no.": "item_number",
 			"quantity ordered": "order_quantity",
+			"quantity shipped": "shipped_quantity",
 			"ordered": "order_quantity",
 			"shipped": "shipped_quantity",
 			"unit": "unit",
@@ -22,8 +23,10 @@
 			"unit weight": "unit_weight",
 			"ext weight": "weight",
 			"ext. weight": "weight",
+			"ext. t. weight": "weight",
 			"unit price": "price",
-			"ext price": "total_price",		
+			"ext price": "total_price",	
+			"xt. price": "total_price",		
 			"ext. price": "total_price"			
 		}
 	},
@@ -31,7 +34,7 @@
 		"item_number": {"num_tokens": 1, "data_type": "int"},
 		"order_quantity": {"num_tokens": 1, "data_type": "int"},
 		"shipped_quantity": {"num_tokens": 1, "data_type": "int"},
-		"unit": {"num_tokens": 1, "data_type": "int"},
+		"unit": {"num_tokens": 1, "data_type": "string"},
 		"size": {
 			"num_tokens": null, "data_type": "string",
 			"regex_summary": {
