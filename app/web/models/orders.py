@@ -80,8 +80,17 @@ class Order(db.Model):
         """
         try:
             if self.date_format:
-                _date = dt.strptime(self.invoice_date, self.date_format)
-                self.invoice_date = dt.strftime(_date, DB_DATE_FORMAT)
+                if isinstance(self.date_format, list):
+                    for fmt in self.date_format:
+                        try:
+                            _date = dt.strptime(self.invoice_date, fmt)
+                            self.invoice_date = dt.strftime(_date, DB_DATE_FORMAT)
+                            break
+                        except:
+                            continue                        
+                else:
+                    _date = dt.strptime(self.invoice_date, self.date_format)
+                    self.invoice_date = dt.strftime(_date, DB_DATE_FORMAT)
             else:
                 # In case there is no date_format, then simply replace the characters.
                 self.invoice_date = self.invoice_date.replace(" ","-")
