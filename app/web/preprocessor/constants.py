@@ -3,7 +3,7 @@ TEMPLATES_DIR = './web/preprocessor/templates/'
 SPREADERS = ['description']
 
 REGEX_MAP = {
-	"float": "[-+]?\d*\.\d+|$",
+	"float": "[-+]?\d*\.?\d+|$",
 	# "float"
 	# [-+] # option magnitude sign
 	# ?\d*\.\d+ # should always contain starting digit(s) with decimal followed by some more digit(s)
