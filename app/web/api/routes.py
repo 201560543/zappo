@@ -42,7 +42,7 @@ def server_error(e):
 
 
 @api.route('/')
-@requires_auth
+# @requires_auth @ Disabled this decorator because this route is required for ELB health check
 def hello_whale():
     return render_template("whale_hello.html")
 
