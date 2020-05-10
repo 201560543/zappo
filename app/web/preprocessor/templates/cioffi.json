@@ -1,0 +1,41 @@
+{
+	"mapper": {
+		"order": {
+			"number:": "invoice_number",
+			"number": "invoice_number",
+			"account": "customer_account_number",
+			"bill to": "sold_to",
+			"invoice mo": "invoice_date",
+			"date": "invoice_date",
+			"terms": "invoice_term_name",
+			"termsc": "invoice_term_name",
+			"charge": "order_total",
+			"sub total": "invoice_subtotal",
+			"sub tota": "invoice_subtotal"
+		},
+		"order_item": {
+			"item number": "item_number",
+			"quantity": "shipped_quantity",
+			"pack size": "size",
+			"item description": "description",
+			"description": "description",
+			"unit price": "price",
+			"extended price": "total_price"			
+		}
+	},
+	"expectation_checks": {
+		"item_number": {"num_tokens": 1, "data_type": "string"},
+		"shipped_quantity": {"num_tokens": 1, "data_type": "float"},
+		"description": {"num_tokens": null, "data_type": "string"},
+		"price": {"num_tokens": null, "data_type": "float"},
+		"total_price": {"num_tokens": null, "data_type": "float"}
+	},
+	"column_order": [
+		"item_number",
+		"description",
+		"shipped_quantity",
+		"price",
+		"total_price"
+	],
+	"date_format": "%m/%d/%Y"
+}

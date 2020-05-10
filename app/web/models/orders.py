@@ -69,7 +69,11 @@ class Order(db.Model):
                             if val is not None}
 
         # Remove all empty keys
-        del matched_keys_raw['']
+        try:
+            del matched_keys_raw['']
+        except KeyError:
+            # If no empty key, pass
+            pass
 
         return {**matched_keys_raw, **failover(matched_keys_raw, order_template, self._Page)}
     
