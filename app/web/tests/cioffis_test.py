@@ -147,3 +147,60 @@ class Cioffis3(CommonTests, unittest.TestCase):
                 'price': '12.861', 'total_price': '12.86'}
             )
 
+
+class Cioffis4(CommonTests, unittest.TestCase):
+    def setUp(self):
+        self.app = create_app(base)
+        self.response = file_load("../data/cioffis/20200420_200503.jpg.json")
+        self.doc = Document(self.response)
+        
+    def test_orders(self):
+        self.order = self.compute_order(self.doc.pages[0], template_name='cioffi.json')
+        self.orders_details('779794', '2016-10-07', '1561')
+    
+    def test_order_items(self):
+        with self.app.app_context():
+            self.processed_doc = ProcessedDocument(self.doc, '', '', '', 'cioffi.json')
+            self.processed_doc.processDocument()
+            df = self.processed_doc._orderitem_obj._TableDataFrame
+            # First row
+            self.check_order_items_row(
+                df.iloc[0],
+                {'item_number': '8005121031126', 'shipped_quantity': '9',
+                'price': '2.691', 'total_price': '24.22'}
+            )
+            # Second row
+            self.check_order_items_row(
+                df.iloc[1],
+                {'item_number': '8005709300262', 'shipped_quantity': '1',
+                'price': '2.061', 'total_price': '2.06'}
+            )
+            # Third row
+            self.check_order_items_row(
+                df.iloc[2],
+                {'item_number': '80538790', 'shipped_quantity': '1',
+                'price': '18.621', 'total_price': '18.62'}
+            )
+            # Fourth row
+            self.check_order_items_row(
+                df.iloc[3],
+                {'item_number': 'ws00106', 'shipped_quantity': '.515',
+                'price': '29.99', 'total_price': '15.44'}
+            )
+            # Fifth row
+            self.check_order_items_row(
+                df.iloc[4],
+                {'item_number': 'ws00107', 'shipped_quantity': '.155',
+                'price': '32.99', 'total_price': '5.11'}
+            )
+            # Sixth row
+            self.check_order_items_row(
+                df.iloc[5],
+                {'item_number': 'ws00436', 'shipped_quantity': '.215',
+                'price': '31.99', 'total_price': '6.88'}
+            )
+            # Eight row
+            self.check_order_items_row(
+                df.iloc[6],
+                {'item_number': '0348'}
+            )
