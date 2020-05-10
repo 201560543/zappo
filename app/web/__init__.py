@@ -1,13 +1,18 @@
 import os
 import re
 import logging
-from flask import Flask, g
+from flask import Flask, g, session
 from flask_migrate import Migrate
 from web.api.routes import api
 from web.api.account_routes import account
 from web.api.address_routes import address
+from web.api.organization_routes import organization
+from web.api.supplier_routes import supplier
 from flask_sqlalchemy import SQLAlchemy
 from .database import db, Base
+from .auth import *
+import inspect
+from flask_cors import CORS
 
 logger = logging.getLogger(__name__)
 
@@ -18,19 +23,42 @@ def camelize_classname(base, tablename, table):
             re.sub(r'_([a-z])', lambda m: m.group(1).upper(), tablename[1:]))
 
 
+def register_extensions(app):
+    """
+    Function to register all extensions
+    """
+    auth_base_url = os.environ.get('AUTH0_BASE_URL', 'https://dev-zappotrack.auth0.com')
+    auth.oauth.init_app(app)
+    auth.auth0 = auth.oauth.register(
+        'auth0',
+        client_id=os.environ.get('AUTH0_CLIENT_ID'),
+        client_secret=os.environ.get('AUTH0_CLIENT_SECRET'),
+        api_base_url=auth_base_url,
+        access_token_url=f'{auth_base_url}/oauth/token',
+        authorize_url=f'{auth_base_url}/authorize',
+        client_kwargs={
+            'scope': 'openid profile email',
+        },
+    )
+
+    db.app = app
+    db.init_app(app)
+    cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+    
 def create_app(config_name):
     # create app instance
     app = Flask(__name__)
-
     # add configuration
     app.config.from_object(config_name)
-    app.logger.setLevel(logging.DEBUG)
+    # app.logger.setLevel(logging.DEBUG)
     app.logger.info(os.environ)
     app.logger.info(app.config)
 
+
     # register extensions
-    db.app = app
-    db.init_app(app)
+    register_extensions(app)
+    # db.app = app
+    # db.init_app(app)
 
     Base.prepare(db.engine, reflect=True)
 
@@ -44,8 +72,8 @@ def create_app(config_name):
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(account, url_prefix='/account')
     app.register_blueprint(address, url_prefix='/address')
-
+    app.register_blueprint(organization, url_prefix='/organization')
+    app.register_blueprint(supplier, url_prefix='/supplier')
 
     return app
-
 

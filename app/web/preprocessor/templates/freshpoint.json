@@ -6,37 +6,46 @@
 			"customer no.": "customer_account_number",
 			"invoice date": "invoice_date",
 			"terms": "invoice_term_name",
-			"ship to": "raw_sold_to_info"
+			"ship to": "raw_sold_to_info",
+			"sub total": "invoice_subtotal"
 		},
 		"order_item": {
 			"item no": "item_number",
+			"item no.": "item_number",
 			"quantity ordered": "order_quantity",
 			"quantity shipped": "shipped_quantity",
+			"ordered": "order_quantity",
+			"shipped": "shipped_quantity",
 			"unit": "unit",
 			"size": "size",
 			"brand": "brand",
 			"item description": "description",
-			"unit weight": "weight",
-			"ext weight": "total_weight",
+			"unit weight": "unit_weight",
+			"ext weight": "weight",
+			"ext. weight": "weight",
+			"ext. t. weight": "weight",
 			"unit price": "price",
-			"ext price": "total_price"			
+			"ext price": "total_price",	
+			"xt. price": "total_price",		
+			"ext. price": "total_price"			
 		}
 	},
 	"expectation_checks": {
 		"item_number": {"num_tokens": 1, "data_type": "int"},
 		"order_quantity": {"num_tokens": 1, "data_type": "int"},
 		"shipped_quantity": {"num_tokens": 1, "data_type": "int"},
-		"unit": {"num_tokens": 1, "data_type": "int"},
+		"unit": {"num_tokens": 1, "data_type": "string"},
 		"size": {
 			"num_tokens": null, "data_type": "string",
 			"regex_summary": {
-				"regex":"([0-9]*\\-?\\.?[0-9]*)\\s?([a-zA-Z#]*)",
+				"regex":"([0-9]*\\-?\\.?[0-9]|(?:per))\\s?([a-zA-Z#]*|(?:each))",
 				"capture_group_columns": ["size", "measure"]
 			}
 		},
 		"brand": {"num_tokens": null, "data_type": "string"},
 		"description": {"num_tokens": null, "data_type": "string"},
-		"weight": {"num_tokens": null, "data_type": "float"},
+		"unit_weight": {"num_tokens": 1, "data_type": "float"},
+		"weight": {"num_tokens": 1, "data_type": "float"},
 		"price": {"num_tokens": null, "data_type": "float"},
 		"total_price": {"num_tokens": null, "data_type": "float"}
 	},

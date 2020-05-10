@@ -25,7 +25,7 @@
 
 on:
   push:
-    branches: ["master"]
+    branches: ["stage"]
     
 name: Deploy to Amazon ECS
 
@@ -53,7 +53,7 @@ jobs:
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: preprocessor
+        ECR_REPOSITORY: staging-preprocessor
         IMAGE_TAG: ${{ github.sha }}
         DB_HOST: ${{ secrets.DB_HOST }}
         MYSQL_DB_BIND: ${{ secrets.MYSQL_DB_BIND }}
@@ -75,14 +75,14 @@ jobs:
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: aws-ecs.json
-        container-name: preprocessor
+        task-definition: stage-aws-ecs.json
+        container-name: stage-preprocessor
         image: ${{ steps.build-image.outputs.image }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: preprocessor-svc
+        service: stage-preprocessor
         cluster: preprocessing-cluster
         wait-for-service-stability: true
