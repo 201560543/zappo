@@ -22,9 +22,9 @@ class MyTest(LiveServerTestCase):
         response = requests.get(f'{self.get_server_url()}/account')
         self.assertEqual(response.status_code, 200)
 
-    def test_server_is_auth_check(self):
+    def test_server_is_check(self):
         response = requests.get(f'{self.get_server_url()}/api')
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 200)
     
     # def test_account_api_save(self):
     #     try:
