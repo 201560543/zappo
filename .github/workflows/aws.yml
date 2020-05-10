@@ -65,8 +65,8 @@ jobs:
         # push it to ECR so that it can
         # be deployed to ECS.
         echo pwd
-        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg DB_HOST=${DB_HOST}\
-        --build-arg MYSQL_DB_BIND=${MYSQL_DB_BIND} --build-arg MEMSQL_DB_BIND=${MEMSQL_DB_BIND}\
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --build-arg DB_HOST=${DB_HOST} \
+        --build-arg MYSQL_DB_BIND=${MYSQL_DB_BIND} --build-arg MEMSQL_DB_BIND=${MEMSQL_DB_BIND} \
         --build-arg AUTH0_CLIENT_ID=${AUTH0_CLIENT_ID} --build-arg AUTH0_CLIENT_SECRET=${AUTH0_CLIENT_SECRET} .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
