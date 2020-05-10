@@ -20,7 +20,8 @@
 			"item description": "description",
 			"description": "description",
 			"unit price": "price",
-			"extended price": "total_price"			
+			"extended price": "total_price",
+			"price": "total_price"	
 		}
 	},
 	"expectation_checks": {
