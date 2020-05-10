@@ -25,3 +25,13 @@ class CommonTests(object):
                         account_number=account_number)
         order.set_order_values(first_page, template_name)
         return order
+    
+    def orders_details(self, invoice_number, invoice_date, customer_account_number):
+        # Order needs to be set to use this
+        self.assertEqual(self.order.invoice_number, invoice_number)
+        self.assertEqual(self.order.invoice_date, invoice_date)
+        self.assertEqual(self.order.customer_account_number, customer_account_number)
+
+    def check_order_items_row(self, row, measures):
+        for k, v in measures.items():
+            self.assertEqual(row[k], v)
