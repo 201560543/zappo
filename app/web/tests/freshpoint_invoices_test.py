@@ -36,3 +36,36 @@ class FreshTest1(CommonTests, unittest.TestCase):
             self.assertEqual(df.iloc[1]['weight'], '14.00')
             self.assertEqual(df.iloc[1]['price'], '25.20')
 
+class FreshTest2(CommonTests, unittest.TestCase):
+    def setUp(self):
+        self.app = create_app(base)
+        self.response = file_load("../data/freshpoint/20200424_085933.jpg.json")
+        self.doc = Document(self.response)
+        
+    def test_orders(self):
+        self.order = self.compute_order(self.doc.pages[0])
+        self.assertEqual(self.order.invoice_number, '1496695')
+        self.assertEqual(self.order.invoice_date, '2018-03-23')
+        self.assertEqual(self.order.customer_account_number, '605211')
+    
+    def test_order_items(self):
+        with self.app.app_context():
+            self.processed_doc = ProcessedDocument(self.doc, '', '', '', 'freshpoint.json')
+            self.processed_doc.processDocument()
+            df = self.processed_doc._orderitem_obj._TableDataFrame
+            self.check_order_items_row(
+                df.iloc[0],
+                {'item_number': '680109', 'shipped_quantity': '2', 'weight': '2.00',
+                'price': '12.65', 'total_price': '25.30'}
+            )
+            self.check_order_items_row(
+                df.iloc[1],
+                {'item_number': '680459', 'shipped_quantity': '2', 'weight': '2.00',
+                'price': '11.65', 'total_price': '23.30'}
+            )
+            self.check_order_items_row(
+                df.iloc[2],
+                {'item_number': '238040', 'shipped_quantity': '1', 'weight': '14.00',
+                'price': '24.30'}
+            )
+
