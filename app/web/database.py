@@ -5,6 +5,9 @@ db = SQLAlchemy()
 Base = automap_base()
 
 class BaseMixin():
+    """
+    Base dunder methods and utility as_dict method for debugging and returning data for models
+    """
     def __repr__(self):
         return str(self.__dict__)
 

@@ -72,3 +72,45 @@ def soft_delete_address(address_id):
     }
     return jsonify(body), 202
 
+
+def insert_address(data, new_org_id, dt_now, org=True, add=True, flush=True):
+    """
+    Utility function to insert new address 
+
+    data: POST request json body
+    new_org_id: associated organization id
+    dt_now: pre-calculated datetime object
+    org: Whether input data is an organization address or location address. Parameters will differ based on this choice
+    add: whether db.session will add
+    flush: whether db.session will flush
+    """
+    if org==True:
+        new_addr = Address(
+            organization_id=new_org_id,
+            address_type_id=1, # 1 (sold to) is the default organization address type
+            country_id=data['org_country_id'],
+            address_name=data['org_street_address'],
+            postal_code=data['org_postal_code'],
+            # province_state=data['org_provice_state'], # TO DO: Add this column to the database before enabling this as a parameter
+            city_name=data['org_city'],
+            from_date=dt_now.date(),
+            created_at=dt_now
+        )
+    else: 
+        new_addr = Address(
+            organization_id=new_org_id,
+            address_type_id=2, # 1 (ship to) is the default organization address type
+            country_id=data['loc_country_id'],
+            address_name=data['loc_street_address'],
+            postal_code=data['loc_postal_code'],
+            # province_state=data['loc_provice_state'], # TO DO: Add this column to the database before enabling this as a parameter
+            city_name=data['loc_city'],
+            from_date=dt_now,
+            created_at=dt_now
+        )
+    if add==True:
+        db.session.add(new_addr)
+    if flush == True:
+        db.session.flush()
+
+    return new_addr

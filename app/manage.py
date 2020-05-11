@@ -17,4 +17,8 @@ if __name__ == '__main__':
     from web.models.order_items import OrderItem
     from web.models.account import Account
     from web.models.supplier import Supplier
+    # To do, run this to get new tables
+    from web.models.person import Person
+    from web.models.person_account import PersonAccount
+    from web.models.restaurant import Restaurant
     manager.run()

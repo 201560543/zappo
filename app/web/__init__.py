@@ -8,6 +8,9 @@ from web.api.account_routes import account
 from web.api.address_routes import address
 from web.api.organization_routes import organization
 from web.api.supplier_routes import supplier
+from web.api.person_routes import person
+from web.api.person_account_routes import person_account
+from web.api.restaurant_routes import restaurant
 from flask_sqlalchemy import SQLAlchemy
 from .database import db, Base
 from .auth import *
@@ -74,6 +77,9 @@ def create_app(config_name):
     app.register_blueprint(address, url_prefix='/address')
     app.register_blueprint(organization, url_prefix='/organization')
     app.register_blueprint(supplier, url_prefix='/supplier')
+    app.register_blueprint(person, url_prefix='/person')
+    app.register_blueprint(person_account, url_prefix='/person_account')
+    app.register_blueprint(restaurant, url_prefix='/restaurant')
 
     return app
 

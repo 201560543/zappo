@@ -5,6 +5,8 @@ from web.models.organization import Organization
 from web.api.api_utils import converter, exception_handler
 from web.database import db
 from flask import current_app, request, abort
+import uuid
+from datetime import datetime as dt
 
 @organization.route('/', methods=['GET'])
 @exception_handler(custom_msg='Issues in fetching all organizations')
@@ -37,3 +39,26 @@ def get_organization_by_org_number(org_number, return_json=True):
         return json.dumps(result_dict, default=converter)
     else:
         return result_dict
+
+def insert_organization(data, dt_now, add=True, flush=True):
+    """
+    Utility function to insert new organization 
+
+    data: POST request json body
+    dt_now: pre-calculated datetime object
+    add: whether db.session will add
+    flush: whether db.session will flush
+    """
+    new_org = Organization(
+        organization_type_id=2, # 2 (restaurant) is the default for now
+        organization_number=uuid.uuid1().hex,
+        industry_id=1, # 1 (restaurants) is the default for now
+        organization_name=data['organization_name'],
+        created_at=dt_now
+    )
+    if add==True:
+        db.session.add(new_org)
+    if flush == True:
+        db.session.flush()
+
+    return new_org

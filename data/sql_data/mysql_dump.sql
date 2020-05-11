@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `organization_id` int unsigned NOT NULL COMMENT 'An organization can have one or multimple account accross time. Account could be closed. Another one opened.',
+  `address_id` int unsigned NOT NULL DEFAULT '0',
   `account_number` char(32) NOT NULL COMMENT 'Possible account number (auto-generated)',
   `account_name` varchar(50) NOT NULL,
   `is_active` tinyint unsigned NOT NULL DEFAULT '1' COMMENT 'Allow track if account is active or de-activated (non payment). Inactive account cannot login.',
@@ -33,7 +34,7 @@ CREATE TABLE `account` (
   `is_deleted` tinyint unsigned NOT NULL DEFAULT '0',
   `timezone_name` varchar(50) NOT NULL COMMENT 'Timezone of the account.',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -42,8 +43,68 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES (1,1,'7d6ad4d080c911eab51c0aedbe94','Truffles Cafe',1,'2020-04-17 16:35:46','0000-00-00 00:00:00',0,''),(2,5,'b893684f82a711eab51c0aedbe94','Truffles Truck 2',1,'2020-04-20 01:39:05','0000-00-00 00:00:00',0,''),(3,6,'2789b95682a911eab51c0aedbe94','Truffles Cafe Anvil Cntr',1,'2020-04-20 01:49:21','0000-00-00 00:00:00',0,''),(4,8,'debddd3782a911eab51c0aedbe94','Oscar\'s Pub',1,'2020-04-20 01:54:28','0000-00-00 00:00:00',0,''),(5,10,'8e87af2382aa11eab51c0aedbe94','FUUD FOODS',1,'2020-04-20 01:59:23','0000-00-00 00:00:00',0,''),(6,0,'account_number','account_name',0,'0000-00-00 00:00:00','0000-00-00 00:00:00',0,'timezone_name'),(7,99,'39e7c8cc8d8e11eaa16f8c8590b7f433','test_account',1,'2020-05-03 15:34:18',NULL,0,'test tz');
+INSERT INTO `account` VALUES (1,1,0,'7d6ad4d080c911eab51c0aedbe94','Truffles Cafe',1,'2020-04-17 16:35:46',NULL,0,''),(2,5,0,'b893684f82a711eab51c0aedbe94','Truffles Truck 2',1,'2020-04-20 01:39:05',NULL,0,''),(3,6,0,'2789b95682a911eab51c0aedbe94','Truffles Cafe Anvil Cntr',1,'2020-04-20 01:49:21',NULL,0,''),(4,8,0,'debddd3782a911eab51c0aedbe94','Oscar\'s Pub',1,'2020-04-20 01:54:28',NULL,0,''),(5,10,0,'8e87af2382aa11eab51c0aedbe94','FUUD FOODS',1,'2020-04-20 01:59:23',NULL,0,'');
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `account_plan`
+--
+
+DROP TABLE IF EXISTS `account_plan`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `account_plan` (
+  `id` smallint unsigned NOT NULL AUTO_INCREMENT,
+  `plan_name` varchar(100) NOT NULL COMMENT 'Basic, Premium, Pro',
+  `plan_price` decimal(5,2) unsigned NOT NULL,
+  `total_unit` int unsigned NOT NULL DEFAULT '0',
+  `length_measure` int DEFAULT NULL COMMENT 'Day, Week, Month',
+  `is_active` tinyint unsigned NOT NULL DEFAULT '1' COMMENT 'Plan could be de-activated',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Subscription plan for an account';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `account_plan`
+--
+
+LOCK TABLES `account_plan` WRITE;
+/*!40000 ALTER TABLE `account_plan` DISABLE KEYS */;
+/*!40000 ALTER TABLE `account_plan` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `account_subscription_period`
+--
+
+DROP TABLE IF EXISTS `account_subscription_period`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `account_subscription_period` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `account_id` int unsigned NOT NULL,
+  `account_plan_id` smallint unsigned NOT NULL,
+  `from_date` date NOT NULL,
+  `thru_date` date DEFAULT NULL,
+  `is_active` tinyint unsigned NOT NULL DEFAULT '1',
+  `is_trial` tinyint unsigned NOT NULL DEFAULT '0',
+  `is_delinquent` tinyint unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `fk_account_subscription_period_account_plan` (`account_plan_id`),
+  CONSTRAINT `fk_account_subscription_period_account_plan` FOREIGN KEY (`account_plan_id`) REFERENCES `account_plan` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Subscription period for an account.';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `account_subscription_period`
+--
+
+LOCK TABLES `account_subscription_period` WRITE;
+/*!40000 ALTER TABLE `account_subscription_period` DISABLE KEYS */;
+/*!40000 ALTER TABLE `account_subscription_period` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -308,7 +369,7 @@ CREATE TABLE `organization` (
 
 LOCK TABLES `organization` WRITE;
 /*!40000 ALTER TABLE `organization` DISABLE KEYS */;
-INSERT INTO `organization` VALUES (1,2,2,'d0a6750c85ce11eab51c0aedbe94',1,'Truffles Cafe',NULL,'2020-04-17 16:33:36',NULL,0,'Pacific Daylight Time/Vancouver'),(2,NULL,4,'d589cb7d85ce11eab51c0aedbe94',1,'TRUFFLES FINE FOODS LTD.',NULL,'2020-04-17 16:33:36',NULL,0,'Pacific Daylight Time/Vancouver'),(3,NULL,3,'d69e334c85ce11eab51c0aedbe94',1,'Sysco Canada, Inc',NULL,'2020-04-17 16:33:36',NULL,0,'Pacific Daylight Time/Vancouver'),(4,3,3,'d7a8755d85ce11eab51c0aedbe94',1,'Sysco Vancouver',NULL,'2020-04-17 16:33:36',NULL,0,'Pacific Daylight Time/Vancouver'),(5,2,2,'d8c2411685ce11eab51c0aedbe94',1,'Truffles Truck 2',NULL,'2020-04-20 01:35:47',NULL,0,'Pacific Daylight Time/Vancouver'),(6,2,2,'da707ff085ce11eab51c0aedbe94',1,'Truffles Cafe Anvil Cntr',NULL,'2020-04-20 01:49:04',NULL,0,'Pacific Daylight Time/Vancouver'),(7,NULL,4,'dbc2dee985ce11eab51c0aedbe94',1,'Oscar\'s Pub',NULL,'2020-04-20 01:52:56',NULL,0,'Pacific Daylight Time/Vancouver'),(8,7,2,'dcefc9fe85ce11eab51c0aedbe94',1,'Oscar\'s Pub',NULL,'2020-04-20 01:54:01',NULL,0,'Pacific Daylight Time/Vancouver'),(9,NULL,4,'de41cffc85ce11eab51c0aedbe94',1,'FUUD FOODS INC.',NULL,'2020-04-20 01:58:17',NULL,0,'Pacific Daylight Time/Vancouver'),(10,9,2,'dfa9dd2f85ce11eab51c0aedbe94',1,'FUUD FOODS',NULL,'2020-04-20 01:58:56',NULL,0,'Pacific Daylight Time/Vancouver'),(11,NULL,3,'f0dba2fd0e8f9bd6bddaab9e2229',1,'Gordon Food Service',NULL,'2020-05-03 20:08:53',NULL,0,'Pacific Daylight Time/Vancouver'),(12,NULL,3,'2c9fb715f5c21ec8f8618efd31b7',1,'Freshpoint Canada',NULL,'2020-05-03 20:10:13',NULL,0,'Pacific Daylight Time/Vancouver'),(13,NULL,3,'d566b38ce530d52aee5dfcd684fe',1,'Cioffi\'s Group',NULL,'2020-05-03 20:10:15',NULL,0,'Pacific Daylight Time/Vancouver'),(14,NULL,3,'d566b38ce530d52aee5dfcd684fe',1,'Snowcap Interior Food Services Ltd',NULL,'2020-05-03 20:10:15',NULL,1,'Pacific Daylight Time/Vancouver'),(15,NULL,3,'58af45984e59ab45ae500984e5d7',1,'Cioffi\'s Group',NULL,'2020-05-03 20:10:17',NULL,1,'Pacific Daylight Time/Vancouver'),(16,NULL,3,'58af45984e59ab45ae500984e5d7',1,'Snowcap Interior Food Services Ltd',NULL,'2020-05-03 20:10:17',NULL,0,'Pacific Daylight Time/Vancouver');
+INSERT INTO `organization` VALUES (1,2,2,'d0a6750c85ce11eab51c0aedbe94',1,'Truffles Cafe',NULL,'2020-04-17 16:33:36',NULL,0,'Pacific Daylight Time/Vancouver'),(2,NULL,4,'d589cb7d85ce11eab51c0aedbe94',1,'TRUFFLES FINE FOODS LTD.',NULL,'2020-04-17 16:33:36',NULL,0,'Pacific Daylight Time/Vancouver'),(3,NULL,3,'d69e334c85ce11eab51c0aedbe94',1,'Sysco Canada, Inc',NULL,'2020-04-17 16:33:36',NULL,0,'Pacific Daylight Time/Vancouver'),(4,3,3,'d7a8755d85ce11eab51c0aedbe94',1,'Sysco Vancouver',NULL,'2020-04-17 16:33:36',NULL,0,'Pacific Daylight Time/Vancouver'),(5,2,2,'d8c2411685ce11eab51c0aedbe94',1,'Truffles Truck 2',NULL,'2020-04-20 01:35:47',NULL,0,'Pacific Daylight Time/Vancouver'),(6,2,2,'da707ff085ce11eab51c0aedbe94',1,'Truffles Cafe Anvil Cntr',NULL,'2020-04-20 01:49:04',NULL,0,'Pacific Daylight Time/Vancouver'),(7,NULL,4,'dbc2dee985ce11eab51c0aedbe94',1,'Oscar\'s Pub',NULL,'2020-04-20 01:52:56',NULL,0,'Pacific Daylight Time/Vancouver'),(8,7,2,'dcefc9fe85ce11eab51c0aedbe94',1,'Oscar\'s Pub',NULL,'2020-04-20 01:54:01',NULL,0,'Pacific Daylight Time/Vancouver'),(9,NULL,4,'de41cffc85ce11eab51c0aedbe94',1,'FUUD FOODS INC.',NULL,'2020-04-20 01:58:17',NULL,0,'Pacific Daylight Time/Vancouver'),(10,9,2,'dfa9dd2f85ce11eab51c0aedbe94',1,'FUUD FOODS',NULL,'2020-04-20 01:58:56',NULL,0,'Pacific Daylight Time/Vancouver'),(11,NULL,3,'f0dba2fd0e8f9bd6bddaab9e2229',1,'Gordon Food Service',NULL,'2020-05-03 20:08:53',NULL,0,'Pacific Daylight Time/Vancouver'),(12,NULL,3,'2c9fb715f5c21ec8f8618efd31b7',1,'Freshpoint Canada',NULL,'2020-05-03 20:10:13',NULL,0,'Pacific Daylight Time/Vancouver'),(13,NULL,3,'d566b38ce530d52aee5dfcd684fe',1,'Cioffi\'s Group',NULL,'2020-05-03 20:10:15',NULL,0,'Pacific Daylight Time/Vancouver'),(14,NULL,3,'',1,'Snowcap Interior Food Services Ltd',NULL,'2020-05-03 20:10:15',NULL,1,'Pacific Daylight Time/Vancouver'),(15,NULL,3,'',1,'Cioffi\'s Group',NULL,'2020-05-03 20:10:17',NULL,1,'Pacific Daylight Time/Vancouver'),(16,NULL,3,'58af45984e59ab45ae500984e5d7',1,'Snowcap Interior Food Services Ltd',NULL,'2020-05-03 20:10:17',NULL,0,'Pacific Daylight Time/Vancouver');
 /*!40000 ALTER TABLE `organization` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -337,6 +398,70 @@ LOCK TABLES `organization_type` WRITE;
 /*!40000 ALTER TABLE `organization_type` DISABLE KEYS */;
 INSERT INTO `organization_type` VALUES (1,'Zappo Track',1,'2020-04-17 16:30:06',NULL),(2,'Restaurant',1,'2020-04-17 16:30:06',NULL),(3,'Supplier',1,'2020-04-17 16:30:06',NULL),(4,'Corporation',1,'2020-04-17 16:30:06',NULL),(5,'organization_type_name',0,'0000-00-00 00:00:00','0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `organization_type` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `person`
+--
+
+DROP TABLE IF EXISTS `person`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `person` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `organization_id` int unsigned NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `email` varchar(65) NOT NULL,
+  `username` varchar(65) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `is_active` tinyint unsigned NOT NULL DEFAULT '1',
+  `created_at` datetime NOT NULL,
+  `udpated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='A person (user) who works for an organization (restaurant, supplier, zappotrack ...).';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `person`
+--
+
+LOCK TABLES `person` WRITE;
+/*!40000 ALTER TABLE `person` DISABLE KEYS */;
+/*!40000 ALTER TABLE `person` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `person_account`
+--
+
+DROP TABLE IF EXISTS `person_account`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `person_account` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `account_id` int unsigned NOT NULL,
+  `person_id` int unsigned NOT NULL,
+  `is_admin` tinyint unsigned NOT NULL DEFAULT '1',
+  `role_name` varchar(100) NOT NULL DEFAULT 'Viewer',
+  `from_date` datetime NOT NULL,
+  `thru_date` datetime DEFAULT NULL,
+  `is_active` tinyint unsigned NOT NULL DEFAULT '1',
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fk_person_account_person` (`person_id`),
+  CONSTRAINT `fk_person_account_person` FOREIGN KEY (`person_id`) REFERENCES `person` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Associating a person to an account. An account can have multiple users, and a user can be associated to multiple accounts.';
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `person_account`
+--
+
+LOCK TABLES `person_account` WRITE;
+/*!40000 ALTER TABLE `person_account` DISABLE KEYS */;
+/*!40000 ALTER TABLE `person_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -458,4 +583,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-09 13:57:09
+-- Dump completed on 2020-05-11 12:45:11
