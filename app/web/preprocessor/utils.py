@@ -75,6 +75,11 @@ def fetch_page_lines(lines, missing_header):
         line_text = remove_special_characters(line.text).lower().strip()
         if line_text == missing_header:
             return next(lines).text
+        # Note 5/9: Testing logic below. If a Word doesn't match the missing header, try failover on line words instead of entire line
+        for idx, word in enumerate(line.words):
+            word_text = remove_special_characters(word.text).lower().strip()
+            if word_text == missing_header:
+                return line.words[idx+1].text
 
 
 def failover(current_data, template_data, page_obj):

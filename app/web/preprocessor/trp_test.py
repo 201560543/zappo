@@ -31,9 +31,10 @@ class ProcessedDocument:
         self._order_buf = order_buf
         self._order_tsv = order_tsv
 
-    def set_orderitem(self, orderitem_buf, orderitem_tsv):
+    def set_orderitem(self, orderitem_buf, orderitem_tsv, orderitem_obj = None):
         self._orderitem_buf = orderitem_buf
         self._orderitem_tsv = orderitem_tsv
+        self._orderitem_obj = orderitem_obj
 
     def processDocument(self):
         for page in self._raw_doc.pages:
@@ -86,7 +87,7 @@ class ProcessedDocument:
                                                 s3_image_key=self._s3_image_key)
                     # Exporting as buffer and raw tsv
                     orderitems_tsv_buf, orderitems_raw_tsv = orderitems.export_items_as_tsv()
-                    self.set_orderitem(orderitems_tsv_buf, orderitems_raw_tsv)
+                    self.set_orderitem(orderitems_tsv_buf, orderitems_raw_tsv, orderitems)
                     return 
                 except KeyError:
                     pass
