@@ -94,36 +94,36 @@ def create_new_account(return_json=True):
     dt_now = dt.now()
     # Insert Organization
     new_org = insert_organization(data=data, dt_now=dt_now, add=True, flush=True)
-    current_app.logger.info('Inserted record:\n',new_org)
+    current_app.logger.info('Inserted record:\n',new_org.as_dict())
     new_org_number = new_org.organization_number # Fetching organization number of new record
     new_org_id = new_org.id # Fetching organization id of new record
     body['organization'] = new_org.as_dict()
     # Insert Org Address
     new_org_addr = insert_address(data=data, new_org_id=new_org_id, dt_now=dt_now, org=True, add=True, flush=False)
-    current_app.logger.info('Inserted record:\n',new_org_addr)
+    current_app.logger.info('Inserted record:\n',new_org_addr.as_dict())
     body['org_address'] = new_org_addr.as_dict()
     # Insert Location Address (Ship to)
     new_loc_addr = insert_address(data=data, new_org_id=new_org_id, dt_now=dt_now, org=False, add=True, flush=True)
-    current_app.logger.info('Inserted record:\n',new_loc_addr)
+    current_app.logger.info('Inserted record:\n',new_loc_addr.as_dict())
     body['loc_address'] = new_loc_addr.as_dict()
     new_loc_addr_id = new_loc_addr.id # Fetching address id of new record
     # Insert Account
     new_accnt = insert_account(data=data, new_org_id=new_org_id, new_loc_addr_id=new_loc_addr_id, dt_now=dt_now, add=True, flush=True)
-    current_app.logger.info('Inserted record:\n',new_accnt)
+    current_app.logger.info('Inserted record:\n',new_accnt.as_dict())
     body['loc_address'] = new_loc_addr.as_dict()
     new_accnt_id = new_accnt.id
     # Insert Person
     new_person = insert_person(data=data, new_org_id=new_org_id, dt_now=dt_now, add=True, flush=True)
-    current_app.logger.info('Inserted record:\n',new_person)
+    current_app.logger.info('Inserted record:\n',new_person.as_dict())
     body['person'] = new_person.as_dict()
     new_person_id = new_person.id
     # Insert PersonAccount
     new_person_accnt = insert_person_account(data=data, new_accnt_id=new_accnt_id, new_person_id=new_person_id, dt_now=dt_now, add=True, flush=False)
-    current_app.logger.info('Inserted record:\n',new_person_accnt)
+    current_app.logger.info('Inserted record:\n',new_person_accnt.as_dict())
     body['person_account'] = new_person_accnt.as_dict()
     # Insert Restaurant
     new_restaurant = insert_restaurant(data=data, new_org_id=new_org_id, dt_now=dt_now, add=True, flush=False)
-    current_app.logger.info('Inserted record:\n',new_restaurant)
+    current_app.logger.info('Inserted record:\n',new_restaurant.as_dict())
     body['restaurant'] = new_restaurant.as_dict()
 
     db.session.commit()
