@@ -16,22 +16,22 @@ def get_all_person_accounts(return_json=True):
     else:
         return result_dict
 
-def insert_person_account(data, new_accnt_id, new_person_id, dt_now, add=True, flush=True):
+def insert_person_account(data, accnt_id, person_id, dt_now, add=True, flush=True):
     """
     Utility function to insert new person_account 
 
     data: POST request json body
-    new_accnt_id: associated account id
-    new_person_id: associated person id
+    accnt_id: associated account id
+    person_id: associated person id
     dt_now: pre-calculated datetime object
     add: whether db.session will add
     flush: whether db.session will flush
     """
     new_person_accnt = PersonAccount(
-        account_id=new_accnt_id,
-        person_id=new_person_id,
-        is_admin=data['is_admin'],  # Default value for new user is admin
-        role_name=data['role_name'], # Default value for new user is admin
+        account_id=accnt_id,
+        person_id=person_id,
+        is_admin=data['is_admin'], 
+        role_name=data['role_name'], 
         from_date=dt_now,
         created_at=dt_now
     )

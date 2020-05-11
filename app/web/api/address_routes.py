@@ -73,12 +73,12 @@ def soft_delete_address(address_id):
     return jsonify(body), 202
 
 
-def insert_address(data, new_org_id, dt_now, org=True, add=True, flush=True):
+def insert_address(data, org_id, dt_now, org=True, add=True, flush=True):
     """
     Utility function to insert new address 
 
     data: POST request json body
-    new_org_id: associated organization id
+    org_id: associated organization id
     dt_now: pre-calculated datetime object
     org: Whether input data is an organization address or location address. Parameters will differ based on this choice
     add: whether db.session will add
@@ -86,7 +86,7 @@ def insert_address(data, new_org_id, dt_now, org=True, add=True, flush=True):
     """
     if org==True:
         new_addr = Address(
-            organization_id=new_org_id,
+            organization_id=org_id,
             address_type_id=1, # 1 (sold to) is the default organization address type
             country_id=data['org_country_id'],
             address_name=data['org_street_address'],
@@ -98,7 +98,7 @@ def insert_address(data, new_org_id, dt_now, org=True, add=True, flush=True):
         )
     else: 
         new_addr = Address(
-            organization_id=new_org_id,
+            organization_id=org_id,
             address_type_id=2, # 1 (ship to) is the default organization address type
             country_id=data['loc_country_id'],
             address_name=data['loc_street_address'],

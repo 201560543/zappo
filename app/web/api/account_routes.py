@@ -87,7 +87,7 @@ def create_new_account(return_json=True):
     6. restaurant
     """
     body = {
-        "success":None
+        'success':None
         }
     # Fetch Relevant Values
     data = request.get_json()
@@ -99,30 +99,30 @@ def create_new_account(return_json=True):
     new_org_id = new_org.id # Fetching organization id of new record
     body['organization'] = new_org.as_dict()
     # Insert Org Address
-    new_org_addr = insert_address(data=data, new_org_id=new_org_id, dt_now=dt_now, org=True, add=True, flush=False)
+    new_org_addr = insert_address(data=data, org_id=new_org_id, dt_now=dt_now, org=True, add=True, flush=False)
     current_app.logger.info('Inserted record:\n',new_org_addr.as_dict())
     body['org_address'] = new_org_addr.as_dict()
     # Insert Location Address (Ship to)
-    new_loc_addr = insert_address(data=data, new_org_id=new_org_id, dt_now=dt_now, org=False, add=True, flush=True)
+    new_loc_addr = insert_address(data=data, org_id=new_org_id, dt_now=dt_now, org=False, add=True, flush=True)
     current_app.logger.info('Inserted record:\n',new_loc_addr.as_dict())
     body['loc_address'] = new_loc_addr.as_dict()
     new_loc_addr_id = new_loc_addr.id # Fetching address id of new record
     # Insert Account
-    new_accnt = insert_account(data=data, new_org_id=new_org_id, new_loc_addr_id=new_loc_addr_id, dt_now=dt_now, add=True, flush=True)
+    new_accnt = insert_account(data=data, org_id=new_org_id, loc_addr_id=new_loc_addr_id, dt_now=dt_now, add=True, flush=True)
     current_app.logger.info('Inserted record:\n',new_accnt.as_dict())
     body['loc_address'] = new_loc_addr.as_dict()
     new_accnt_id = new_accnt.id
     # Insert Person
-    new_person = insert_person(data=data, new_org_id=new_org_id, dt_now=dt_now, add=True, flush=True)
+    new_person = insert_person(data=data, org_id=new_org_id, dt_now=dt_now, add=True, flush=True)
     current_app.logger.info('Inserted record:\n',new_person.as_dict())
     body['person'] = new_person.as_dict()
     new_person_id = new_person.id
     # Insert PersonAccount
-    new_person_accnt = insert_person_account(data=data, new_accnt_id=new_accnt_id, new_person_id=new_person_id, dt_now=dt_now, add=True, flush=False)
+    new_person_accnt = insert_person_account(data=data, accnt_id=new_accnt_id, person_id=new_person_id, dt_now=dt_now, add=True, flush=False)
     current_app.logger.info('Inserted record:\n',new_person_accnt.as_dict())
     body['person_account'] = new_person_accnt.as_dict()
     # Insert Restaurant
-    new_restaurant = insert_restaurant(data=data, new_org_id=new_org_id, dt_now=dt_now, add=True, flush=False)
+    new_restaurant = insert_restaurant(data=data, org_id=new_org_id, dt_now=dt_now, add=True, flush=False)
     current_app.logger.info('Inserted record:\n',new_restaurant.as_dict())
     body['restaurant'] = new_restaurant.as_dict()
 
@@ -131,20 +131,45 @@ def create_new_account(return_json=True):
     db.session.close()
     return json.dumps(body, default=converter), 200
 
-def insert_account(data, new_org_id, new_loc_addr_id, dt_now, add=True, flush=True):
+@account.route('/add-account', methods=['POST'])
+@exception_handler()
+def add_account():
+    """
+    Route to add additional account/location to an existing organization. A logged in user adds a location on the location page.
+
+    Inserts records into the following tables in the following order:
+    1. address
+    2. account
+    3. restaurant
+    """
+    body = {
+        'success': None
+    }
+    # Fetch Relevant Values
+    data = request.get_json()
+    dt_now = dt.now()
+    
+    # Insert Address
+    new_address = insert_address()
+    # Insert Account
+
+    # Insert Restaurant
+
+
+def insert_account(data, org_id, loc_addr_id, dt_now, add=True, flush=True):
     """
     Utility function to insert new account 
 
     data: POST request json body
-    new_org_id: associated organization id
-    new_loc_addr_id: associated address for this account
+    org_id: associated organization id
+    loc_addr_id: associated address for this account
     dt_now: pre-calculated datetime object
     add: whether db.session will add
     flush: whether db.session will flush
     """
     new_accnt = Account(
-        organization_id=new_org_id,
-        address_id=new_loc_addr_id,
+        organization_id=org_id,
+        address_id=loc_addr_id,
         account_number=uuid.uuid1().hex,
         account_name=data['account_name'],
         created_at=dt_now,

@@ -17,18 +17,18 @@ def get_all_restaurants(return_json=True):
         return result_dict
 
 
-def insert_restaurant(data, new_org_id, dt_now, add=True, flush=True):
+def insert_restaurant(data, org_id, dt_now, add=True, flush=True):
     """
     Utility function to insert new person_account 
 
     data: POST request json body
-    new_org_id: associated organization id
+    org_id: associated organization id
     dt_now: pre-calculated datetime object
     add: whether db.session will add
     flush: whether db.session will flush
     """
     new_restaurant = Restaurant(
-        organization_id=new_org_id,
+        organization_id=org_id,
         restaurant_name=data['account_name'],
         created_at=dt_now
     )

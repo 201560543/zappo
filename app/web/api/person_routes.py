@@ -17,18 +17,18 @@ def get_all_people(return_json=True):
         return result_dict
 
 
-def insert_person(data, new_org_id, dt_now, add=True, flush=True):
+def insert_person(data, org_id, dt_now, add=True, flush=True):
     """
     Utility function to insert new person 
 
     data: POST request json body
-    new_org_id: associated organization id
+    org_id: associated organization id
     dt_now: pre-calculated datetime object
     add: whether db.session will add
     flush: whether db.session will flush
     """
     new_person = Person(
-        organization_id=new_org_id,
+        organization_id=org_id,
         first_name=data['first_name'],
         last_name=data['last_name'],
         email=data['email'],
