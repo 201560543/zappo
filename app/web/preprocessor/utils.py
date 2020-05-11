@@ -120,8 +120,16 @@ def update_column_headers(df, template_name):
     template_data = fetch_json(template_name)
     # Fetch the order item template
     order_item_template = template_data.get('mapper').get('order_item')
+    # Fetch the order item template
+    header_indexes = template_data.get('header_indexes', {})
     # Fetch the column headers
     column_headers = [prefix_dictionary_search(header, order_item_template) for header in column_headers]
+    # Match column headers if they are empty and update them
+    if header_indexes:
+        for col_name, index in header_indexes.items():
+            # Either select the existing column or don't
+            column_headers[index] = column_headers[index] or col_name
+
     # Return the correct dataframe with changed column headers
     orders_df = pd.DataFrame(df.values[1:], columns=column_headers)
     # Spread the columns if they are empty
