@@ -131,7 +131,7 @@ def create_new_account(return_json=True):
     db.session.close()
     return json.dumps(body, default=converter), 200
 
-@account.route('/add-account', methods=['POST'])
+@account.route('/add_account', methods=['POST'])
 @exception_handler()
 def add_account():
     """
@@ -148,13 +148,25 @@ def add_account():
     # Fetch Relevant Values
     data = request.get_json()
     dt_now = dt.now()
-    
+    org_id = data['organization_id']
     # Insert Address
-    new_address = insert_address()
+    new_address = insert_address(data=data,org_id=org_id, dt_now=dt_now, org=False, add=True, flush=True)
+    current_app.logger.info('Inserted record:\n',new_address.as_dict())
+    body['address'] = new_address.as_dict()
+    new_address_id = new_address.id
     # Insert Account
-
+    new_account = insert_account(data=data, org_id=org_id,loc_addr_id=new_address_id, dt_now=dt_now, add=True, flush=False)
+    current_app.logger.info('Inserted record:\n',new_account.as_dict())
+    body['account'] = new_account.as_dict()
     # Insert Restaurant
+    new_restaurant = insert_restaurant(data=data, org_id=org_id, dt_now=dt_now, add=True)
+    current_app.logger.info('Inserted record:\n',new_restaurant.as_dict())
+    body['restaurant'] = new_restaurant.as_dict()
 
+    db.session.commit()
+    body['success'] = True
+    db.session.close()
+    return json.dumps(body, default=converter)
 
 def insert_account(data, org_id, loc_addr_id, dt_now, add=True, flush=True):
     """
