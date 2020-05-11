@@ -81,3 +81,73 @@ Sample URL for S3 on local:
 http://localhost:5000/api/s3-connect?file_name=113375995671546834861/0aa281948fvbq2v/2020/April/05e73376-7ec3-471e-b1e1-59919b660501.json
 ```
 
+# API Reference
+
+## API Utility (Non-DB)
+
+All routes here are preceded with `/api/` (e.g. `/api/s3-connect`)
+
+`/connection`
+- Method: GET
+- Desc: Test database connection by running `SHOW DATABASES`
+
+`/s3-connect`
+- Method: GET
+- Params:
+    - file_name: filename/key of the json object within the S3 Bucket "uploads-results-prod.zappotrack.com"
+- Desc: Preprocess and display the output of Textract's json invoice scan
+
+`/s3-upload`
+- Method: POST
+- Header: Content-Type:application/json
+- Body params:
+    - file_name:  filename/key of the json object within the S3 Bucket "uploads-results-prod.zappotrack.com"
+- Desc: Preprocess and upload Textract's json invoice scan. Upload will go to S3 Bucket "invoiceupload-memsql"
+    - The file naming convention is as follows:
+        - export/`header or lineitem`/`account_number`/`year`/`month`/`day`-`hour`-`minute`-`millisecond`\_`random integer`\_`invoice number`
+
+## DB General GETs
+- `/account/`
+- `/address/`
+- `/organization/`
+- `/supplier/`
+- `/person/`
+- `/person_account/`
+- `/restaurant/`
+
+## DB POSTs
+
+`/account/new_account`
+- Method: POST
+- Header: Content-Type:application/json
+- Body params:
+    - organization_name
+    - org_country_id
+    - org_street_address
+    - org_postal_code
+    - org_provice_state (As of 5/11, this field has not yet been added to DB table. Do not use)
+    - org_city
+    - loc_country_id
+    - loc_street_address
+    - loc_postal_code
+    - loc_provice_state (As of 5/11, this field has not yet been added to DB table. Do not use)
+    - loc_city
+    - account_name
+    - first_name
+    - last_name
+    - email
+    - auth0_id (As of 5/11, this field has not yet been added to DB table. Do not use)
+    - is_admin
+    - role_name
+
+`/account/add_account`
+- Method: POST
+- Header: Content-Type:application/json
+- Body params:
+    - organization_id
+    - loc_country_id
+    - loc_street_address
+    - loc_postal_code
+    - loc_provice_state (As of 5/11, this field has not yet been added to DB table. Do not use)
+    - loc_city
+    - account_name
