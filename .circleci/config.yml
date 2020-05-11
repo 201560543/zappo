@@ -35,7 +35,7 @@ jobs:
             sudo apt-get install mysql-server
             sudo service mysql start
             sudo mysql -e "show databases; create database zappo;"
-            sudo mysql zappo < ./data/sql_data/dummy.sql
+            sudo mysql zappo < ./data/sql_data/mysql_dump.sql
     
       - save_cache:
           paths:
