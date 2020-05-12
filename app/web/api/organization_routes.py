@@ -2,9 +2,13 @@ import json
 from . import organization
 from sqlalchemy import and_
 from web.models.organization import Organization
+from web.models.organization_type import OrganizationType
+from web.models.industry import Industry
 from web.api.api_utils import converter, exception_handler
 from web.database import db
 from flask import current_app, request, abort
+import uuid
+from datetime import datetime as dt
 
 @organization.route('/', methods=['GET'])
 @exception_handler(custom_msg='Issues in fetching all organizations')
@@ -37,3 +41,28 @@ def get_organization_by_org_number(org_number, return_json=True):
         return json.dumps(result_dict, default=converter)
     else:
         return result_dict
+
+def insert_organization(data, dt_now, add=True, flush=True):
+    """
+    Utility function to insert new organization 
+
+    data: POST request json body
+    dt_now: pre-calculated datetime object
+    add: whether db.session will add
+    flush: whether db.session will flush
+    """
+    org_type_id = db.session.query(OrganizationType).filter_by(organization_type_name='Restaurant').one_or_none().id # 2 (restaurant) is the default for now
+    industry_id = db.session.query(Industry).filter_by(industry_name='Restaurant').one_or_none().id # 1 (Restaurant) is default for now
+    new_org = Organization(
+        organization_type_id=org_type_id, 
+        organization_number=uuid.uuid1().hex,
+        industry_id=industry_id, 
+        organization_name=data['organization_name'],
+        created_at=dt_now
+    )
+    if add==True:
+        db.session.add(new_org)
+    if flush == True:
+        db.session.flush()
+
+    return new_org

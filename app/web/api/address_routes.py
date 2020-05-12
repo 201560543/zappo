@@ -1,5 +1,6 @@
 from . import address
 from web.models.address import Address
+from web.models.address_type import AddressType
 from web.api.api_utils import converter, exception_handler
 from datetime import date as d
 from datetime import datetime as dt
@@ -72,3 +73,49 @@ def soft_delete_address(address_id):
     }
     return jsonify(body), 202
 
+
+def insert_address(data, org_id, dt_now, org=True, add=True, flush=True):
+    """
+    Utility function to insert new address 
+
+    data: POST request json body
+    org_id: associated organization id
+    dt_now: pre-calculated datetime object
+    org: Whether input data is an organization address or location address. Parameters will differ based on this choice
+    add: whether db.session will add
+    flush: whether db.session will flush
+    """
+    if org==True:
+        # Org is a Sold To address
+        addr_type_id = db.session.query(AddressType).filter_by(address_type_name='Sold To Address').one_or_none().id
+        new_addr = Address(
+            organization_id=org_id,
+            address_type_id=addr_type_id, 
+            country_id=data['org_country_id'],
+            address_name=data['org_street_address'],
+            postal_code=data['org_postal_code'],
+            # province_state=data['org_provice_state'], # TO DO: Add this column to the database before enabling this as a parameter
+            city_name=data['org_city'],
+            from_date=dt_now.date(),
+            created_at=dt_now
+        )
+    else: 
+        # Otherwise, this is a Ship To address
+        addr_type_id = db.session.query(AddressType).filter_by(address_type_name='Ship To Address').one_or_none().id
+        new_addr = Address(
+            organization_id=org_id,
+            address_type_id=addr_type_id, 
+            country_id=data['loc_country_id'],
+            address_name=data['loc_street_address'],
+            postal_code=data['loc_postal_code'],
+            # province_state=data['loc_provice_state'], # TO DO: Add this column to the database before enabling this as a parameter
+            city_name=data['loc_city'],
+            from_date=dt_now,
+            created_at=dt_now
+        )
+    if add==True:
+        db.session.add(new_addr)
+    if flush == True:
+        db.session.flush()
+
+    return new_addr
