@@ -40,7 +40,11 @@ def exception_handler(**kw):
             except Exception as exc:
                 current_app.logger.warn(custom_msg)
                 current_app.logger.warn(exc)
-                abort(400, description='Kindly contact your dev team to handle this error')
+                description = getattr(exc, 'description', 'Kindly contact your dev team to handle this error')
+                abort(
+                    getattr(exc, 'code', 400),
+                    description=description
+                )
         return inner
     return handler
 

@@ -1,0 +1,47 @@
+{
+	"mapper": {
+		"order": {
+			"invoice": "invoice_number",
+			"customer": "customer_account_number",
+			"customfr": "customer_account_number",
+			"bill to": "sold_to",
+			"date": "invoice_date",
+			"total": "invoice_subtotal"
+		},
+		"order_item": {
+			"item no": "item_number",
+			"item nc": "item_number",
+			"quan": "shipped_quantity",
+			"size": "size",
+			"description": "description",
+			"unit price": "price",
+			"amount": "total_price"
+		}
+	},
+	"expectation_checks": {
+		"item_number": {"num_tokens": 1, "data_type": "string"},
+		"shipped_quantity": {"num_tokens": 1, "data_type": "float"},
+		"description": {"num_tokens": null, "data_type": "string"},
+		"size": {"num_tokens": null, "data_type": "string"},
+		"price": {"num_tokens": null, "data_type": "float"},
+		"total_price": {"num_tokens": null, "data_type": "float"}
+	},
+	"column_order": [
+		"item_number",
+		"shipped_quantity",
+        "description",
+        "size",
+		"price",
+		"total_price"
+    ],
+    "header_indexes": {
+		"item_number": 1,
+		"shipped_quantity": 2,
+        "description": 5,
+        "size": 7,
+		"price": 8,
+		"total_price": 9
+        
+    },
+	"date_format": ["%m/%d/%Y", "%m/%d1212%y"]
+}
