@@ -62,6 +62,16 @@ All files which maintain any sort of connection with another service is maintain
 
 This has been done so that our parent directory is as clean as possible.
 
+# Circle CI
+We have a circle CI setup to validate all our tests when we push our code and create a pull request. You can also validate the tests locally. You can also run circleci locally:
+
+```
+circleci config process .circleci/config.yml > process.yml
+```
+
+```
+circleci local execute -c process.yml --job build
+```
 
 # Configuration to run S3 APIs
 ```

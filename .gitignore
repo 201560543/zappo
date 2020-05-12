@@ -15,3 +15,5 @@ app/zappo_env/
 url
 
 test_env/
+
+process.yml
