@@ -6,7 +6,7 @@ from web.database import db
 from flask import current_app, request
 
 @restaurant.route('/', methods=['GET'])
-@exception_handler(custom_msg="Issues in fetching all suppliers")
+@exception_handler(custom_msg="Issues in fetching all restaurants")
 def get_all_restaurants(return_json=True):
     results = db.session.query(Restaurant).all()
     result_dict = [result.as_dict() for result in results if result.is_deleted==0]

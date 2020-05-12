@@ -6,7 +6,9 @@ from flask_migrate import Migrate
 from web.api.routes import api
 from web.api.account_routes import account
 from web.api.address_routes import address
+from web.api.address_type_routes import address_type
 from web.api.organization_routes import organization
+from web.api.organization_type_routes import organization_type
 from web.api.supplier_routes import supplier
 from web.api.person_routes import person
 from web.api.person_account_routes import person_account
@@ -75,7 +77,9 @@ def create_app(config_name):
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(account, url_prefix='/account')
     app.register_blueprint(address, url_prefix='/address')
+    app.register_blueprint(address_type, url_prefix='/address_type')
     app.register_blueprint(organization, url_prefix='/organization')
+    app.register_blueprint(organization_type, url_prefix='/organization_type')
     app.register_blueprint(supplier, url_prefix='/supplier')
     app.register_blueprint(person, url_prefix='/person')
     app.register_blueprint(person_account, url_prefix='/person_account')

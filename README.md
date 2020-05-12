@@ -119,7 +119,9 @@ All routes here are preceded with `/api/` (e.g. `/api/s3-connect`)
 ## DB General GETs
 - `/account/`
 - `/address/`
+- `/address_type/`
 - `/organization/`
+- `/organization_type/`
 - `/supplier/`
 - `/person/`
 - `/person_account/`

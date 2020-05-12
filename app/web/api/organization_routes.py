@@ -2,6 +2,8 @@ import json
 from . import organization
 from sqlalchemy import and_
 from web.models.organization import Organization
+from web.models.organization_type import OrganizationType
+from web.models.industry import Industry
 from web.api.api_utils import converter, exception_handler
 from web.database import db
 from flask import current_app, request, abort
@@ -49,10 +51,12 @@ def insert_organization(data, dt_now, add=True, flush=True):
     add: whether db.session will add
     flush: whether db.session will flush
     """
+    org_type_id = db.session.query(OrganizationType).filter_by(organization_type_name='Restaurant').one_or_none().id # 2 (restaurant) is the default for now
+    industry_id = db.session.query(Industry).filter_by(industry_name='Restaurant').one_or_none().id # 1 (Restaurant) is default for now
     new_org = Organization(
-        organization_type_id=2, # 2 (restaurant) is the default for now
+        organization_type_id=org_type_id, 
         organization_number=uuid.uuid1().hex,
-        industry_id=1, # 1 (restaurants) is the default for now
+        industry_id=industry_id, 
         organization_name=data['organization_name'],
         created_at=dt_now
     )

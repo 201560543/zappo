@@ -6,7 +6,7 @@ from web.database import db
 from flask import current_app, request
 
 @person.route('/', methods=['GET'])
-@exception_handler(custom_msg="Issues in fetching all suppliers")
+@exception_handler(custom_msg="Issues in fetching all persons")
 def get_all_people(return_json=True):
     results = db.session.query(Person).all()
     result_dict = [result.as_dict() for result in results]# if result.is_deleted==0] # No is_deleted for person

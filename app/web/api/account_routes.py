@@ -8,11 +8,11 @@ from web.models.address import Address
 from web.api.api_utils import converter, exception_handler
 from web.database import db
 from flask import current_app, request, jsonify
-from .organization_routes import insert_organization
-from .address_routes import insert_address
-from .person_routes import insert_person
-from .person_account_routes import insert_person_account
-from .restaurant_routes import insert_restaurant
+from web.api.organization_routes import insert_organization
+from web.api.address_routes import insert_address
+from web.api.person_routes import insert_person
+from web.api.person_account_routes import insert_person_account
+from web.api.restaurant_routes import insert_restaurant
 import uuid
 from datetime import datetime as dt
 
@@ -65,7 +65,6 @@ def create_account(return_json=True):
     body['obj']=new_accnt.as_dict()
 
     db.session.add(new_accnt)
-    import pdb; pdb.set_trace()
     db.session.commit()
     current_app.logger.info('Inserted record:\n',new_accnt)
     db.session.close()
@@ -98,29 +97,35 @@ def create_new_account(return_json=True):
     new_org_number = new_org.organization_number # Fetching organization number of new record
     new_org_id = new_org.id # Fetching organization id of new record
     body['organization'] = new_org.as_dict()
+
     # Insert Org Address
     new_org_addr = insert_address(data=data, org_id=new_org_id, dt_now=dt_now, org=True, add=True, flush=False)
     current_app.logger.info('Inserted record:\n',new_org_addr.as_dict())
     body['org_address'] = new_org_addr.as_dict()
+
     # Insert Location Address (Ship to)
     new_loc_addr = insert_address(data=data, org_id=new_org_id, dt_now=dt_now, org=False, add=True, flush=True)
     current_app.logger.info('Inserted record:\n',new_loc_addr.as_dict())
     body['loc_address'] = new_loc_addr.as_dict()
     new_loc_addr_id = new_loc_addr.id # Fetching address id of new record
+
     # Insert Account
     new_accnt = insert_account(data=data, org_id=new_org_id, loc_addr_id=new_loc_addr_id, dt_now=dt_now, add=True, flush=True)
     current_app.logger.info('Inserted record:\n',new_accnt.as_dict())
     body['loc_address'] = new_loc_addr.as_dict()
     new_accnt_id = new_accnt.id
+
     # Insert Person
     new_person = insert_person(data=data, org_id=new_org_id, dt_now=dt_now, add=True, flush=True)
     current_app.logger.info('Inserted record:\n',new_person.as_dict())
     body['person'] = new_person.as_dict()
     new_person_id = new_person.id
+
     # Insert PersonAccount
     new_person_accnt = insert_person_account(data=data, accnt_id=new_accnt_id, person_id=new_person_id, dt_now=dt_now, add=True, flush=False)
     current_app.logger.info('Inserted record:\n',new_person_accnt.as_dict())
     body['person_account'] = new_person_accnt.as_dict()
+
     # Insert Restaurant
     new_restaurant = insert_restaurant(data=data, org_id=new_org_id, dt_now=dt_now, add=True, flush=False)
     current_app.logger.info('Inserted record:\n',new_restaurant.as_dict())
@@ -154,10 +159,12 @@ def add_account():
     current_app.logger.info('Inserted record:\n',new_address.as_dict())
     body['address'] = new_address.as_dict()
     new_address_id = new_address.id
+
     # Insert Account
     new_account = insert_account(data=data, org_id=org_id,loc_addr_id=new_address_id, dt_now=dt_now, add=True, flush=False)
     current_app.logger.info('Inserted record:\n',new_account.as_dict())
     body['account'] = new_account.as_dict()
+    
     # Insert Restaurant
     new_restaurant = insert_restaurant(data=data, org_id=org_id, dt_now=dt_now, add=True)
     current_app.logger.info('Inserted record:\n',new_restaurant.as_dict())

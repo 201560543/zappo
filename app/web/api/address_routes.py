@@ -1,5 +1,6 @@
 from . import address
 from web.models.address import Address
+from web.models.address_type import AddressType
 from web.api.api_utils import converter, exception_handler
 from datetime import date as d
 from datetime import datetime as dt
@@ -85,9 +86,11 @@ def insert_address(data, org_id, dt_now, org=True, add=True, flush=True):
     flush: whether db.session will flush
     """
     if org==True:
+        # Org is a Sold To address
+        addr_type_id = db.session.query(AddressType).filter_by(address_type_name='Sold To Address').one_or_none().id
         new_addr = Address(
             organization_id=org_id,
-            address_type_id=1, # 1 (sold to) is the default organization address type
+            address_type_id=addr_type_id, 
             country_id=data['org_country_id'],
             address_name=data['org_street_address'],
             postal_code=data['org_postal_code'],
@@ -97,9 +100,11 @@ def insert_address(data, org_id, dt_now, org=True, add=True, flush=True):
             created_at=dt_now
         )
     else: 
+        # Otherwise, this is a Ship To address
+        addr_type_id = db.session.query(AddressType).filter_by(address_type_name='Ship To Address').one_or_none().id
         new_addr = Address(
             organization_id=org_id,
-            address_type_id=2, # 1 (ship to) is the default organization address type
+            address_type_id=addr_type_id, 
             country_id=data['loc_country_id'],
             address_name=data['loc_street_address'],
             postal_code=data['loc_postal_code'],
